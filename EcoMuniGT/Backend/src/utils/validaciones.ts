@@ -60,7 +60,7 @@ export function validarUbicacion(
 }
 
 export function validarUsuario(
-    id_rol: number,
+    idRol: number,
     nombres: string,
     apellidos: string,
     correo: string,
@@ -70,7 +70,7 @@ export function validarUsuario(
 
     const errores: string[] = [];
 
-    if (!id_rol || !Number.isInteger(id_rol) || id_rol <= 0) {
+    if (!idRol || !Number.isInteger(idRol) || idRol <= 0) {
         errores.push("El ID del rol debe ser un número entero válido.");
     }
 
