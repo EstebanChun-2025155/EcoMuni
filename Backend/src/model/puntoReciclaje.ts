@@ -1,10 +1,12 @@
-export interface puntoReciclaje {
-    id_punto: number,
-    id_ubicacion: number,
-    nombre: string,
-    descripcion: string,
-    materiales: string,
-    horario: string,
-    telefono: string,
-    estado: boolean
+export type EstadoPunto = 'activo' | 'inactivo';
+
+export interface PuntoReciclaje {
+  id_punto?: number;
+  id_ubicacion: number;
+  nombre: string;
+  descripcion?: string | null;
+  materiales: string;
+  horario?: string | null;
+  telefono?: string | null;
+  estado: EstadoPunto;
 }
