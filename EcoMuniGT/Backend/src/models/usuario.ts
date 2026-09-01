@@ -1,11 +1,13 @@
-export interface Usuario{
-    idUsuario: number
-    idRol:number
-    nombres: String,
-    apellidos: String,
-    correo: String,
-    contrasena: String, 
-    telefono: String,
-    estado: String, 
-    fechaRegistro: Date
+export type EstadoUsuario = "activo" | "suspendido";
+
+export interface Usuario {
+    idUsuario?: number,
+    idRol: number,
+    nombres: string,
+    apellidos: string,
+    correo: string,
+    contrasena?: string,
+    telefono?: string | null,
+    estado: EstadoUsuario,
+    fechaRegistro?: Date
 }

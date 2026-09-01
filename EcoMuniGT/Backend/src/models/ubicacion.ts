@@ -1,8 +1,8 @@
-export interface Ubicacion{
-    idUbicacion: number,
-    departamento: String,
-    municipio: String,
-    zona: String, 
-    direccion: String,
-    referencia: String
+export interface Ubicacion {
+    idUbicacion?: number,
+    departamento: string,
+    municipio: string,
+    zona?: string | null,
+    direccion?: string | null,
+    referencia?: string | null
 }

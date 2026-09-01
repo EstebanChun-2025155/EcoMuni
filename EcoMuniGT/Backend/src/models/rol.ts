@@ -1,5 +1,5 @@
-export interface Rol{
-    idRol: number,
-    nombre: String,
-    descripcion: String
+export interface Rol {
+    idRol?: number,
+    nombre: string,
+    descripcion?: string | null
 }
