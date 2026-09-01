@@ -1,16 +1,14 @@
-import {Roles} from "../models/roles";
-
 export function validarRol(
     nombre: string,
-    descripcion?: string
+    descripcion?: string | null
 ): string[] {
 
     const errores: string[] = [];
 
     if (!nombre || nombre.trim().length === 0) {
         errores.push("El nombre del rol es obligatorio.");
-    } else if (!Object.values(Roles).includes(nombre as Roles)) {
-        errores.push("El rol debe ser Admin, Supervisor o Ciudadano.");
+    } else if (nombre.trim().length > 45) {
+        errores.push("El nombre del rol no puede superar los 45 caracteres.");
     }
 
     if (descripcion && descripcion.trim().length > 150) {
@@ -23,9 +21,9 @@ export function validarRol(
 export function validarUbicacion(
     departamento: string,
     municipio: string,
-    zona?: string,
-    direccion?: string,
-    referencia?: string
+    zona?: string | null,
+    direccion?: string | null,
+    referencia?: string | null
 ): string[] {
 
     const errores: string[] = [];
@@ -47,13 +45,11 @@ export function validarUbicacion(
     }
 
     if (direccion && direccion.trim().length > 200) {
-        errores.push( "La dirección no puede superar los 200 caracteres.");
+        errores.push("La dirección no puede superar los 200 caracteres.");
     }
 
     if (referencia && referencia.trim().length > 200) {
-        errores.push(
-            "La referencia no puede superar los 200 caracteres."
-        );
+        errores.push("La referencia no puede superar los 200 caracteres.");
     }
 
     return errores;
@@ -64,8 +60,10 @@ export function validarUsuario(
     nombres: string,
     apellidos: string,
     correo: string,
-    contrasena: string,
-    telefono?: string
+    contrasena?: string,
+    telefono?: string | null,
+    estado?: string,
+    validarContrasena: boolean = true
 ): string[] {
 
     const errores: string[] = [];
@@ -86,8 +84,7 @@ export function validarUsuario(
         errores.push("Los apellidos no pueden superar los 60 caracteres.");
     }
 
-    const regexCorreo =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!correo || correo.trim().length === 0) {
         errores.push("El correo es obligatorio.");
@@ -97,22 +94,23 @@ export function validarUsuario(
         errores.push("El formato del correo electrónico no es válido.");
     }
 
-    if (!contrasena || contrasena.length === 0) {
-        errores.push("La contraseña es obligatoria.");
-    } else if (contrasena.length < 8) {
-        errores.push("La contraseña debe tener al menos 8 caracteres.");
-    } else if (!/[A-Z]/.test(contrasena)) {
-        errores.push("La contraseña debe contener al menos una letra mayúscula.");
-    } else if (!/[a-z]/.test(contrasena)) {
-        errores.push("La contraseña debe contener al menos una letra minúscula.");
-    } else if (!/[0-9]/.test(contrasena)) {
-        errores.push("La contraseña debe contener al menos un número.");
-    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(contrasena)) {
-        errores.push("La contraseña debe contener al menos un carácter especial.");
+    if (validarContrasena || contrasena) {
+        if (!contrasena || contrasena.length === 0) {
+            errores.push("La contraseña es obligatoria.");
+        } else if (contrasena.length < 8) {
+            errores.push("La contraseña debe tener al menos 8 caracteres.");
+        } else if (!/[A-Z]/.test(contrasena)) {
+            errores.push("La contraseña debe contener al menos una letra mayúscula.");
+        } else if (!/[a-z]/.test(contrasena)) {
+            errores.push("La contraseña debe contener al menos una letra minúscula.");
+        } else if (!/[0-9]/.test(contrasena)) {
+            errores.push("La contraseña debe contener al menos un número.");
+        } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(contrasena)) {
+            errores.push("La contraseña debe contener al menos un carácter especial.");
+        }
     }
 
     if (telefono) {
-
         if (telefono.trim().length > 20) {
             errores.push("El teléfono no puede superar los 20 caracteres.");
         }
@@ -120,6 +118,10 @@ export function validarUsuario(
         if (!/^[0-9]+$/.test(telefono.trim())) {
             errores.push("El teléfono solo debe contener números.");
         }
+    }
+
+    if (estado !== "activo" && estado !== "suspendido") {
+        errores.push("El estado debe ser activo o suspendido.");
     }
 
     return errores;
