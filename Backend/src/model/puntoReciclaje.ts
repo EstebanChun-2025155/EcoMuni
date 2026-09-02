@@ -8,5 +8,5 @@ export interface PuntoReciclaje {
   materiales: string;
   horario?: string | null;
   telefono?: string | null;
-  estado: EstadoPunto;
+  estado?: EstadoPunto;
 }
