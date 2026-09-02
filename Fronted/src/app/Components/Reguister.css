@@ -1,0 +1,134 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:host {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fondo principal */
+.bg-blur {
+  position: fixed; /* Mantiene el fondo fijo cubriendo toda la pantalla */
+  top: 0;
+  left: 0; /* Cambiado de 20px a 0 para centrarlo correctamente */
+  width: 100vw; /* Asegura el ancho total de la ventana */
+  height: 100vh; /* Asegura el alto total de la ventana */
+  background: url('/fondo.png') no-repeat center center / cover;
+  filter: blur(4px);
+  transform: scale(1.05); /* Evita bordes blancos causados por el filtro blur */
+  z-index: -1;
+}
+
+/* Tarjeta */
+.card-container {
+  width: 800px;
+  max-width: 90%;
+  height: 450px;
+  background-color: #437059;
+  border-radius: 25px;
+  display: flex;
+  padding: 15px;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+  border: 2px solid #335543;
+}
+
+.form-side {
+  flex: 1;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.back-btn {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: #a3b88c;
+  transform: rotate(180deg);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.back-btn:hover {
+  transform: rotate(180deg) scale(1.1);
+}
+
+.form-side h2 {
+  text-align: center;
+  color: #0d1b12;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.form-side form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.form-side input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: none;
+  background-color: #dcdcdc;
+  color: #333;
+  font-size: 0.95rem;
+  text-align: center;
+  outline: none;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.form-side input::placeholder {
+  color: #777;
+  font-weight: 600;
+}
+
+.submit-btn {
+  width: 60%;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  background-color: #cde69c;
+  color: #2a3d1d;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.submit-btn:hover {
+  background-color: #bebe84;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Imagen Lateral */
+.image-side {
+  flex: 1;
+  border-radius: 20px;
+  overflow: hidden;
+  background: url('/imagen.png') no-repeat center center/cover;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
