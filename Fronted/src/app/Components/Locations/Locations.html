@@ -1,0 +1,49 @@
+<div class="bg-blur"></div>
+
+<!-- Barra de navegación superior (con "Locations" activo) -->
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/logo.png" alt="EcoMuni Logo" class="logo-icon" />
+    <span class="logo-text">{{ brandName }}</span>
+  </div>
+
+  <nav class="nav-links">
+    <button class="menu-btn" (click)="onMenuClick()">Menu</button>
+    <a *ngFor="let link of navLinks" 
+       (click)="onNavigate(link.path)" 
+       [class.active]="link.name === 'Locations'"
+       class="nav-item">
+      {{ link.name }}
+    </a>
+  </nav>
+
+  <div class="logout-container">
+    <button class="logout-btn" (click)="onLogout()">Logout</button>
+  </div>
+</header>
+
+<!-- Contenido de Ubicaciones -->
+<main class="locations-content">
+  <div class="header-section">
+    <h1 class="locations-title">Ubicaciones</h1>
+    <p class="locations-description">
+      En nuestros puntos mas importantes tenemos en la ciudad de guatemala como zona 7, zona 3 etc como podras ver a continuacion tambien podras observar donde estamos ubicados para una consulta personalizada
+    </p>
+  </div>
+
+  <!-- Tarjetas de ubicaciones -->
+  <div class="cards-grid">
+    <div class="location-card" *ngFor="let loc of locationsList">
+      <div class="card-image-wrapper">
+        <img [src]="loc.image" [alt]="loc.name" class="loc-image" />
+      </div>
+      <span class="loc-name">{{ loc.name }}</span>
+    </div>
+  </div>
+
+  <!-- Botón inferior Scroll -->
+  <div class="scroll-container" (click)="onScrollDown()">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-icon">&#8595;</div>
+  </div>
+</main>
