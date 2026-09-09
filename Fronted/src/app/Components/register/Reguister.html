@@ -1,0 +1,46 @@
+<div class="bg-blur"></div>
+
+<div class="card-container">
+  <div class="form-side">
+    <button type="button" class="back-btn" (click)="onBack()">&#10140;</button>
+    <h2>Register</h2>
+
+    <form (ngSubmit)="onSubmit()">
+      <input 
+        type="text" 
+        [placeholder]="placeholders.nombre" 
+        [(ngModel)]="formData.nombre" 
+        name="nombre" 
+        required
+      >
+      <input 
+        type="email" 
+        [placeholder]="placeholders.correo" 
+        [(ngModel)]="formData.correo" 
+        name="correo" 
+        required
+      >
+      <input 
+        type="password" 
+        [placeholder]="placeholders.contrasena" 
+        [(ngModel)]="formData.contrasena" 
+        name="contrasena" 
+        required
+      >
+      <input 
+        type="password" 
+        [placeholder]="placeholders.confirmarContrasena" 
+        [(ngModel)]="formData.confirmarContrasena" 
+        name="confirmarContrasena" 
+        required
+      >
+      
+      <button type="submit" class="submit-btn" [disabled]="loading">
+        {{ buttonText }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Imagen lateral cargada desde CSS -->
+  <div class="image-side"></div>
+</div>
