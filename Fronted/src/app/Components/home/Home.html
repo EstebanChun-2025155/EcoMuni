@@ -1,0 +1,30 @@
+<div class="bg-blur"></div>
+
+<!-- Barra de navegación superior -->
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/logo.png" alt="EcoMuni Logo" class="logo-icon" />
+    <span class="logo-text">{{ brandName }}</span>
+  </div>
+
+  <nav class="nav-links">
+    <button class="menu-btn" (click)="onMenuClick()">Menu</button>
+    <a *ngFor="let link of navLinks" (click)="onNavigate(link.path)" class="nav-item">
+      {{ link.name }}
+    </a>
+  </nav>
+
+  <div class="logout-container">
+    <button class="logout-btn" (click)="onLogout()">Logout</button>
+  </div>
+</header>
+
+<!-- Contenido Principal del Home -->
+<main class="hero-content">
+  <h1 class="hero-title" [innerHTML]="heroTitle"></h1>
+  
+  <div class="scroll-container" (click)="onScrollDown()">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-icon">&#8595;</div>
+  </div>
+</main>
