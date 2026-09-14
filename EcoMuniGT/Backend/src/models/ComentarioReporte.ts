@@ -3,6 +3,6 @@ export interface ComentarioReporte {
     idReporte: number;
     idUsuario: number;
     comentario: string;
-    fechaComentario: Date;
+    fechaComentario?: Date;
     estado: string;
 }
