@@ -1,0 +1,50 @@
+<div class="bg-blur"></div>
+
+<!-- Barra de navegación superior -->
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/logo.png" alt="EcoMuni Logo" class="logo-icon" />
+    <span class="logo-text">{{ brandName }}</span>
+  </div>
+
+  <nav class="nav-links">
+    <button class="menu-btn" (click)="onNavigate('/home')">Menu</button>
+    <a *ngFor="let link of navLinks" 
+       (click)="onNavigate(link.path)" 
+       [class.active]="link.name === 'Evidences'"
+       class="nav-item">
+      {{ link.name }}
+    </a>
+  </nav>
+
+  <div class="logout-container">
+    <button class="logout-btn" (click)="onLogout()">Logout</button>
+  </div>
+</header>
+
+<!-- Contenido Principal -->
+<main class="main-content">
+  <div class="header-section">
+    <h1 class="page-title">Evidencias Fotográficas</h1>
+    <p class="page-description">
+      Registro visual y multimedia recopilado de las inspecciones ambientales y reportes ciudadanos verificados.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="evidence-card" *ngFor="let ev of evidencesList">
+      <div class="card-image-wrapper">
+        <img [src]="ev.image" [alt]="ev.title" class="loc-image" />
+      </div>
+      <div class="evidence-footer">
+        <span class="loc-name">{{ ev.title }}</span>
+        <span class="evidence-date">{{ ev.date }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-container" (click)="onScrollDown()">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-icon">&#8595;</div>
+  </div>
+</main>
