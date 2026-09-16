@@ -1,0 +1,517 @@
+<div class="bg-blur" aria-hidden="true"></div>
+
+<header class="navbar">
+  <button class="brand-button" type="button" (click)="volverHome()">
+    <img src="/logo.png" alt="" class="logo-icon" width="36" height="36">
+    <span class="logo-text">EcoMuni</span>
+  </button>
+
+  <div class="navigation-container">
+    <button class="menu-btn" type="button" (click)="alternarMenu()">
+      Menú
+    </button>
+
+    <nav class="nav-links" [hidden]="!menuAbierto()">
+      <button class="nav-item" type="button" disabled>About</button>
+
+      <button class="nav-item active" type="button"
+        (click)="volverHome()">
+        Departamentos
+      </button>
+
+      <span class="nav-item">Reports</span>
+
+      <button class="nav-item" type="button" disabled>Help</button>
+    </nav>
+  </div>
+
+  <button class="logout-btn" type="button"
+    [disabled]="cerrando()" (click)="cerrarSesion()">
+    {{ cerrando() ? 'Cerrando…' : 'Cerrar sesión' }}
+  </button>
+</header>
+
+<main class="department-page">
+
+  <!-- PORTADA -->
+
+  <section class="hero"
+    [style.background-image]="
+      'linear-gradient(
+        90deg,
+        rgba(5, 35, 25, .92),
+        rgba(5, 35, 25, .25)
+      ),
+      url(' + departamento.imagen + ')'
+    ">
+
+    <div class="hero-copy">
+      <button class="breadcrumb" type="button" (click)="volverHome()">
+        ← Departamentos
+      </button>
+
+      <p class="eyebrow">Departamento de</p>
+
+      <h1>{{ departamento.nombre }}</h1>
+
+      <p class="hero-description">
+        {{ departamento.frase }}
+      </p>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-card">
+        <span>Cabecera</span>
+        <strong>{{ departamento.cabecera }}</strong>
+      </div>
+
+      <div class="stat-card">
+        <span>Municipios</span>
+        <strong>{{ departamento.municipios }}</strong>
+      </div>
+
+      <div class="stat-card">
+        <span>Enfoque</span>
+        <strong>Reciclaje y ambiente</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORTES -->
+
+  <section class="workspace">
+    <div class="reports-panel">
+
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Participación ciudadana</p>
+          <h2>Reportes ambientales</h2>
+
+          <p>
+            Consulta incidencias ambientales reportadas en
+            {{ departamento.nombre }}.
+          </p>
+        </div>
+
+        <button class="primary-btn" type="button"
+          (click)="mostrarNuevoReporte.set(true)">
+          + Nuevo reporte
+        </button>
+      </div>
+
+      <!-- FILTROS -->
+
+      <div class="filters">
+        <label>
+          <span>Estado</span>
+
+          <select [(ngModel)]="filtroEstado">
+            <option>Todos</option>
+            <option>Pendiente</option>
+            <option>En proceso</option>
+            <option>Resuelto</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Categoría</span>
+
+          <select [(ngModel)]="filtroCategoria">
+            <option>Todas</option>
+
+            @for (categoria of categorias; track categoria) {
+              <option>{{ categoria }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Prioridad</span>
+
+          <select [(ngModel)]="filtroPrioridad">
+            <option>Todas</option>
+            <option value="baja">Baja</option>
+            <option value="media">Media</option>
+            <option value="alta">Alta</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- TARJETAS -->
+
+      <div class="reports-grid">
+        @for (reporte of reportesFiltrados; track reporte.id) {
+
+          <article class="report-card"
+            [class.selected]="reporteSeleccionado?.id === reporte.id">
+
+            <div class="report-topline">
+              <span class="status-badge"
+                [class.status-pending]="reporte.estado === 'Pendiente'"
+                [class.status-progress]="reporte.estado === 'En proceso'"
+                [class.status-done]="reporte.estado === 'Resuelto'">
+                {{ reporte.estado }}
+              </span>
+
+              <span class="priority">
+                {{ reporte.prioridad }}
+              </span>
+            </div>
+
+            <span class="category">
+              {{ reporte.categoria }}
+            </span>
+
+            <h3>{{ reporte.titulo }}</h3>
+
+            <p class="location">
+              ⌖ {{ reporte.ubicacion }}
+            </p>
+
+            <p class="report-description">
+              {{ reporte.descripcion }}
+            </p>
+
+            @if (reporte.evidencias[0]; as miniatura) {
+              <img class="report-thumbnail"
+                [src]="miniatura"
+                [alt]="'Evidencia de ' + reporte.titulo">
+            }
+
+            <div class="card-footer">
+              <div class="card-meta">
+                <span>{{ reporte.fecha }}</span>
+                <span>♥ {{ reporte.apoyos }}</span>
+                <span>💬 {{ reporte.comentarios.length }}</span>
+              </div>
+
+              <button class="detail-btn" type="button"
+                (click)="abrirDetalle(reporte)">
+                Ver detalle
+              </button>
+            </div>
+          </article>
+
+        } @empty {
+
+          <div class="empty-state">
+            No existen reportes con estos filtros.
+          </div>
+
+        }
+      </div>
+    </div>
+
+    <!-- DETALLE -->
+
+    <aside class="reporte-detalle">
+      @if (reporteSeleccionado; as reporte) {
+
+        <div class="detail-header">
+          <div>
+            <span class="status-badge"
+              [class.status-pending]="reporte.estado === 'Pendiente'"
+              [class.status-progress]="reporte.estado === 'En proceso'"
+              [class.status-done]="reporte.estado === 'Resuelto'">
+              {{ reporte.estado }}
+            </span>
+
+            <h2>{{ reporte.titulo }}</h2>
+          </div>
+
+          <button class="close-detail" type="button"
+            (click)="cerrarDetalle()">
+            ×
+          </button>
+        </div>
+
+        <div class="detail-meta">
+          <span>⌖ {{ reporte.ubicacion }}</span>
+          <span>▣ {{ reporte.fecha }}</span>
+          <span>♥ {{ reporte.apoyos }}</span>
+        </div>
+
+        <div class="detail-block">
+          <h3>Descripción</h3>
+          <p>{{ reporte.descripcion }}</p>
+        </div>
+
+        <!-- EVIDENCIAS -->
+
+        <div class="detail-block">
+          <h3>Evidencias</h3>
+
+          @if (reporte.evidencias.length > 0) {
+
+            <div class="evidence-grid">
+              @for (evidencia of reporte.evidencias; track evidencia) {
+                <img [src]="evidencia" alt="Evidencia del reporte">
+              }
+            </div>
+
+          } @else {
+
+            <div class="no-evidence">
+              Este reporte todavía no tiene evidencias.
+            </div>
+
+          }
+        </div>
+
+        <!-- SEGUIMIENTO -->
+
+        <div class="detail-block">
+          <h3>Estado del reporte</h3>
+
+          <div class="timeline">
+            <div class="timeline-step active">
+              <span>✓</span>
+              <small>Reportado</small>
+            </div>
+
+            <div class="timeline-line"
+              [class.active]="reporte.estado !== 'Pendiente'">
+            </div>
+
+            <div class="timeline-step"
+              [class.active]="reporte.estado !== 'Pendiente'">
+              <span>✓</span>
+              <small>Revisión</small>
+            </div>
+
+            <div class="timeline-line"
+              [class.active]="
+                reporte.estado === 'En proceso' ||
+                reporte.estado === 'Resuelto'
+              ">
+            </div>
+
+            <div class="timeline-step"
+              [class.active]="
+                reporte.estado === 'En proceso' ||
+                reporte.estado === 'Resuelto'
+              ">
+              <span>✓</span>
+              <small>En proceso</small>
+            </div>
+
+            <div class="timeline-line"
+              [class.active]="reporte.estado === 'Resuelto'">
+            </div>
+
+            <div class="timeline-step"
+              [class.active]="reporte.estado === 'Resuelto'">
+              <span>✓</span>
+              <small>Resuelto</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMENTARIOS -->
+
+        <div class="detail-block">
+          <div class="comments-title">
+            <h3>Comentarios</h3>
+            <span>{{ reporte.comentarios.length }}</span>
+          </div>
+
+          <div class="comments-list">
+            @for (comentario of reporte.comentarios; track $index) {
+
+              <article class="comment">
+                <div class="avatar">
+                  {{ comentario.autor.charAt(0) }}
+                </div>
+
+                <div>
+                  <div class="comment-head">
+                    <strong>{{ comentario.autor }}</strong>
+                    <small>{{ comentario.fecha }}</small>
+                  </div>
+
+                  <p>{{ comentario.texto }}</p>
+                </div>
+              </article>
+
+            } @empty {
+
+              <p class="muted">
+                Todavía no hay comentarios.
+              </p>
+
+            }
+          </div>
+
+          <div class="comment-form">
+            <input type="text"
+              [(ngModel)]="comentarioNuevo"
+              placeholder="Escribe un comentario..."
+              (keyup.enter)="agregarComentario()">
+
+            <button type="button"
+              (click)="agregarComentario()">
+              Enviar
+            </button>
+          </div>
+        </div>
+
+      } @else {
+
+        <div class="detail-empty">
+          <span>↗</span>
+
+          <h2>Selecciona un reporte</h2>
+
+          <p>
+            Presiona “Ver detalle” para consultar
+            evidencias, estado y comentarios.
+          </p>
+        </div>
+
+      }
+    </aside>
+  </section>
+
+  <!-- PUNTOS DE RECICLAJE -->
+
+  <section class="recycling-section">
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">Recicla cerca de ti</p>
+        <h2>Puntos de reciclaje</h2>
+
+        <p>
+          Centros y puntos de recolección disponibles en
+          {{ departamento.nombre }}.
+        </p>
+      </div>
+    </div>
+
+    <div class="recycling-grid">
+      @for (punto of departamento.puntos; track punto.nombre) {
+
+        <article class="recycling-card">
+          <div class="recycle-icon">
+            ♻
+          </div>
+
+          <div>
+            <h3>{{ punto.nombre }}</h3>
+            <p>{{ punto.ubicacion }}</p>
+            <span>{{ punto.materiales }}</span>
+          </div>
+        </article>
+
+      }
+    </div>
+  </section>
+
+  <footer class="department-footer">
+    <p>
+      EcoMuni · Una misma comunidad, un mismo compromiso.
+    </p>
+
+    <button type="button" (click)="volverHome()">
+      ← Volver a departamentos
+    </button>
+  </footer>
+</main>
+
+<!-- NUEVO REPORTE -->
+
+@if (mostrarNuevoReporte()) {
+
+  <div class="modal-backdrop"
+    (click)="mostrarNuevoReporte.set(false)">
+
+    <section class="new-report-modal"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <p class="section-kicker">Reporte ambiental</p>
+          <h2>Nuevo reporte</h2>
+        </div>
+
+        <button class="close-detail" type="button"
+          (click)="mostrarNuevoReporte.set(false)">
+          ×
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <label class="full-field">
+          <span>Título</span>
+
+          <input type="text"
+            [(ngModel)]="nuevoReporte.titulo"
+            placeholder="Ej. Acumulación de basura">
+        </label>
+
+        <label>
+          <span>Categoría</span>
+
+          <select [(ngModel)]="nuevoReporte.categoria">
+            <option>Acumulación de basura</option>
+            <option>Reciclaje</option>
+            <option>Residuos sólidos</option>
+            <option>Contaminación</option>
+            <option>Quema de residuos</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Prioridad</span>
+
+          <select [(ngModel)]="nuevoReporte.prioridad">
+            <option value="baja">Baja</option>
+            <option value="media">Media</option>
+            <option value="alta">Alta</option>
+          </select>
+        </label>
+
+        <label class="full-field">
+          <span>Ubicación</span>
+
+          <input type="text"
+            [(ngModel)]="nuevoReporte.ubicacion"
+            placeholder="Municipio, zona o referencia">
+        </label>
+
+        <label class="full-field">
+          <span>Descripción</span>
+
+          <textarea [(ngModel)]="nuevoReporte.descripcion"
+            placeholder="Describe el problema ambiental">
+          </textarea>
+        </label>
+      </div>
+
+      <div class="fake-upload">
+        <span>＋</span>
+
+        <div>
+          <strong>Agregar evidencias</strong>
+
+          <small>
+            La carga real de imágenes se realizará
+            después con el Backend.
+          </small>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary-btn" type="button"
+          (click)="mostrarNuevoReporte.set(false)">
+          Cancelar
+        </button>
+
+        <button class="primary-btn" type="button"
+          (click)="registrarReporteVisual()">
+          Crear reporte
+        </button>
+      </div>
+    </section>
+  </div>
+
+}
