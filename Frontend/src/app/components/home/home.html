@@ -88,7 +88,12 @@
                             </div>
                         }
 
-                        <span class="availability-badge">Próximamente</span>
+                        @if (departamento.disponible) {
+                            <span class="availability-badge">Disponible</span>
+                        } @else {
+                            <span class="availability-badge">Próximamente</span>
+                        }
+                        
                     </div>
 
                     <h2 class="department-name"
