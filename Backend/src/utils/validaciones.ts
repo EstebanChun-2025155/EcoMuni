@@ -1,3 +1,5 @@
+import { Categoria } from "../models/categoria";
+
 export function validarRol(nombre?: string, descripcion?: string): string[] {
     const errores: string[] = [];
 
@@ -24,6 +26,29 @@ export function validarCategoria(
     }
 
     return errores;
+}
+
+export function validarDatosCategoria(categoria: Categoria): Categoria {
+    if (!categoria) {
+        throw new Error("No se proporcionaron los datos de la categoría.");
+    }
+
+    const errores = validarCategoria(
+        categoria.categoria,
+        categoria.descripcion,
+        categoria.estado  
+    );
+
+    if (errores.length > 0) {
+        throw new Error(errores.join(" "));
+    }
+
+    return {
+        ...categoria,
+        categoria: categoria.categoria?.trim() as any,
+        descripcion: categoria.descripcion?.trim(),
+        estado: categoria.estado?.trim() as any
+    };
 }
 
 export function validarEvidencia(
@@ -92,7 +117,7 @@ export function validarReporte(
         errores.push("La descripción del reporte es obligatoria.");
     }
 
-    if (!prioridad || prioridad.trim() === "") {
+    if (!prioridad || prioridad.trim() === "") { // Corregido aquí
         errores.push("La prioridad del reporte es obligatoria.");
     }
 
