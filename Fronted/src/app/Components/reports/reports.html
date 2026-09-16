@@ -1,0 +1,50 @@
+<div class="bg-blur"></div>
+
+<!-- Barra de navegación superior -->
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/logo.png" alt="EcoMuni Logo" class="logo-icon" />
+    <span class="logo-text">{{ brandName }}</span>
+  </div>
+
+  <nav class="nav-links">
+    <button class="menu-btn" (click)="onNavigate('/home')">Menu</button>
+    <a *ngFor="let link of navLinks" 
+       (click)="onNavigate(link.path)" 
+       [class.active]="link.name === 'Reports'"
+       class="nav-item">
+      {{ link.name }}
+    </a>
+  </nav>
+
+  <div class="logout-container">
+    <button class="logout-btn" (click)="onLogout()">Logout</button>
+  </div>
+</header>
+
+<!-- Contenido Principal -->
+<main class="main-content">
+  <div class="header-section">
+    <h1 class="page-title">Gestión de Reportes</h1>
+    <p class="page-description">
+      Consulta y administra los reportes ambientales generados por los ciudadanos para darles el seguimiento adecuado en tiempo real.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="custom-card" *ngFor="let report of reportsList">
+      <div class="card-info">
+        <span class="badge" [class.active-badge]="report.status === 'Activo'">{{ report.status }}</span>
+        <h3>{{ report.title }}</h3>
+        <p><strong>Zona:</strong> {{ report.zone }}</p>
+        <p>{{ report.description }}</p>
+      </div>
+      <button class="action-card-btn" (click)="viewDetails(report.id)">Ver Detalle</button>
+    </div>
+  </div>
+
+  <div class="scroll-container" (click)="onScrollDown()">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-icon">&#8595;</div>
+  </div>
+</main>
