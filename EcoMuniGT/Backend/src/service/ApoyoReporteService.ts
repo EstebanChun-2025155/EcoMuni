@@ -1,3 +1,4 @@
+import { pool } from "../config/database";
 import { ApoyoReporte } from "../models/apoyoReporte";
 import { validarApoyoReporte } from "../utils/Validaciones";
 
@@ -24,18 +25,39 @@ function validarDatosApoyo(
 }
 
 export async function listarApoyos(): Promise<ApoyoReporte[]> {
-    throw new Error("Conexión con PostgreSQL aún no configurada.");
+
+    const resultado = await pool.query(`
+        SELECT
+            id_apoyo AS "idApoyo",
+            id_reporte AS "idReporte",
+            id_usuario AS "idUsuario",
+            fecha_apoyo AS "fechaApoyo"
+        FROM ApoyoReporte
+        ORDER BY id_apoyo
+    `);
+
+    return resultado.rows;
 }
 
 export async function buscarApoyo(
     id: number
-): Promise<ApoyoReporte> {
+): Promise<ApoyoReporte | null> {
 
     if (!validarId(id)) {
         throw new Error("ID inválido.");
     }
 
-    throw new Error("Conexión con PostgreSQL aún no configurada.");
+    const resultado = await pool.query(`
+        SELECT
+            id_apoyo AS "idApoyo",
+            id_reporte AS "idReporte",
+            id_usuario AS "idUsuario",
+            fecha_apoyo AS "fechaApoyo"
+        FROM ApoyoReporte
+        WHERE id_apoyo = $1
+    `, [id]);
+
+    return resultado.rows[0] ?? null;
 }
 
 export async function agregarApoyo(
@@ -44,13 +66,29 @@ export async function agregarApoyo(
 
     const nuevoApoyo = validarDatosApoyo(apoyo);
 
-    throw new Error("Conexión con PostgreSQL aún no configurada.");
+    const resultado = await pool.query(`
+        INSERT INTO ApoyoReporte (
+            id_reporte,
+            id_usuario
+        )
+        VALUES ($1, $2)
+        RETURNING
+            id_apoyo AS "idApoyo",
+            id_reporte AS "idReporte",
+            id_usuario AS "idUsuario",
+            fecha_apoyo AS "fechaApoyo"
+    `, [
+        nuevoApoyo.idReporte,
+        nuevoApoyo.idUsuario
+    ]);
+
+    return resultado.rows[0];
 }
 
 export async function actualizarApoyo(
     id: number,
     datos: ApoyoReporte
-): Promise<ApoyoReporte> {
+): Promise<ApoyoReporte | null> {
 
     if (!validarId(id)) {
         throw new Error("ID inválido.");
@@ -67,16 +105,43 @@ export async function actualizarApoyo(
 
     const apoyoActualizado = validarDatosApoyo(datos);
 
-    throw new Error("Conexión con PostgreSQL aún no configurada.");
+    const resultado = await pool.query(`
+        UPDATE ApoyoReporte
+        SET
+            id_reporte = $1,
+            id_usuario = $2
+        WHERE id_apoyo = $3
+        RETURNING
+            id_apoyo AS "idApoyo",
+            id_reporte AS "idReporte",
+            id_usuario AS "idUsuario",
+            fecha_apoyo AS "fechaApoyo"
+    `, [
+        apoyoActualizado.idReporte,
+        apoyoActualizado.idUsuario,
+        id
+    ]);
+
+    return resultado.rows[0] ?? null;
 }
 
 export async function eliminarApoyo(
     id: number
-): Promise<ApoyoReporte> {
+): Promise<ApoyoReporte | null> {
 
     if (!validarId(id)) {
         throw new Error("ID inválido.");
     }
 
-    throw new Error("Conexión con PostgreSQL aún no configurada.");
+    const resultado = await pool.query(`
+        DELETE FROM ApoyoReporte
+        WHERE id_apoyo = $1
+        RETURNING
+            id_apoyo AS "idApoyo",
+            id_reporte AS "idReporte",
+            id_usuario AS "idUsuario",
+            fecha_apoyo AS "fechaApoyo"
+    `, [id]);
+
+    return resultado.rows[0] ?? null;
 }
