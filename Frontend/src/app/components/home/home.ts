@@ -7,6 +7,7 @@ interface Departamento {
     slug: string;
     nombre: string;
     imagen?: string;
+    disponible?: boolean;
 }
 
 @Component({
@@ -16,6 +17,7 @@ interface Departamento {
     styleUrl: './home.css'
 })
 export class HomeComponent {
+
     readonly auth = inject(AuthService);
     private readonly router = inject(Router);
 
@@ -24,17 +26,17 @@ export class HomeComponent {
     readonly menuAbierto = signal(true);
 
     readonly departamentos: readonly Departamento[] = [
-        { slug: 'alta-verapaz', nombre: 'Alta Verapaz' },
+        { slug: 'alta-verapaz', nombre: 'Alta Verapaz'},
         { slug: 'baja-verapaz', nombre: 'Baja Verapaz' },
         { slug: 'chimaltenango', nombre: 'Chimaltenango' },
         { slug: 'chiquimula', nombre: 'Chiquimula' },
         { slug: 'el-progreso', nombre: 'El Progreso' },
-        { slug: 'escuintla', nombre: 'Escuintla' },
-        { slug: 'guatemala', nombre: 'Guatemala' },
-        { slug: 'huehuetenango', nombre: 'Huehuetenango' },
-        { slug: 'izabal', nombre: 'Izabal' },
-        { slug: 'jalapa', nombre: 'Jalapa' },
-        { slug: 'jutiapa', nombre: 'Jutiapa' },
+        { slug: 'escuintla', nombre: 'Escuintla', imagen: 'Escuintla.png'},
+        { slug: 'guatemala', nombre: 'Guatemala', imagen: 'Capital.jpg', disponible: true },
+        { slug: 'huehuetenango', nombre: 'Huehuetenango', imagen: 'Huehuetenango.png', disponible: true },
+        { slug: 'izabal', nombre: 'Izabal', imagen: 'Izabal.png', disponible: true },
+        { slug: 'jalapa', nombre: 'Jalapa', imagen: 'Jalapa.png', disponible: true },
+        { slug: 'jutiapa', nombre: 'Jutiapa', imagen: 'Jutiapa.png', disponible: true },
         { slug: 'peten', nombre: 'Petén' },
         { slug: 'quetzaltenango', nombre: 'Quetzaltenango' },
         { slug: 'quiche', nombre: 'Quiché' },
@@ -61,6 +63,13 @@ export class HomeComponent {
             top: 0,
             behavior: reducirMovimiento ? 'auto' : 'smooth'
         });
+    }
+
+    abrirDepartamento(slug: string): void {
+
+    void this.router.navigate(
+        ['/departamentos', slug]
+    );
     }
 
     cerrarSesion(): void {
