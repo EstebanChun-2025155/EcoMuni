@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { SeguimientoComponent } from './Components/seguimiento/seguimiento';
+import { HomeComponent } from './Components/home/home';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [SeguimientoComponent],
+  imports: [HomeComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
+
 }
