@@ -1,46 +1,87 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
+import { AuthService } from '../../Service/auth.service';
 
-interface NavLink {
-  name: string;
-  path: string;
+interface Departamento {
+    slug: string;
+    nombre: string;
+    imagen?: string;
 }
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './Home.html',
-  styleUrls: ['./Home.css']
+    selector: 'app-home',
+    standalone: true,
+    templateUrl: './home.html',
+    styleUrl: './home.css'
 })
 export class HomeComponent {
-  brandName: string = 'EcoMuni';
-  
-  heroTitle: string = 'Ayudando a mantener <br> el medio ambiente';
+    readonly auth = inject(AuthService);
+    private readonly router = inject(Router);
 
-  navLinks: NavLink[] = [
-    { name: 'About', path: '/about' },
-    { name: 'Locations', path: '/locations' },
-    { name: 'Reports', path: '/reports' },
-    { name: 'Help', path: '/help' }
-  ];
+    readonly cerrando = signal(false);
+    readonly error = signal('');
+    readonly menuAbierto = signal(true);
 
-  onMenuClick(): void {
-    console.log('Menú desplegado');
-    // Aquí puedes abrir un drawer o menú móvil
-  }
+    readonly departamentos: readonly Departamento[] = [
+        { slug: 'alta-verapaz', nombre: 'Alta Verapaz' },
+        { slug: 'baja-verapaz', nombre: 'Baja Verapaz' },
+        { slug: 'chimaltenango', nombre: 'Chimaltenango' },
+        { slug: 'chiquimula', nombre: 'Chiquimula' },
+        { slug: 'el-progreso', nombre: 'El Progreso' },
+        { slug: 'escuintla', nombre: 'Escuintla' },
+        { slug: 'guatemala', nombre: 'Guatemala' },
+        { slug: 'huehuetenango', nombre: 'Huehuetenango' },
+        { slug: 'izabal', nombre: 'Izabal' },
+        { slug: 'jalapa', nombre: 'Jalapa' },
+        { slug: 'jutiapa', nombre: 'Jutiapa' },
+        { slug: 'peten', nombre: 'Petén' },
+        { slug: 'quetzaltenango', nombre: 'Quetzaltenango',imagen: '/Quetzaltenango.jpg' },
+        { slug: 'quiche', nombre: 'Quiché', imagen: '/Quiche.jpeg' },
+        { slug: 'retalhuleu', nombre: 'Retalhuleu', imagen: '/Retalhuleu.jpg' },
+        { slug: 'sacatepequez', nombre: 'Sacatepéquez',imagen: '/Sacatepeques.jpg' },
+        { slug: 'san-marcos', nombre: 'San Marcos', imagen: '/San-Marcos-La-Laguna.png' },
+        { slug: 'santa-rosa', nombre: 'Santa Rosa' },
+        { slug: 'solola', nombre: 'Sololá' },
+        { slug: 'suchitepequez', nombre: 'Suchitepéquez' },
+        { slug: 'totonicapan', nombre: 'Totonicapán' },
+        { slug: 'zacapa', nombre: 'Zacapa' }
+    ];
 
-  onNavigate(path: string): void {
-    console.log('Navegando a:', path);
-    // Aquí puedes usar Router de Angular: this.router.navigate([path]);
-  }
+    alternarMenu(): void {
+        this.menuAbierto.update(abierto => !abierto);
+    }
 
-  onLogout(): void {
-    console.log('Sesión cerrada');
-    // Lógica para limpiar tokens y redirigir al login
-  }
+    volverArriba(): void {
+        const reducirMovimiento = window.matchMedia(
+            '(prefers-reduced-motion: reduce)'
+        ).matches;
 
-  onScrollDown(): void {
-    window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
-  }
+        window.scrollTo({
+            top: 0,
+            behavior: reducirMovimiento ? 'auto' : 'smooth'
+        });
+    }
+
+    cerrarSesion(): void {
+        if (this.cerrando()) return;
+
+        this.cerrando.set(true);
+        this.error.set('');
+
+        this.auth.logout()
+            .pipe(finalize(() => this.cerrando.set(false)))
+            .subscribe({
+                next: () => {
+                    void this.router.navigateByUrl('/login', {
+                        replaceUrl: true
+                    });
+                },
+                error: () => {
+                    this.error.set(
+                        'No se pudo cerrar la sesión. Comprueba la conexión e inténtalo otra vez.'
+                    );
+                }
+            });
+    }
 }
