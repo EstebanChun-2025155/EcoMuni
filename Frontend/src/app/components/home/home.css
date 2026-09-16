@@ -354,3 +354,19 @@ h1 {
         font-size: 0.85rem;
     }
 }
+
+.availability-button {
+    color: white;
+
+    cursor: pointer;
+
+    font: inherit;
+}
+
+.availability-button:hover {
+    background: #c9e99b;
+
+    color: #112a18;
+
+    border-color: #dff4b7;
+}
