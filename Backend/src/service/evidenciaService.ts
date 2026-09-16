@@ -7,11 +7,18 @@ function validarId(id: number): boolean {
 }
 
 function validarDatosEvidencia(evidencia: Evidencia): Evidencia {
+    if (!evidencia) {
+        throw new Error("No se proporcionaron los datos de la evidencia.");
+    }
+
+    // Aseguramos que la fecha sea un objeto Date si viene como string
+    const fechaSubidaDate = evidencia.fechaSubida ? new Date(evidencia.fechaSubida) : new Date();
+
     const errores = validarEvidencia(
         evidencia.idReporte,
         evidencia.urlImagen,
         evidencia.descripcion,
-        evidencia.fechaSubida
+        fechaSubidaDate
     );
 
     if (errores.length > 0) {
@@ -21,7 +28,8 @@ function validarDatosEvidencia(evidencia: Evidencia): Evidencia {
     return {
         ...evidencia,
         urlImagen: evidencia.urlImagen.trim(),
-        descripcion: evidencia.descripcion?.trim()
+        descripcion: evidencia.descripcion?.trim(),
+        fechaSubida: fechaSubidaDate
     };
 }
 
@@ -37,7 +45,7 @@ export async function listarEvidencias(): Promise<Evidencia[]> {
 
 export async function buscarEvidencia(id: number): Promise<Evidencia | null> {
     if (!validarId(id)) {
-        throw new Error("ID inválido.");
+        throw new Error("ID de evidencia inválido.");
     }
 
     const resultado = await pool.query<Evidencia>(
@@ -68,7 +76,7 @@ export async function actualizarEvidencia(
     datos: Evidencia
 ): Promise<Evidencia | null> {
     if (!validarId(id)) {
-        throw new Error("ID inválido.");
+        throw new Error("ID de evidencia inválido.");
     }
 
     if (datos.idEvidencia !== undefined && datos.idEvidencia !== id) {
@@ -90,7 +98,7 @@ export async function actualizarEvidencia(
 
 export async function eliminarEvidencia(id: number): Promise<Evidencia | null> {
     if (!validarId(id)) {
-        throw new Error("ID inválido.");
+        throw new Error("ID de evidencia inválido.");
     }
 
     const resultado = await pool.query<Evidencia>(
