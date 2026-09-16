@@ -1,0 +1,252 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:host {
+  display: block;
+  min-height: 0;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-blur {
+  position: fixed;
+    inset: -8px;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(#123e3155, #10392ecc),
+        url('/bosque.png') center / cover no-repeat;
+    filter: blur(4px);
+}
+
+.navbar {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 1200px;
+  height: 65px;
+  background: rgba(235, 240, 235, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  z-index: 10;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-size: 1.4rem;
+  font-weight: bold;
+  font-style: italic;
+  color: #112a18;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.menu-btn {
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 8px 22px;
+  border-radius: 20px;
+  font-weight: 600;
+  color: #112a18;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.2s;
+}
+
+.menu-btn:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.menu-btn.active {
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #2b3a2f;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.nav-item:hover {
+  color: #000000;
+}
+
+/* Botón Logout */
+.logout-btn {
+  background-color: #ff5c5c;
+  color: #ffffff;
+  border: none;
+  padding: 9px 22px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(255, 92, 92, 0.4);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.logout-btn:hover {
+  background-color: #e04848;
+  transform: scale(1.03);
+}
+
+/* Contenido Principal (Hero Text y Scroll) */
+.hero-content {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 60px 8%;
+}
+
+.hero-title {
+  position: absolute;
+  bottom: 90px;
+  left: 8%;
+  color: #ffffff;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  max-width: 800px;
+}
+
+/* Botón inferior Scroll */
+.scroll-container {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  padding: 6px 18px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.scroll-container:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+
+.scroll-text {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #112a18;
+}
+
+.scroll-icon {
+  background-color: #000000;
+  color: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+/* Enlaces del menú central */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Efecto de botón con borde blanco al acercar el cursor */
+.nav-item {
+  text-decoration: none;
+  color: #2b3a2f;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0); /* Borde inicial invisible */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  color: #000000;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8); /* Aparece el borde blanco */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nav-item.active {
+  background-color: #ffffff;
+  color: #112a18;
+  border-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+.navbar {
+  gap: 0;
+}
+
+.nav-links {
+  gap: 15px;
+}
+
+.nav-item {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.menu-btn {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.menu-btn.active {
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+.bg-blur {
+  inset: -8px;
+  background:
+    linear-gradient(#123e3155, #10392ecc),
+    url('/bosque.png') center / cover no-repeat;
+  filter: blur(4px);
+}
