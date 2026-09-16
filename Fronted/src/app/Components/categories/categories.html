@@ -1,0 +1,47 @@
+<div class="bg-blur"></div>
+
+<!-- Barra de navegación superior -->
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/logo.png" alt="EcoMuni Logo" class="logo-icon" />
+    <span class="logo-text">{{ brandName }}</span>
+  </div>
+
+  <nav class="nav-links">
+    <button class="menu-btn" (click)="onNavigate('/home')">Menu</button>
+    <a *ngFor="let link of navLinks" 
+       (click)="onNavigate(link.path)" 
+       [class.active]="link.name === 'Categories'"
+       class="nav-item">
+      {{ link.name }}
+    </a>
+  </nav>
+
+  <div class="logout-container">
+    <button class="logout-btn" (click)="onLogout()">Logout</button>
+  </div>
+</header>
+
+<!-- Contenido Principal -->
+<main class="main-content">
+  <div class="header-section">
+    <h1 class="page-title">Categorías Ambientales</h1>
+    <p class="page-description">
+      Clasificación oficial de incidencias y normativas ecológicas reguladas dentro del municipio.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="category-card" *ngFor="let cat of categoriesList">
+      <div class="cat-icon-wrapper">🌱</div>
+      <h3>{{ cat.name }}</h3>
+      <p>{{ cat.description }}</p>
+      <span class="cat-count">{{ cat.count }} casos registrados</span>
+    </div>
+  </div>
+
+  <div class="scroll-container" (click)="onScrollDown()">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-icon">&#8595;</div>
+  </div>
+</main>
