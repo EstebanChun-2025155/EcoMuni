@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import usuarioRouter from "../router/reporteRouter";
+import usuarioRouter from "../router/reporteRouter"; 
 import categoriaRouter from "../router/categoriaRouter";
 import evidenciaRouter from "../router/evidenciaRouter";
 import reporteRouter from "../router/reporteRouter";
@@ -9,7 +9,9 @@ const servidor = express();
 
 servidor.use(cors());
 servidor.use(express.json());
-servidor.use("/api/categorias",categoriaRouter );
+
+// Rutas de la API
+servidor.use("/api/categorias", categoriaRouter);
 servidor.use("/api/evidencias", evidenciaRouter);
 servidor.use("/api/reportes", reporteRouter);
 servidor.use("/api/usuarios", usuarioRouter);
