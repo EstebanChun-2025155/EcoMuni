@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { probarConexion, pool } from "./config/database";
 import { iniciarServidor } from "./server/server";
 
