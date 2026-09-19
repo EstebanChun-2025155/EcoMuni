@@ -2,3 +2,6 @@ node_modules/
 dist/
 .env
 
+
+# Evidencias cargadas durante el uso de la aplicación
+storage/
