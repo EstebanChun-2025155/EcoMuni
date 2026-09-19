@@ -66,10 +66,8 @@ export class HomeComponent {
     }
 
     abrirDepartamento(slug: string): void {
-
-    void this.router.navigate(
-        ['/departamentos', slug]
-    );
+        if (!this.departamentos.some(d => d.slug === slug && d.disponible)) return;
+        void this.router.navigate(['/departamentos', slug]);
     }
 
     cerrarSesion(): void {
