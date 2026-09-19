@@ -1,3 +1,4 @@
+import type { Conexion } from "../config/transaccion";
 import { pool } from "../config/database";
 import { Ubicacion } from "../models/ubicacion";
 import { validarUbicacion } from "../utils/validaciones";
@@ -57,11 +58,12 @@ export async function buscarUbicacion(id: number): Promise<Ubicacion | null> {
 }
 
 export async function agregarUbicacion(
-    ubicacion: Ubicacion
+    ubicacion: Ubicacion,
+    db: Conexion = pool
 ): Promise<Ubicacion> {
     const nuevaUbicacion = validarDatosUbicacion(ubicacion);
 
-    const resultado = await pool.query<Ubicacion>(
+    const resultado = await db.query<Ubicacion>(
         `insert into ubicacion (
             departamento, municipio, zona, direccion, referencia
          )
