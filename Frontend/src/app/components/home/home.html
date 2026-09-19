@@ -51,7 +51,7 @@
         <h1 id="titulo-departamentos">Departamentos</h1>
         <p class="departments-description">
             Un espacio para cada departamento de Guatemala.
-            Próximamente podrás consultar la información ambiental
+            Consulta la información ambiental de los departamentos disponibles
             y las iniciativas de cada comunidad.
         </p>
         <span class="department-count">
@@ -89,7 +89,7 @@
                         }
 
                         @if (departamento.disponible) {
-                            <span class="availability-badge">Disponible</span>
+                            <button class="availability-badge availability-button" type="button" (click)="abrirDepartamento(departamento.slug)" [attr.aria-label]="'Ver información de ' + departamento.nombre">Ver departamento</button>
                         } @else {
                             <span class="availability-badge">Próximamente</span>
                         }
