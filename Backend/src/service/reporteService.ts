@@ -6,134 +6,134 @@ function validarId(id: number): boolean {
     return Number.isInteger(id) && id > 0;
 }
 
-function validarDatosReporte(reporte: Reporte): Reporte {
+export function leerFiltros(query: any) {
+    return {
+        categoria: query.categoria ? String(query.categoria) : undefined,
+        estado: query.estado ? String(query.estado) : undefined,
+        buscar: query.buscar ? String(query.buscar) : undefined,
+    };
+}
+
+export async function listarReportes(departamento: string, actor: any, filtros: any) {
+    let sql = `
+        select r.id_reporte as "idReporte", r.codigo, r.titulo, r.descripcion, 
+               r.prioridad, r.fecha_reporte as "fechaReporte",
+               c.categoria, e.nombre as estado
+        from reporte r
+        join categoria c on c.id_categoria = r.id_categoria
+        join estado_reporte e on e.id_estado = r.id_estado
+        join ubicacion u on u.id_ubicacion = r.id_ubicacion
+        where u.departamento = $1
+    `;
+    const params: any[] = [departamento];
+
+    if (filtros.categoria) {
+        params.push(filtros.categoria);
+        sql += ` and c.categoria = $${params.length}`;
+    }
+
+    if (filtros.estado) {
+        params.push(filtros.estado);
+        sql += ` and e.nombre = $${params.length}`;
+    }
+
+    sql += ` order by r.fecha_reporte desc`;
+
+    const resultado = await pool.query(sql, params);
+    return { reportes: resultado.rows };
+}
+
+export async function detalleReporte(departamento: string, id: number, actor: any) {
+    if (!validarId(id)) throw new Error("ID de reporte inválido.");
+
+    const resultado = await pool.query(
+        `select r.id_reporte as "idReporte", r.codigo, r.titulo, r.descripcion, 
+                r.prioridad, r.fecha_reporte as "fechaReporte",
+                c.categoria, e.nombre as estado
+         from reporte r
+         join categoria c on c.id_categoria = r.id_categoria
+         join estado_reporte e on e.id_estado = r.id_estado
+         join ubicacion u on u.id_ubicacion = r.id_ubicacion
+         where r.id_reporte = $1 and u.departamento = $2`,
+        [id, departamento]
+    );
+
+    return resultado.rows[0] || null;
+}
+
+export async function agregarReporte(departamento: string, cuerpo: any, actor: any) {
+    const { idCategoria, idUbicacion, idEstado, codigo, titulo, descripcion, prioridad } = cuerpo;
+
     const errores = validarReporte(
-        reporte.idUsuario,
-        reporte.idCategoria,
-        reporte.idUbicacion,
-        reporte.idEstado,
-        reporte.codigo,
-        reporte.titulo,
-        reporte.descripcion,
-        reporte.prioridad,
-        reporte.motivoRechazo,
-        reporte.fechaReporte,
-        reporte.fechaActualizacion
+        actor.idUsuario,
+        idCategoria,
+        idUbicacion,
+        idEstado,
+        codigo,
+        titulo,
+        descripcion,
+        prioridad,
+        undefined,
+        new Date(),
+        new Date()
     );
 
     if (errores.length > 0) {
         throw new Error(errores.join(" "));
     }
 
-    return {
-        ...reporte,
-        codigo: reporte.codigo.trim(),
-        titulo: reporte.titulo.trim(),
-        descripcion: reporte.descripcion.trim(),
-        prioridad: reporte.prioridad.trim(),
-        motivoRechazo: reporte.motivoRechazo?.trim()
-    };
-}
-
-export async function listarReportes(): Promise<Reporte[]> {
-    const resultado = await pool.query<Reporte>(
-        `select id_reporte as "idReporte", id_usuario as "idUsuario", id_categoria as "idCategoria", id_ubicacion as "idUbicacion", id_estado as "idEstado", codigo, titulo, descripcion, prioridad, motivo_rechazo as "motivoRechazo", fecha_reporte as "fechaReporte", fecha_actualizacion as "fechaActualizacion"
-         from reporte
-         order by id_reporte`
-    );
-
-    return resultado.rows;
-}
-
-export async function buscarReporte(id: number): Promise<Reporte | null> {
-    if (!validarId(id)) {
-        throw new Error("ID inválido.");
-    }
-
-    const resultado = await pool.query<Reporte>(
-        `select id_reporte as "idReporte", id_usuario as "idUsuario", id_categoria as "idCategoria", id_ubicacion as "idUbicacion", id_estado as "idEstado", codigo, titulo, descripcion, prioridad, motivo_rechazo as "motivoRechazo", fecha_reporte as "fechaReporte", fecha_actualizacion as "fechaActualizacion"
-         from reporte
-         where id_reporte = $1`,
-        [id]
-    );
-
-    return resultado.rows[0] || null;
-}
-
-export async function agregarReporte(reporte: Reporte): Promise<Reporte> {
-    const nuevoReporte = validarDatosReporte(reporte);
-
-    const resultado = await pool.query<Reporte>(
-        `insert into reporte (id_usuario, id_categoria, id_ubicacion, id_estado, codigo, titulo, descripcion, prioridad, motivo_rechazo, fecha_reporte, fecha_actualizacion)
-         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-         returning id_reporte as "idReporte", id_usuario as "idUsuario", id_categoria as "idCategoria", id_ubicacion as "idUbicacion", id_estado as "idEstado", codigo, titulo, descripcion, prioridad, motivo_rechazo as "motivoRechazo", fecha_reporte as "fechaReporte", fecha_actualizacion as "fechaActualizacion"`,
-        [
-            nuevoReporte.idUsuario,
-            nuevoReporte.idCategoria,
-            nuevoReporte.idUbicacion,
-            nuevoReporte.idEstado,
-            nuevoReporte.codigo,
-            nuevoReporte.titulo,
-            nuevoReporte.descripcion,
-            nuevoReporte.prioridad,
-            nuevoReporte.motivoRechazo,
-            nuevoReporte.fechaReporte,
-            nuevoReporte.fechaActualizacion
-        ]
+    const resultado = await pool.query(
+        `insert into reporte (id_usuario, id_categoria, id_ubicacion, id_estado, codigo, titulo, descripcion, prioridad, fecha_reporte, fecha_actualizacion)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, now(), now())
+         returning id_reporte as "idReporte", codigo, titulo`,
+        [actor.idUsuario, idCategoria, idUbicacion, idEstado, codigo.trim(), titulo.trim(), descripcion.trim(), prioridad.trim()]
     );
 
     return resultado.rows[0];
 }
 
-export async function actualizarReporte(
-    id: number,
-    datos: Reporte
-): Promise<Reporte | null> {
-    if (!validarId(id)) {
-        throw new Error("ID inválido.");
-    }
+export async function comentar(departamento: string, idReporte: number, cuerpo: any, actor: any) {
+    if (!validarId(idReporte)) throw new Error("ID de reporte inválido.");
 
-    if (datos.idReporte !== undefined && datos.idReporte !== id) {
-        throw new Error("No se puede modificar el ID del reporte.");
-    }
-
-    const reporteActualizado = validarDatosReporte(datos);
-
-    const resultado = await pool.query<Reporte>(
-        `update reporte
-         set id_usuario = $1, id_categoria = $2, id_ubicacion = $3, id_estado = $4, codigo = $5, titulo = $6, descripcion = $7, prioridad = $8, motivo_rechazo = $9, fecha_reporte = $10, fecha_actualizacion = $11
-         where id_reporte = $12
-         returning id_reporte as "idReporte", id_usuario as "idUsuario", id_categoria as "idCategoria", id_ubicacion as "idUbicacion", id_estado as "idEstado", codigo, titulo, descripcion, prioridad, motivo_rechazo as "motivoRechazo", fecha_reporte as "fechaReporte", fecha_actualizacion as "fechaActualizacion"`,
-        [
-            reporteActualizado.idUsuario,
-            reporteActualizado.idCategoria,
-            reporteActualizado.idUbicacion,
-            reporteActualizado.idEstado,
-            reporteActualizado.codigo,
-            reporteActualizado.titulo,
-            reporteActualizado.descripcion,
-            reporteActualizado.prioridad,
-            reporteActualizado.motivoRechazo,
-            reporteActualizado.fechaReporte,
-            reporteActualizado.fechaActualizacion,
-            id
-        ]
+    const resultado = await pool.query(
+        `insert into comentario_reporte (id_reporte, id_usuario, contenido, fecha_comentario)
+         values ($1, $2, $3, now())
+         returning id_comentario as "idComentario", contenido, fecha_comentario as "fechaComentario"`,
+        [idReporte, actor.idUsuario, cuerpo.comentario?.trim()]
     );
 
-    return resultado.rows[0] || null;
+    return resultado.rows[0];
 }
 
-export async function eliminarReporte(id: number): Promise<Reporte | null> {
-    if (!validarId(id)) {
-        throw new Error("ID inválido.");
-    }
+export async function apoyar(departamento: string, idReporte: number, actor: any, apoyando: boolean) {
+    if (!validarId(idReporte)) throw new Error("ID de reporte inválido.");
 
-    const resultado = await pool.query<Reporte>(
-        `delete from reporte
-         where id_reporte = $1
-         returning id_reporte as "idReporte", id_usuario as "idUsuario", id_categoria as "idCategoria", id_ubicacion as "idUbicacion", id_estado as "idEstado", codigo, titulo, descripcion, prioridad, motivo_rechazo as "motivoRechazo", fecha_reporte as "fechaReporte", fecha_actualizacion as "fechaActualizacion"`,
-        [id]
+    if (apoyando) {
+        await pool.query(
+            `insert into apoyo_reporte (id_reporte, id_usuario)
+             values ($1, $2)
+             on conflict (id_reporte, id_usuario) do nothing`,
+            [idReporte, actor.idUsuario]
+        );
+        return { mensaje: "Apoyo registrado correctamente" };
+    } else {
+        await pool.query(
+            `delete from apoyo_reporte where id_reporte = $1 and id_usuario = $2`,
+            [idReporte, actor.idUsuario]
+        );
+        return { mensaje: "Apoyo retirado correctamente" };
+    }
+}
+
+export async function seguir(departamento: string, idReporte: number, cuerpo: any, actor: any) {
+    if (!validarId(idReporte)) throw new Error("ID de reporte inválido.");
+
+    const resultado = await pool.query(
+        `insert into seguimiento_reporte (id_reporte, id_usuario, detalle, fecha_seguimiento)
+         values ($1, $2, $3, now())
+         returning id_seguimiento as "idSeguimiento", detalle, fecha_seguimiento as "fechaSeguimiento"`,
+        [idReporte, actor.idUsuario, cuerpo.detalle?.trim()]
     );
 
-    return resultado.rows[0] || null;
+    return resultado.rows[0];
 }
