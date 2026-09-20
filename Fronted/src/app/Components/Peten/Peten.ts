@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DepartamentoPagina } from '../Departamentos-shared/departamento-pagina';
+// Change 'Departamentos-shared' to lowercase 'departamentos-shared'
+import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
 
 @Component({
-  selector: 'app-peten',
+  selector: 'app-Peten',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './peten.html',
-  styleUrl: './peten.css'
+  templateUrl: './Peten.html',
+  styleUrl: './Peten.css'
 })
 export class Peten extends DepartamentoPagina {
   constructor() {
