@@ -17,7 +17,7 @@
   z-index: -1;
   background:
     linear-gradient(#123e3155, #10392edd),
-    url('/bosque.png') center / cover no-repeat;
+    url('/../fondo.png') center / cover no-repeat;
   filter: blur(4px);
 }
 
@@ -898,4 +898,4 @@ a.nav-item { text-decoration: none; }
 .report-description, .detail-block p, .recycling-card { overflow-wrap: anywhere; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 #reportes, #reciclaje { scroll-margin-top: 100px; }
-@media (prefers-reduced-motion: reduce) { .report-card { transition: none; } .report-card:hover { transform: none; } }  
+@media (prefers-reduced-motion: reduce) { .report-card { transition: none; } .report-card:hover { transform: none; } }
