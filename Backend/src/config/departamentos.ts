@@ -1,10 +1,10 @@
+import { ApiError } from "../utils/apiError.js";
 
-import { ApiError } from "../utils/apiError";
 
-const departamentos = new Map([
-    ["peten", "Peten"],
-    ["quetaltenago", "Quetzaltenango"],
-    ["quiche", "Quiche"],
+const departamentos = new Map<string, string>([
+    ["peten", "Petén"],
+    ["quetzaltenango", "Quetzaltenango"],
+    ["quiche", "Quiché"],
     ["retalhuleu", "Retalhuleu"],
     ["sacatepequez", "Sacatepéquez"]
 ]);
