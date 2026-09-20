@@ -12,14 +12,14 @@
   <button class="logout-btn" type="button" [disabled]="cerrando() || guardando()" (click)="cerrarSesion()">{{ cerrando() ? 'Cerrando…' : 'Cerrar sesión' }}</button>
 </header>
 <main class="department-page">
-  <section class="hero" [style.background-image]="'linear-gradient(90deg, rgba(5,35,25,.92), rgba(5,35,25,.25)), url(' + departamento.imagen + ')'">
-    <div class="hero-copy"><button class="breadcrumb" type="button" (click)="volverHome()">← Departamentos</button><p class="eyebrow">Departamento de</p><h1>{{ departamento.nombre }}</h1><p class="hero-description">{{ departamento.frase }}</p></div>
-    <div class="hero-stats">
-      <div class="stat-card"><span>Cabecera</span><strong>{{ departamento.cabecera }}</strong></div>
-      <div class="stat-card"><span>Municipios</span><strong>{{ departamento.municipios }}</strong></div>
-      <div class="stat-card"><span>Enfoque</span><strong>Reciclaje y ambiente</strong></div>
-    </div>
-  </section>
+ <section class="hero" [style.background-image]="'linear-gradient(90deg, rgba(5,35,25,.85), rgba(5,35,25,.35)), url(/Quiche.jpeg)'">
+  <div class="hero-copy"><button class="breadcrumb" type="button" (click)="volverHome()">← Departamentos</button><p class="eyebrow">Departamento de</p><h1>{{ departamento.nombre }}</h1><p class="hero-description">{{ departamento.frase }}</p></div>
+  <div class="hero-stats">
+    <div class="stat-card"><span>Cabecera</span><strong>{{ departamento.cabecera }}</strong></div>
+    <div class="stat-card"><span>Municipios</span><strong>{{ departamento.municipios }}</strong></div>
+    <div class="stat-card"><span>Enfoque</span><strong>Reciclaje y ambiente</strong></div>
+  </div>
+</section>
   @if (error()) { <div class="notice notice-error" role="alert"><p>{{ error() }}</p><button class="secondary-btn" type="button" [disabled]="guardando()" (click)="recargar()">Recargar datos</button></div> }
   @if (mensaje()) { <p class="notice" role="status">{{ mensaje() }}</p> }
   <section id="reportes" class="workspace">
