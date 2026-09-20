@@ -17,7 +17,7 @@
   z-index: -1;
   background:
     linear-gradient(#123e3155, #10392edd),
-    url('/bosque.png') center / cover no-repeat;
+    url('/../fondo.png') center / cover no-repeat;
   filter: blur(4px);
 }
 
