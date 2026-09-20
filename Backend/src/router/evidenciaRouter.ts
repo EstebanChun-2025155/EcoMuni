@@ -6,7 +6,7 @@ import {
     eliminarEvidencia,
     listarEvidencias
 } from "../service/evidenciaService";
-import { responderError } from "./RespuestaError";
+import { responderError } from "./respuestaError";
 
 const evidenciaRouter = Router();
 

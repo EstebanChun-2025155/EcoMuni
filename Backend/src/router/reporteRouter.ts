@@ -6,7 +6,7 @@ import {
     eliminarReporte,
     listarReportes
 } from "../service/reporteService";
-import { responderError } from "./RespuestaError";
+import { responderError } from "./respuestaError";
 
 const reporteRouter = Router();
 
