@@ -6,7 +6,7 @@ import {
     eliminarCategoria,
     listarCategorias
 } from "../service/categoriaService";
-import { responderError } from "./RespuestaError";
+import { responderError } from "./respuestaError";
 
 const categoriaRouter = Router();
 
