@@ -3,8 +3,8 @@ import { nombreDepartamento } from "../config/departamentos";
 import { exigirSesion, exigirGestion, puedeGestionar, type Actor } from "../middleware/autorizacion";
 import { idParametro } from "../utils/apiError";
 import { listarCategorias } from "../service/categoriaService";
-import { listarEstados } from "../service/estadoReporteService";
-import { listarPuntos, agregarPunto } from "../service/puntoReciclajeService";
+import { listarEstados } from "../service/Estadoreporteservice";
+import { listarPuntos, agregarPunto } from "../service/Puntoreciclajeservice";
 import { listarReportes, leerFiltros, detalleReporte, agregarReporte, comentar, apoyar, seguir } from "../service/reporteService";
 import { agregarEvidencia, maximoImagen } from "../service/evidenciaService";
 
