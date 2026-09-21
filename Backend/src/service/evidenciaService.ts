@@ -3,7 +3,7 @@ import { mkdir, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { pool } from "../config/database";
 import { transaccion } from "../config/transaccion";
-import { ApiError } from "../utils/apiError";
+import { ApiError, objeto, texto, entero } from "../utils/apiError";
 import { puedeGestionar, type Actor } from "../middleware/autorizacion";
 import type { Evidencia } from "../models/evidencia";
 
@@ -23,7 +23,8 @@ export async function listarEvidencias(idReporte: number): Promise<Evidencia[]> 
     return result.rows;
 }
 
-export async function agregarEvidencia(departamento: string, idReporte: number, data: unknown, tipo: string | undefined, actor: Actor) {
+export async function agregarEvidencia(departamento: string, idReporte: number, data: unknown, tipo: string | undefined, actor: Actor, descripcionEntrada: unknown = undefined) {
+    const descripcion = texto({ descripcion: descripcionEntrada }, "descripcion", 150, false);
     const extension = extensionImagen(data,tipo);
     const nombre = randomUUID()+"."+extension;
     const archivo = path.join(carpetaEvidencias,nombre);
@@ -41,11 +42,29 @@ export async function agregarEvidencia(departamento: string, idReporte: number, 
             await mkdir(carpetaEvidencias,{recursive:true});
             await writeFile(archivo,data as Buffer,{flag:"wx"});
             escrito = true;
-            const result = await db.query<{id:number}>("INSERT INTO evidencia (id_reporte,url_imagen,descripcion) VALUES ($1,$2,$3) RETURNING id_evidencia AS id",[idReporte,"/api/archivos/"+nombre,"Evidencia del reporte"]);
+            const result = await db.query<{id:number}>("INSERT INTO evidencia (id_reporte,url_imagen,descripcion) VALUES ($1,$2,$3) RETURNING id_evidencia AS id",[idReporte,"/api/archivos/"+nombre,descripcion || null]);
             return result.rows[0];
         });
     } catch (error) {
         if (escrito) await unlink(archivo).catch(() => undefined);
         throw error;
     }
+}
+
+export async function describirEvidencia(departamento: string, idReporte: number, idEvidencia: number, entrada: unknown, actor: Actor) {
+    const descripcion = texto(objeto(entrada), "descripcion", 150, false);
+    return transaccion(async db => {
+        const reporte = await db.query<{idUsuario: number}>(
+            'SELECT r.id_usuario AS "idUsuario" FROM reporte r JOIN ubicacion u ON u.id_ubicacion=r.id_ubicacion WHERE r.id_reporte=$1 AND lower(btrim(u.departamento))=lower($2) FOR UPDATE OF r',
+            [idReporte, departamento]
+        );
+        if (!reporte.rows[0]) throw new ApiError(404, "El reporte no existe en este departamento.");
+        if (reporte.rows[0].idUsuario !== actor.idUsuario && !puedeGestionar(actor)) throw new ApiError(403, "Solo el autor o un supervisor puede describir evidencias.");
+        const result = await db.query<{id: number}>(
+            "UPDATE evidencia SET descripcion=$1 WHERE id_evidencia=$2 AND id_reporte=$3 RETURNING id_evidencia AS id",
+            [descripcion || null, entero(idEvidencia), idReporte]
+        );
+        if (!result.rows[0]) throw new ApiError(404, "La evidencia no pertenece a este reporte.");
+        return result.rows[0];
+    });
 }

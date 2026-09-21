@@ -6,7 +6,8 @@ import { listarCategorias } from "../service/categoriaService";
 import { listarEstados } from "../service/estadoReporteService";
 import { listarPuntos, agregarPunto } from "../service/puntoReciclajeService";
 import { listarReportes, leerFiltros, detalleReporte, agregarReporte, comentar, apoyar, seguir } from "../service/reporteService";
-import { agregarEvidencia, maximoImagen } from "../service/evidenciaService";
+import { agregarEvidencia, describirEvidencia, maximoImagen } from "../service/evidenciaService";
+
 
 const router = Router();
 router.use(exigirSesion);
@@ -46,7 +47,10 @@ router.post("/:slug/puntos",exigirGestion,async (req,res) => {
     res.status(201).json(await agregarPunto(res.locals.departamento,req.body));
 });
 router.post("/:slug/reportes/:id/evidencias",raw({type:["image/png","image/jpeg","image/webp"],limit:maximoImagen}),async (req,res) => {
-    res.status(201).json(await agregarEvidencia(res.locals.departamento,idParametro(req.params.id),req.body,req.get("Content-Type")?.split(";")[0],res.locals.actor));
+    res.status(201).json(await agregarEvidencia(res.locals.departamento,idParametro(req.params.id),req.body,req.get("Content-Type")?.split(";")[0],res.locals.actor,req.query["descripcion"]));
 });
 
+router.patch("/:slug/reportes/:id/evidencias/:idEvidencia",async (req,res) => {
+    res.json(await describirEvidencia(res.locals.departamento,idParametro(req.params.id),idParametro(req.params.idEvidencia),req.body,res.locals.actor));
+});
 export default router;
