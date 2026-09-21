@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
-import { actualizarRol, agregarRol, buscarRol, eliminarRol, listarRoles } from "../service/rolService";
-import { responderError } from "./respuestaError";
+import { actualizarRol, agregarRol, buscarRol, eliminarRol, listarRoles } from "../service/rolService.js";
+import { responderError } from "./RespuestaError.js";
 
 const rolRouter = Router();
 
