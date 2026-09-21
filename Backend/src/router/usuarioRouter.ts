@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
-import { pool } from "../config/database";
-import { Usuario } from "../models/usuario";
-import { validarUsuario } from "../utils/validaciones";
+import { pool } from "../config/database.js";
+import { Usuario } from "../models/usuario.js";
+import { validarUsuario } from "../utils/validaciones.js";
 
 function validarId(id: number): boolean {
     return Number.isInteger(id) && id > 0;
