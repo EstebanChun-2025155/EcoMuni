@@ -1,175 +1,72 @@
-import bcrypt from "bcryptjs";
-import { pool } from "../config/database.js";
-import { Usuario } from "../models/usuario.js";
-import { validarUsuario } from "../utils/validaciones.js";
+import { Router } from "express";
+import { 
+    listarUsuarios, 
+    buscarUsuario, 
+    agregarUsuario, 
+    actualizarUsuario, 
+    eliminarUsuario 
+} from "../service/usuarioService.js";
+import { exigirSesion, exigirAdmin } from "../middleware/autorizacion.js";
 
-function validarId(id: number): boolean {
-    return Number.isInteger(id) && id > 0;
-}
+export const usuarioRouter = Router();
 
-function validarDatosUsuario(
-    usuario: Usuario,
-    validarContrasena: boolean
-): Usuario {
-    const errores = validarUsuario(
-        usuario.idRol,
-        usuario.nombres,
-        usuario.apellidos,
-        usuario.correo,
-        usuario.contrasena,
-        usuario.telefono,
-        usuario.estado,
-        validarContrasena
-    );
-
-    if (errores.length > 0) {
-        throw new Error(errores.join(" "));
+// Rutas protegidas para administración de usuarios
+usuarioRouter.get("/", exigirSesion, exigirAdmin, async (req, res, next) => {
+    try {
+        const usuarios = await listarUsuarios();
+        res.json(usuarios);
+    } catch (error) {
+        next(error);
     }
+});
 
-    return {
-        ...usuario,
-        nombres: usuario.nombres.trim(),
-        apellidos: usuario.apellidos.trim(),
-        correo: usuario.correo.trim().toLowerCase(),
-        telefono: usuario.telefono?.trim() || null
-    };
-}
-
-export async function listarUsuarios(): Promise<Usuario[]> {
-    const resultado = await pool.query<Usuario>(
-        `select id_usuario as "idUsuario", id_rol as "idRol", nombres,
-                apellidos, correo, telefono, estado,
-                fecha_registro as "fechaRegistro"
-         from usuario
-         order by id_usuario`
-    );
-
-    return resultado.rows;
-}
-
-export async function buscarUsuario(id: number): Promise<Usuario | null> {
-    if (!validarId(id)) {
-        throw new Error("ID inválido.");
+usuarioRouter.get("/:id", exigirSesion, exigirAdmin, async (req, res, next) => {
+    try {
+        const id = Number(req.params.id);
+        const usuario = await buscarUsuario(id);
+        if (!usuario) {
+            res.status(404).json({ mensaje: "Usuario no encontrado." });
+            return;
+        }
+        res.json(usuario);
+    } catch (error) {
+        next(error);
     }
+});
 
-    const resultado = await pool.query<Usuario>(
-        `select id_usuario as "idUsuario", id_rol as "idRol", nombres,
-                apellidos, correo, telefono, estado,
-                fecha_registro as "fechaRegistro"
-         from usuario
-         where id_usuario = $1`,
-        [id]
-    );
-
-    return resultado.rows[0] || null;
-}
-
-export async function agregarUsuario(usuario: Usuario): Promise<Usuario> {
-    const nuevoUsuario = validarDatosUsuario(usuario, true);
-    const contrasenaCifrada = await bcrypt.hash(
-        nuevoUsuario.contrasena as string,
-        12
-    );
-
-    const resultado = await pool.query<Usuario>(
-        `insert into usuario (
-            id_rol, nombres, apellidos, correo, contrasena, telefono, estado
-         )
-         values ($1, $2, $3, $4, $5, $6, $7)
-         returning id_usuario as "idUsuario", id_rol as "idRol", nombres,
-                   apellidos, correo, telefono, estado,
-                   fecha_registro as "fechaRegistro"`,
-        [
-            nuevoUsuario.idRol,
-            nuevoUsuario.nombres,
-            nuevoUsuario.apellidos,
-            nuevoUsuario.correo,
-            contrasenaCifrada,
-            nuevoUsuario.telefono,
-            nuevoUsuario.estado
-        ]
-    );
-
-    return resultado.rows[0];
-}
-
-export async function actualizarUsuario(
-    id: number,
-    datos: Usuario
-): Promise<Usuario | null> {
-    if (!validarId(id)) {
-        throw new Error("ID inválido.");
+usuarioRouter.post("/", exigirSesion, exigirAdmin, async (req, res, next) => {
+    try {
+        const nuevoUsuario = await agregarUsuario(req.body);
+        res.status(201).json(nuevoUsuario);
+    } catch (error) {
+        next(error);
     }
+});
 
-    if (datos.idUsuario !== undefined && datos.idUsuario !== id) {
-        throw new Error("No se puede modificar el ID del usuario.");
+usuarioRouter.put("/:id", exigirSesion, exigirAdmin, async (req, res, next) => {
+    try {
+        const id = Number(req.params.id);
+        const usuarioActualizado = await actualizarUsuario(id, req.body);
+        if (!usuarioActualizado) {
+            res.status(404).json({ mensaje: "Usuario no encontrado." });
+            return;
+        }
+        res.json(usuarioActualizado);
+    } catch (error) {
+        next(error);
     }
+});
 
-    const usuarioActualizado = validarDatosUsuario(datos, false);
-    let resultado;
-
-    if (usuarioActualizado.contrasena) {
-        const contrasenaCifrada = await bcrypt.hash(
-            usuarioActualizado.contrasena,
-            12
-        );
-
-        resultado = await pool.query<Usuario>(
-            `update usuario
-             set id_rol = $1, nombres = $2, apellidos = $3, correo = $4,
-                 contrasena = $5, telefono = $6, estado = $7
-             where id_usuario = $8
-             returning id_usuario as "idUsuario", id_rol as "idRol", nombres,
-                       apellidos, correo, telefono, estado,
-                       fecha_registro as "fechaRegistro"`,
-            [
-                usuarioActualizado.idRol,
-                usuarioActualizado.nombres,
-                usuarioActualizado.apellidos,
-                usuarioActualizado.correo,
-                contrasenaCifrada,
-                usuarioActualizado.telefono,
-                usuarioActualizado.estado,
-                id
-            ]
-        );
-    } else {
-        resultado = await pool.query<Usuario>(
-            `update usuario
-             set id_rol = $1, nombres = $2, apellidos = $3, correo = $4,
-                 telefono = $5, estado = $6
-             where id_usuario = $7
-             returning id_usuario as "idUsuario", id_rol as "idRol", nombres,
-                       apellidos, correo, telefono, estado,
-                       fecha_registro as "fechaRegistro"`,
-            [
-                usuarioActualizado.idRol,
-                usuarioActualizado.nombres,
-                usuarioActualizado.apellidos,
-                usuarioActualizado.correo,
-                usuarioActualizado.telefono,
-                usuarioActualizado.estado,
-                id
-            ]
-        );
+usuarioRouter.delete("/:id", exigirSesion, exigirAdmin, async (req, res, next) => {
+    try {
+        const id = Number(req.params.id);
+        const usuarioEliminado = await eliminarUsuario(id);
+        if (!usuarioEliminado) {
+            res.status(404).json({ mensaje: "Usuario no encontrado." });
+            return;
+        }
+        res.json(usuarioEliminado);
+    } catch (error) {
+        next(error);
     }
-
-    return resultado.rows[0] || null;
-}
-
-export async function eliminarUsuario(id: number): Promise<Usuario | null> {
-    if (!validarId(id)) {
-        throw new Error("ID inválido.");
-    }
-
-    const resultado = await pool.query<Usuario>(
-        `delete from usuario
-         where id_usuario = $1
-         returning id_usuario as "idUsuario", id_rol as "idRol", nombres,
-                   apellidos, correo, telefono, estado,
-                   fecha_registro as "fechaRegistro"`,
-        [id]
-    );
-
-    return resultado.rows[0] || null;
-}
+});
