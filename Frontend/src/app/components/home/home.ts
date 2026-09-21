@@ -70,6 +70,10 @@ export class HomeComponent {
         void this.router.navigate(['/departamentos', slug]);
     }
 
+    abrirCampanas(): void {
+        void this.router.navigateByUrl('/campana');
+    }
+
     cerrarSesion(): void {
         if (this.cerrando()) return;
 

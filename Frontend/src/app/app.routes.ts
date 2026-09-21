@@ -21,6 +21,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'campana',
+    loadComponent: () => import('./components/campana/campana').then(m => m.Campana),
+    canActivate: [authGuard]
+  },
+  {
     path: 'departamentos/guatemala',
     loadComponent: () => import('./components/cdguatemala/cdguatemala').then(m => m.CDGuatemala),
     canActivate: [authGuard]
