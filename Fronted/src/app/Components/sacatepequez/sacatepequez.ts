@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
+import { DepartamentoPagina } from '../Departamentos-shared/departamento-pagina';
 
 @Component({
   selector: 'app-sacatepequez',
@@ -16,7 +16,7 @@ export class Sacatepequez extends DepartamentoPagina {
       "nombre": "Sacatepéquez",
       "cabecera": "Antigua Guatemala",
       "municipios": 16,
-      "imagen": "/Sacatepequez.png",
+      "imagen": "/Sacatepeques.jpg",
       "frase": "Tierra de historia colonial y riqueza cultural, comprometida con la protección de sus paisajes y la gestión ambiental."
     });
   }
