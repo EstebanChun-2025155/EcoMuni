@@ -1,5 +1,5 @@
 import type { PoolClient } from "pg";
-import { pool } from "./database";
+import { pool } from "./database.js";
 
 export type Conexion = Pick<PoolClient, "query">;
 
