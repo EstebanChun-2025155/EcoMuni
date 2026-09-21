@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-// Change 'Departamentos-shared' to lowercase 'departamentos-shared'
-import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
+import { DepartamentoPagina } from '../Departamentos-shared/departamento-pagina';
 
 @Component({
   selector: 'app-Peten',
@@ -17,7 +16,7 @@ export class Peten extends DepartamentoPagina {
       "nombre": "Petén",
       "cabecera": "Flores",
       "municipios": 14,
-      "imagen": "/Peten.png",
+      "imagen": "/Peten.jpg",
       "frase": "Protegiendo la biósfera maya y la gran selva tropical de Guatemala."
     });
   }
