@@ -62,8 +62,10 @@
     <ul class="cards-grid" aria-label="Departamentos de Guatemala">
         @for (departamento of departamentos; track departamento.slug) {
             <li class="department-item">
-                <article class="department-card"
-                    [attr.aria-labelledby]="'nombre-' + departamento.slug">
+                <article
+                    class="department-card"
+                    [attr.aria-labelledby]="'nombre-' + departamento.slug"
+                    (click)="irDepartamento(departamento.slug)">
 
                     <div class="card-image-wrapper">
                         <span class="card-number" aria-hidden="true">
