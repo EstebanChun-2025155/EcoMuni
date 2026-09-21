@@ -42,7 +42,8 @@ export abstract class DepartamentoPagina {
   comentarioNuevo = '';
   nuevoSeguimiento = { idEstado: null as number | null, observacion: '', motivoRechazo: '' };
   archivo: File | null = null;
-
+  descripcionEvidencia = '';
+  descripcionesEvidencias: Record<number, string> = {};
   constructor(readonly departamento: PortadaDepartamento) {
     this.recargas.pipe(
       startWith(undefined),
@@ -62,6 +63,7 @@ export abstract class DepartamentoPagina {
         this.detalle.set(null);
         this.errorDetalle.set('');
         this.archivo = null;
+        this.descripcionEvidencia = '';
         if (id === null) return EMPTY;
         this.cargandoDetalle.set(true);
         return this.api.detalle(departamento.slug, id).pipe(
@@ -76,6 +78,7 @@ export abstract class DepartamentoPagina {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(detalle => {
       this.detalle.set(detalle);
+      this.descripcionesEvidencias = Object.fromEntries(detalle.evidencias.map(e => [e.idEvidencia, e.descripcion ?? '']));
       this.nuevoSeguimiento = { idEstado: detalle.idEstado, observacion: '', motivoRechazo: '' };
     });
   }
@@ -182,7 +185,7 @@ export abstract class DepartamentoPagina {
   subirEvidencia(): void {
     const detalle = this.detalle();
     if (!detalle || !this.archivo || !detalle.puedeAdjuntar) return;
-    this.guardar(this.api.subirEvidencia(this.departamento.slug, detalle.idReporte, this.archivo),
+    this.guardar(this.api.subirEvidencia(this.departamento.slug, detalle.idReporte, this.archivo, this.descripcionEvidencia),
       () => this.seleccion.next(detalle.idReporte), 'Evidencia guardada.');
   }
 
@@ -192,6 +195,13 @@ export abstract class DepartamentoPagina {
       this.nuevoPunto = puntoVacio();
       this.mostrarNuevoPunto.set(false);
     }, 'Punto de reciclaje guardado.');
+  }
+
+  guardarDescripcionEvidencia(idEvidencia: number): void {
+    const detalle = this.detalle();
+    if (!detalle?.puedeAdjuntar) return;
+    this.guardar(this.api.describirEvidencia(this.departamento.slug, detalle.idReporte, idEvidencia, this.descripcionesEvidencias[idEvidencia] ?? ''),
+      () => this.seleccion.next(detalle.idReporte), 'Descripción guardada.');
   }
 
   cerrarSesion(): void {
