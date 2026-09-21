@@ -1,12 +1,13 @@
 import { Router, raw } from "express";
-import { nombreDepartamento } from "../config/departamentos";
-import { exigirSesion, exigirGestion, puedeGestionar, type Actor } from "../middleware/autorizacion";
-import { idParametro } from "../utils/apiError";
-import { listarCategorias } from "../service/categoriaService";
-import { listarEstados } from "../service/Estadoreporteservice";
-import { listarPuntos, agregarPunto } from "../service/Puntoreciclajeservice";
-import { listarReportes, leerFiltros, detalleReporte, agregarReporte, comentar, apoyar, seguir } from "../service/reporteService";
-import { agregarEvidencia, maximoImagen } from "../service/evidenciaService";
+import { nombreDepartamento } from "../config/departamentos.js";
+import { exigirSesion, exigirGestion, puedeGestionar, type Actor } from "../middleware/autorizacion.js";
+import { idParametro } from "../utils/apiError.js";
+import { listarCategoriasActivas } from "../service/categoriaService.js";
+import { listarEstados } from "../service/Estadoreporteservice.js";
+import { listarPuntos, agregarPunto } from "../service/Puntoreciclajeservice.js";
+import { listarReportes, leerFiltros, detalleReporte, agregarReporte, comentar, apoyar, seguir } from "../service/reporteService.js";
+import { agregarEvidencia, describirEvidencia, maximoImagen } from "../service/evidenciaService.js";
+
 
 const router = Router();
 router.use(exigirSesion);
@@ -19,7 +20,7 @@ router.get("/:slug",async (req,res) => {
     const nombre = res.locals.departamento as string;
     const [listado,categorias,estados,puntos] = await Promise.all([
         listarReportes(nombre,actor,leerFiltros(req.query)),
-        listarCategorias(),listarEstados(),listarPuntos(nombre)
+        listarCategoriasActivas(),listarEstados(),listarPuntos(nombre)
     ]);
     res.json({...listado,categorias,estados,puntos,puedeGestionar:puedeGestionar(actor)});
 });
@@ -46,7 +47,10 @@ router.post("/:slug/puntos",exigirGestion,async (req,res) => {
     res.status(201).json(await agregarPunto(res.locals.departamento,req.body));
 });
 router.post("/:slug/reportes/:id/evidencias",raw({type:["image/png","image/jpeg","image/webp"],limit:maximoImagen}),async (req,res) => {
-    res.status(201).json(await agregarEvidencia(res.locals.departamento,idParametro(req.params.id),req.body,req.get("Content-Type")?.split(";")[0],res.locals.actor));
+    res.status(201).json(await agregarEvidencia(res.locals.departamento,idParametro(req.params.id),req.body,req.get("Content-Type")?.split(";")[0],res.locals.actor,req.query["descripcion"]));
 });
 
+router.patch("/:slug/reportes/:id/evidencias/:idEvidencia",async (req,res) => {
+    res.json(await describirEvidencia(res.locals.departamento,idParametro(req.params.id),idParametro(req.params.idEvidencia),req.body,res.locals.actor));
+});
 export default router;
