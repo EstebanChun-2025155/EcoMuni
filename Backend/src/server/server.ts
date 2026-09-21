@@ -1,159 +1,82 @@
-import path from "path";
-import { pool } from "../config/database";
-import { Evidencia } from "../models/evidencia";
-import { validarEvidencia } from "../utils/validaciones";
-import express from "express";import express from "express";
+import cors from "cors";
+import { pool } from "../config/database.js";
+import express, { type ErrorRequestHandler } from "express";
+import rolRouter from "../router/rolRouter.js";
+import ubicacionRouter from "../router/ubicacionRouter.js";
+import usuarioRouter from "../router/usuarioRouter.js";
+import authRouter from "../router/authrouter.js";
+import departamentoRouter from "../router/departamentoRouter.js";
+import { middlewareSesion } from "../config/sesion.js";
+import { exigirSesion, exigirGestion, exigirAdmin } from "../middleware/autorizacion.js";
+import { carpetaEvidencias } from "../service/evidenciaService.js";
+import { ApiError } from "../utils/apiError.js";
+import { responderError } from "../router/RespuestaError.js";
 
-export const maximoImagen = 5 * 1024 * 1024;
-export const carpetaEvidencias = path.resolve(process.cwd(), "uploads");
+import categoriaRouter from "../router/categoriaRouter.js";
+import reporteRouter from "../router/reporteRouter.js";
+import evidenciaRouter from "../router/evidenciaRouter.js";
+import consultaRouter from "../router/consultaRouter.js";
+const servidor = express();
+const origenFrontend = process.env.FRONTEND_ORIGIN || "http://localhost:4200";
 
-function validarId(id: number): boolean {
-    return Number.isInteger(id) && id > 0;
-}
-
-function validarDatosEvidencia(evidencia: Partial<Evidencia>): Partial<Evidencia> {
-    if (!evidencia) {
-        throw new Error("No se proporcionaron los datos de la evidencia.");
+servidor.disable("x-powered-by");
+servidor.use(cors({ origin: origenFrontend, credentials: true }));
+servidor.use((req,res,next) => {
+    const esLectura = ["GET","HEAD","OPTIONS"].includes(req.method);
+    const origen = req.get("Origin");
+    if (!esLectura && origen && origen !== origenFrontend) {
+        res.status(403).json({mensaje:"Origen no permitido."});
+        return;
     }
+    res.setHeader("X-Content-Type-Options","nosniff");
+    next();
+});
+servidor.use(express.json({limit:"100kb"}));
+servidor.use(middlewareSesion);
 
-    const fechaSubidaDate = evidencia.fechaSubida ? new Date(evidencia.fechaSubida) : new Date();
+servidor.use("/api/auth",authRouter);
+servidor.use("/api/departamentos",departamentoRouter);
+servidor.use("/api/categorias",categoriaRouter);
+servidor.use("/api/reportes",reporteRouter);
+servidor.use("/api/evidencias",evidenciaRouter);
+servidor.use("/api/consulta",exigirSesion,consultaRouter);
+servidor.use("/api/archivos",exigirSesion,async(req,res,next)=>{
+    const existe=await pool.query("SELECT id_evidencia FROM evidencia WHERE url_imagen=$1 LIMIT 1",["/api/archivos"+req.path]);
+    if(!existe.rows.length){res.status(404).json({mensaje:"Archivo no encontrado."});return;}
+    next();
+},express.static(carpetaEvidencias,{
+    index:false,dotfiles:"deny",fallthrough:false,
+    setHeaders: res => res.setHeader("Cache-Control","private, max-age=3600")
+}));
+servidor.use("/api/roles",exigirSesion,exigirAdmin,rolRouter);
+servidor.use("/api/ubicaciones",exigirSesion,exigirGestion,ubicacionRouter);
+servidor.use("/api/usuarios",exigirSesion,exigirAdmin,usuarioRouter);
+servidor.get("/api",(_req,res) => {
+    res.json({mensaje:"API EcoMuni disponible."});
+});
+servidor.use("/api",(_req,res) => {
+    res.status(404).json({mensaje:"Ruta no encontrada."});
+});
 
-    const errores = validarEvidencia(
-        evidencia.idReporte!,
-        evidencia.urlImagen || "",
-        evidencia.descripcion,
-        fechaSubidaDate
-    );
-
-    if (errores.length > 0) {
-        throw new Error(errores.join(" "));
+const errores: ErrorRequestHandler = (error,_req,res,_next) => {
+    if (error instanceof ApiError) {
+        res.status(error.status).json({mensaje:error.message});
+    } else if (error?.type === "entity.too.large") {
+        res.status(413).json({mensaje:"El archivo o los datos exceden el tamaño permitido."});
+    } else if (error?.type === "entity.parse.failed") {
+        res.status(400).json({mensaje:"El JSON enviado no es válido."});
+    } else if (error?.status === 404) {
+        res.status(404).json({mensaje:"Archivo no encontrado."});
+    } else {
+        responderError(res,error);
     }
+};
+servidor.use(errores);
 
-    return {
-        ...evidencia,
-        urlImagen: evidencia.urlImagen?.trim(),
-        descripcion: evidencia.descripcion?.trim(),
-        fechaSubida: fechaSubidaDate
-    };
-}
-
-export async function listarEvidenciasByReporte(departamento: string, idReporte: number) {
-    if (!validarId(idReporte)) {
-        throw new Error("ID de reporte inválido.");
-    }
-
-    const resultado = await pool.query(
-        `select e.id_evidencia as "idEvidencia", e.id_reporte as "idReporte", 
-                e.url_imagen as "urlImagen", e.descripcion, e.fecha_subida as "fechaSubida"
-         from evidencia e
-         join reporte r on r.id_reporte = e.id_reporte
-         join ubicacion u on u.id_ubicacion = r.id_ubicacion
-         where e.id_reporte = $1 and u.departamento = $2
-         order by e.fecha_subida desc`,
-        [idReporte, departamento]
-    );
-
-    return resultado.rows;
-}
-
-export async function buscarEvidencia(departamento: string, id: number): Promise<Evidencia | null> {
-    if (!validarId(id)) {
-        throw new Error("ID de evidencia inválido.");
-    }
-
-    const resultado = await pool.query<Evidencia>(
-        `select e.id_evidencia as "idEvidencia", e.id_reporte as "idReporte", 
-                e.url_imagen as "urlImagen", e.descripcion, e.fecha_subida as "fechaSubida"
-         from evidencia e
-         join reporte r on r.id_reporte = e.id_reporte
-         join ubicacion u on u.id_ubicacion = r.id_ubicacion
-         where e.id_evidencia = $1 and u.departamento = $2`,
-        [id, departamento]
-    );
-
-    return resultado.rows[0] || null;
-}
-
-export async function agregarEvidencia(departamento: string, cuerpo: any, actor: any): Promise<Evidencia> {
-    const datosValidados = validarDatosEvidencia(cuerpo);
-
-    const reporteValido = await pool.query(
-        `select r.id_reporte 
-         from reporte r 
-         join ubicacion u on u.id_ubicacion = r.id_ubicacion 
-         where r.id_reporte = $1 and u.departamento = $2`,
-        [datosValidados.idReporte, departamento]
-    );
-
-    if (reporteValido.rowCount === 0) {
-        throw new Error("El reporte especificado no existe o no pertenece a este departamento.");
-    }
-
-    const resultado = await pool.query<Evidencia>(
-        `insert into evidencia (id_reporte, url_imagen, descripcion, fecha_subida)
-         values ($1, $2, $3, $4)
-         returning id_evidencia as "idEvidencia", id_reporte as "idReporte", 
-                   url_imagen as "urlImagen", descripcion, fecha_subida as "fechaSubida"`,
-        [datosValidados.idReporte, datosValidados.urlImagen, datosValidados.descripcion, datosValidados.fechaSubida]
-    );
-
-    return resultado.rows[0];
-}
-
-export async function actualizarEvidencia(
-    departamento: string,
-    id: number,
-    datos: Partial<Evidencia>
-): Promise<Evidencia | null> {
-    if (!validarId(id)) {
-        throw new Error("ID de evidencia inválido.");
-    }
-
-    const evidenciaExistente = await buscarEvidencia(departamento, id);
-    if (!evidenciaExistente) {
-        throw new Error("La evidencia no existe o no pertenece al departamento.");
-    }
-
-    const evidenciaActualizada = validarDatosEvidencia({
-        ...evidenciaExistente,
-        ...datos,
-        idReporte: evidenciaExistente.idReporte
-    });
-
-    const resultado = await pool.query<Evidencia>(
-        `update evidencia
-         set url_imagen = $1, descripcion = $2, fecha_subida = $3
-         where id_evidencia = $4
-         returning id_evidencia as "idEvidencia", id_reporte as "idReporte", 
-                   url_imagen as "urlImagen", descripcion, fecha_subida as "fechaSubida"`,
-        [evidenciaActualizada.urlImagen, evidenciaActualizada.descripcion, evidenciaActualizada.fechaSubida, id]
-    );
-
-    return resultado.rows[0] || null;
-}
-
-export async function eliminarEvidencia(departamento: string, id: number): Promise<Evidencia | null> {
-    if (!validarId(id)) {
-        throw new Error("ID de evidencia inválido.");
-    }
-
-    const resultado = await pool.query<Evidencia>(
-        `delete from evidencia e
-         using reporte r, ubicacion u
-         where e.id_reporte = r.id_reporte 
-           and r.id_ubicacion = u.id_ubicacion
-           and e.id_evidencia = $1 
-           and u.departamento = $2
-         returning e.id_evidencia as "idEvidencia", e.id_reporte as "idReporte", 
-                   e.url_imagen as "urlImagen", e.descripcion, e.fecha_subida as "fechaSubida"`,
-        [id, departamento]
-    );
-
-    return resultado.rows[0] || null;
-}
 export function iniciarServidor(): void {
-    const puerto = process.env.PORT || 3000;
-    app.listen(puerto, () => {
-        console.log(`Servidor EcoMuni corriendo en el puerto ${puerto}`);
+    const puerto = Number(process.env.PORT || 3000);
+    servidor.listen(puerto,"127.0.0.1",() => {
+        console.log("Servidor disponible en http://localhost:"+puerto);
     });
 }
+export default servidor;
