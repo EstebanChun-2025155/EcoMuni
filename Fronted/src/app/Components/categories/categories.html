@@ -1,47 +1,8 @@
-<div class="bg-blur"></div>
-
-<!-- Barra de navegación superior -->
-<header class="navbar">
-  <div class="logo-container">
-    <img src="/logo.png" alt="EcoMuni Logo" class="logo-icon" />
-    <span class="logo-text">{{ brandName }}</span>
-  </div>
-
-  <nav class="nav-links">
-    <button class="menu-btn" (click)="onNavigate('/home')">Menu</button>
-    <a *ngFor="let link of navLinks" 
-       (click)="onNavigate(link.path)" 
-       [class.active]="link.name === 'Categories'"
-       class="nav-item">
-      {{ link.name }}
-    </a>
-  </nav>
-
-  <div class="logout-container">
-    <button class="logout-btn" (click)="onLogout()">Logout</button>
-  </div>
-</header>
-
-<!-- Contenido Principal -->
-<main class="main-content">
-  <div class="header-section">
-    <h1 class="page-title">Categorías Ambientales</h1>
-    <p class="page-description">
-      Clasificación oficial de incidencias y normativas ecológicas reguladas dentro del municipio.
-    </p>
-  </div>
-
-  <div class="cards-grid">
-    <div class="category-card" *ngFor="let cat of categoriesList">
-      <div class="cat-icon-wrapper">🌱</div>
-      <h3>{{ cat.name }}</h3>
-      <p>{{ cat.description }}</p>
-      <span class="cat-count">{{ cat.count }} casos registrados</span>
-    </div>
-  </div>
-
-  <div class="scroll-container" (click)="onScrollDown()">
-    <span class="scroll-text">Scroll</span>
-    <div class="scroll-icon">&#8595;</div>
-  </div>
+<div class="bg-blur" aria-hidden="true"></div>
+<header class="navbar"><a class="logo-container" routerLink="/home"><img src="/logo.png" alt="" class="logo-icon"><span class="logo-text">EcoMuni</span></a><nav class="nav-links" aria-label="Navegación principal">@for(enlace of enlaces;track enlace.ruta){<a class="nav-item" [routerLink]="enlace.ruta" routerLinkActive="active">{{ enlace.nombre }}</a>}</nav><button class="logout-btn" type="button" [disabled]="cerrando()" (click)="cerrarSesion()">{{ cerrando()?'Cerrando…':'Cerrar sesión' }}</button></header>
+<main class="main-content"><section class="header-section"><h1 class="page-title">Categorías</h1><p class="page-description">Categorías activas disponibles al crear reportes.</p></section>
+@if(error()){<div class="notice" role="alert"><p>{{ error() }}</p><button type="button" (click)="recargar()">Reintentar</button></div>}
+@if(cargando()){<p role="status">Cargando…</p>}
+<div class="cards-grid" [attr.aria-busy]="cargando()">@for(item of datos().items;track item.idCategoria){<article class="custom-card"><div class="card-info"><h3>{{ item.categoria }}</h3><p>{{ item.descripcion || 'Sin descripción.' }}</p><p>{{ item.total }} reportes en los departamentos habilitados</p></div></article>}@empty{@if(!cargando()&&!error()){<p>No hay registros disponibles.</p>}}</div>
+<nav class="pagination" aria-label="Paginación"><button type="button" [disabled]="cargando()||datos().pagina<=1" (click)="cambiarPagina(-1)">Anterior</button><span>Página {{ datos().pagina }} de {{ paginas }} · {{ datos().total }} registros</span><button type="button" [disabled]="cargando()||datos().pagina>=paginas" (click)="cambiarPagina(1)">Siguiente</button></nav>
 </main>
