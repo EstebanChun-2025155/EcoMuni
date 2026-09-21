@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
+import { DepartamentoPagina } from '../Departamentos-shared/departamento-pagina';
 
 @Component({
   selector: 'app-retalhuleu',
@@ -16,7 +16,7 @@ export class Retalhuleu extends DepartamentoPagina {
       "nombre": "Retalhuleu",
       "cabecera": "Retalhuleu",
       "municipios": 9,
-      "imagen": "/Retalhuleu.png",
+      "imagen": "/Retalhuleu.jpg",
       "frase": "Capital del mundo cálido, donde la riqueza natural y el desarrollo sostenible impulsan la conservación ambiental."
     });
   }
