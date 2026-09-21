@@ -3,7 +3,7 @@ import { pool } from "../config/database.js";
 import express, { type ErrorRequestHandler } from "express";
 import rolRouter from "../router/rolRouter.js";
 import ubicacionRouter from "../router/ubicacionRouter.js";
-import usuarioRouter from "../router/usuarioRouter.js";
+import { usuarioRouter } from "../router/usuarioRouter.js";
 import authRouter from "../router/authrouter.js";
 import departamentoRouter from "../router/departamentoRouter.js";
 import { middlewareSesion } from "../config/sesion.js";
