@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/apiError.js";
 
 
-const departamentos = new Map<string, string>([
+export const departamentos = new Map<string, string>([
     ["peten", "Petén"],
     ["quetzaltenango", "Quetzaltenango"],
     ["quiche", "Quiché"],
