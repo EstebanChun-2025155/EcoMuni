@@ -354,3 +354,5 @@ h1 {
         font-size: 0.85rem;
     }
 }
+.department-card .nav-item { display:inline-block; margin-top:12px; background:#d4e978; color:#173e2d; text-decoration:none; }
+a:focus-visible { outline:3px solid #d4e978; outline-offset:4px; }
