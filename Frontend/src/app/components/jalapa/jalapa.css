@@ -898,3 +898,11 @@ a.nav-item { text-decoration: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 #reportes, #reciclaje { scroll-margin-top: 100px; }
 @media (prefers-reduced-motion: reduce) { .report-card { transition: none; } .report-card:hover { transform: none; } }
+
+/* Descripción de evidencias */
+.evidence-item { margin: 0; min-width: 0; display: grid; align-content: start; gap: 8px; font-size: .85rem; }
+.evidence-item figcaption { white-space: pre-wrap; overflow-wrap: anywhere; }
+.evidence-item textarea, .upload-form textarea { width: 100%; box-sizing: border-box; min-height: 70px; border: 1px solid #538371; border-radius: 10px; padding: 10px; background: #0d4939; color: #fff; font: inherit; resize: vertical; }
+
+.navigation-container { max-width: 100%; }
+.nav-links { flex-wrap: wrap; min-width: 0; }
