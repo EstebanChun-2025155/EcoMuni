@@ -17,21 +17,10 @@
         <nav id="navegacion-principal" class="nav-links"
             aria-label="Navegación principal"
             [hidden]="!menuAbierto()">
-            <button class="nav-item" type="button" disabled
-                title="Sección próximamente disponible">
-                About
-            </button>
-            <span class="nav-item active" aria-current="page">
-                Departamentos
-            </span>
-            <button class="nav-item" type="button" disabled
-                title="Sección próximamente disponible">
-                Reports
-            </button>
-            <button class="nav-item" type="button" disabled
-                title="Sección próximamente disponible">
-                Help
-            </button>
+            <a class="nav-item" routerLink="/reports">Reportes</a>
+            <a class="nav-item" routerLink="/categories">Categorías</a>
+            <a class="nav-item" routerLink="/evidences">Evidencias</a>
+            <a class="nav-item" routerLink="/locations">Ubicaciones</a>
         </nav>
     </div>
 
@@ -51,8 +40,7 @@
         <h1 id="titulo-departamentos">Departamentos</h1>
         <p class="departments-description">
             Un espacio para cada departamento de Guatemala.
-            Próximamente podrás consultar la información ambiental
-            y las iniciativas de cada comunidad.
+            Consulta reportes y puntos de reciclaje en los cinco departamentos habilitados.
         </p>
         <span class="department-count">
             {{ departamentos.length }} departamentos · Una misma comunidad
@@ -88,13 +76,16 @@
                             </div>
                         }
 
-                        <span class="availability-badge">Próximamente</span>
+                        <span class="availability-badge">{{ disponible(departamento.slug) ? "Disponible" : "Próximamente" }}</span>
                     </div>
 
                     <h2 class="department-name"
                         [id]="'nombre-' + departamento.slug">
                         {{ departamento.nombre }}
                     </h2>
+                    @if (disponible(departamento.slug)) {
+                        <a class="nav-item" [routerLink]="['/departamentos', departamento.slug]">Ver departamento →</a>
+                    }
                 </article>
             </li>
         }
