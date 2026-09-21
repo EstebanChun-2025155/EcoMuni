@@ -163,3 +163,76 @@ create table ComentarioReporte(
     constraint fk_comentario_reporte foreign key (id_reporte) references Reporte(id_reporte) on delete cascade,
     constraint fk_comentario_usuario foreign key (id_usuario) references Usuario(id_usuario) on delete cascade
 );
+-- Permite generar contraseñas compatibles con bcrypt
+create extension if not exists pgcrypto;
+ 
+-- Roles necesarios
+insert into Rol (nombre, descripcion)
+values
+('Ciudadano', 'Usuario que puede registrar y apoyar reportes ambientales.'),
+('Supervisor', 'Usuario encargado de gestionar reportes y campañas.'),
+('Admin', 'Usuario con acceso administrativo completo.')
+on conflict (nombre) do nothing;
+ 
+ 
+-- Usuario Administrador
+insert into Usuario (
+    id_rol,
+    nombres,
+    apellidos,
+    correo,
+    contrasena,
+    telefono,
+    estado
+)
+values (
+    (select id_rol from Rol where nombre = 'Admin'),
+    'Carlos',
+    'Mendez',
+    'admin@ecomuni.com',
+    crypt('Admin123!', gen_salt('bf', 12)),
+    '5555-1001',
+    'activo'
+);
+ 
+ 
+-- Usuario Supervisor
+insert into Usuario (
+    id_rol,
+    nombres,
+    apellidos,
+    correo,
+    contrasena,
+    telefono,
+    estado
+)
+values (
+    (select id_rol from Rol where nombre = 'Supervisor'),
+    'Andrea',
+    'Lopez',
+    'supervisor@ecomuni.com',
+    crypt('Supervisor123!', gen_salt('bf', 12)),
+    '5555-1002',
+    'activo'
+);
+ 
+ 
+-- Usuario Ciudadano
+insert into Usuario (
+    id_rol,
+    nombres,
+    apellidos,
+    correo,
+    contrasena,
+    telefono,
+    estado
+)
+values (
+    (select id_rol from Rol where nombre = 'Ciudadano'),
+    'Luis',
+    'Garcia',
+    'ciudadano@ecomuni.com',
+    crypt('Ciudadano123!', gen_salt('bf', 12)),
+    '5555-1003',
+    'activo'
+);
