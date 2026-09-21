@@ -1,12 +1,14 @@
-import { pool } from "../config/database";
-import { Categoria } from "../models/categoria";
-import { validarCategoria } from "../utils/validaciones";
+import { objeto } from "../utils/apiError.js";
+import { pool } from "../config/database.js";
+import { Categoria } from "../models/categoria.js";
+import { validarCategoria } from "../utils/validaciones.js";
 
 function validarId(id: number): boolean {
-    return Number.isInteger(id) && id > 0;
+    return Number.isSafeInteger(id) && id > 0 && id <= 2147483647;
 }
 
 function validarDatosCategoria(categoria: Categoria): Categoria {
+    objeto(categoria);
     const errores = validarCategoria(
         categoria.categoria,
         categoria.descripcion ,
@@ -19,9 +21,9 @@ function validarDatosCategoria(categoria: Categoria): Categoria {
 
     return {
         ...categoria,
-        categoria: categoria.categoria.trim() as any,
-        descripcion: categoria.descripcion?.trim() ,
-        estado: categoria.estado.trim() as any
+        categoria: categoria.categoria.trim(),
+        descripcion: categoria.descripcion?.trim() || null,
+        estado: categoria.estado
     };
 }
 
@@ -71,6 +73,7 @@ export async function actualizarCategoria(
         throw new Error("ID inválido.");
     }
 
+    objeto(datos);
     if (datos.idCategoria !== undefined && datos.idCategoria !== id) {
         throw new Error("No se puede modificar el ID de la categoría.");
     }
@@ -94,11 +97,14 @@ export async function eliminarCategoria(id: number): Promise<Categoria | null> {
     }
 
     const resultado = await pool.query<Categoria>(
-        `delete from categoria
+        `update categoria set estado = 'inactiva'
          where id_categoria = $1
          returning id_categoria as "idCategoria", categoria, descripcion, estado`,
         [id]
     );
 
     return resultado.rows[0] || null;
+}
+export async function listarCategoriasActivas(): Promise<Categoria[]> {
+ return (await pool.query<Categoria>(`SELECT id_categoria AS "idCategoria", categoria, descripcion, estado FROM categoria WHERE estado='activa' ORDER BY id_categoria`)).rows;
 }
