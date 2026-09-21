@@ -1,3 +1,4 @@
+import { exigirSesion, exigirAdmin } from "../middleware/autorizacion.js";
 import { Request, Response, Router } from "express";
 import {
     actualizarCategoria,
@@ -5,10 +6,11 @@ import {
     buscarCategoria,
     eliminarCategoria,
     listarCategorias
-} from "../service/categoriaService";
-import { responderError } from "./respuestaError";
+} from "../service/categoriaService.js";
+import { responderError } from "./RespuestaError.js";
 
 const categoriaRouter = Router();
+categoriaRouter.use(exigirSesion);
 
 categoriaRouter.get("/", async (_req: Request, res: Response) => {
     try {
@@ -33,7 +35,7 @@ categoriaRouter.get("/:id", async (req: Request, res: Response) => {
     }
 });
 
-categoriaRouter.post("/", async (req: Request, res: Response) => {
+categoriaRouter.post("/", exigirAdmin, async (req: Request, res: Response) => {
     try {
         res.status(201).json(await agregarCategoria(req.body));
     } catch (error) {
@@ -41,7 +43,7 @@ categoriaRouter.post("/", async (req: Request, res: Response) => {
     }
 });
 
-categoriaRouter.put("/:id", async (req: Request, res: Response) => {
+categoriaRouter.put("/:id", exigirAdmin, async (req: Request, res: Response) => {
     try {
         const categoria = await actualizarCategoria(Number(req.params.id), req.body);
 
@@ -56,7 +58,7 @@ categoriaRouter.put("/:id", async (req: Request, res: Response) => {
     }
 });
 
-categoriaRouter.delete("/:id", async (req: Request, res: Response) => {
+categoriaRouter.delete("/:id", exigirAdmin, async (req: Request, res: Response) => {
     try {
         const categoria = await eliminarCategoria(Number(req.params.id));
 
