@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
+import { DepartamentoPagina } from '../Departamentos-shared/departamento-pagina';
 
 @Component({
   selector: 'app-quetzaltenango',
@@ -16,7 +16,7 @@ export class Quetzaltenango extends DepartamentoPagina {
       "nombre": "Quetzaltenango",
       "cabecera": "Quetzaltenango",
       "municipios": 24,
-      "imagen": "/Quetzaltenango.png",
+      "imagen": "/Quetzaltenango.jpg",
       "frase": "Cuna de cultura, valles y volcanes unidos en pro del desarrollo sostenible y la conservación ambiental."
     });
   }
