@@ -1,7 +1,7 @@
 import "dotenv/config";
-import { prepararCatalogos } from "./service/catalogoService";
-import { probarConexion, pool } from "./config/database";
-import { iniciarServidor } from "./server/server";
+import { prepararCatalogos } from "./service/catalogoService.js";
+import { probarConexion, pool } from "./config/database.js";
+import { iniciarServidor } from "./server/server.js";
 
 async function main(): Promise<void> {
     try {
