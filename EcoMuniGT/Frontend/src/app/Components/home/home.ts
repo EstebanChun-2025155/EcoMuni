@@ -118,4 +118,8 @@ export class HomeComponent {
                 }
             });
     }
+
+    irDepartamento(slug: string): void {
+        void this.router.navigate(['/departamentos', slug]);
+    }
 }
