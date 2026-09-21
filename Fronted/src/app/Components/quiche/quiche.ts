@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
+import { DepartamentoPagina } from '../Departamentos-shared/departamento-pagina';
 
 @Component({
   selector: 'app-quiche',
@@ -16,7 +16,7 @@ export class Quiche extends DepartamentoPagina {
       "nombre": "Quiché",
       "cabecera": "Santa Cruz del Quiché",
       "municipios": 21,
-      "imagen": "/Quiche.png",
+      "imagen": "/Quiche.jpeg",
       "frase": "Tierra de historia, tradiciones sagradas y comunidades unidas por la protección de sus bosques y valles."
     });
   }
