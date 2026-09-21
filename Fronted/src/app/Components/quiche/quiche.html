@@ -56,11 +56,15 @@
         <div class="detail-block">
           <h3>Evidencias</h3>
           <div class="evidence-grid">
-            @for (evidencia of reporte.evidencias; track evidencia.idEvidencia) { <a [href]="api.urlImagen(evidencia.urlImagen)" target="_blank" rel="noopener"><img [src]="api.urlImagen(evidencia.urlImagen)" [alt]="evidencia.descripcion || 'Evidencia del reporte'"></a> }
+            @for (evidencia of reporte.evidencias; track evidencia.idEvidencia) {
+              <figure class="evidence-item"><a [href]="api.urlImagen(evidencia.urlImagen)" target="_blank" rel="noopener"><img [src]="api.urlImagen(evidencia.urlImagen)" [alt]="evidencia.descripcion || 'Evidencia del reporte'"></a><figcaption>{{ evidencia.descripcion || 'Sin descripción.' }}</figcaption>
+              @if(reporte.puedeAdjuntar){<label [for]="'descripcion-'+evidencia.idEvidencia">Descripción</label><textarea [id]="'descripcion-'+evidencia.idEvidencia" maxlength="150" [(ngModel)]="descripcionesEvidencias[evidencia.idEvidencia]" [disabled]="guardando()"></textarea><button class="secondary-btn" type="button" [disabled]="guardando() || cargando()" (click)="guardarDescripcionEvidencia(evidencia.idEvidencia)">Guardar descripción</button>}
+              </figure>
+            }
             @empty { <p class="no-evidence">Este reporte todavía no tiene evidencias.</p> }
           </div>
           @if (reporte.puedeAdjuntar && reporte.evidencias.length < 5) {
-            <div class="upload-form"><label for="imagen-evidencia">Adjuntar fotografía (PNG, JPEG o WebP; hasta 5 MB)</label><input id="imagen-evidencia" type="file" accept="image/png,image/jpeg,image/webp" [disabled]="guardando()" (change)="seleccionarArchivo($event)"><button class="primary-btn" type="button" [disabled]="!archivo || guardando() || cargando()" (click)="subirEvidencia()">Guardar evidencia</button></div>
+            <div class="upload-form"><label for="imagen-evidencia">Adjuntar fotografía (PNG, JPEG o WebP; hasta 5 MB)</label><input id="imagen-evidencia" type="file" accept="image/png,image/jpeg,image/webp" [disabled]="guardando()" (change)="seleccionarArchivo($event)"><label for="descripcion-evidencia">Descripción — opcional</label><textarea id="descripcion-evidencia" maxlength="150" [(ngModel)]="descripcionEvidencia" [disabled]="guardando()"></textarea><button class="primary-btn" type="button" [disabled]="!archivo || guardando() || cargando()" (click)="subirEvidencia()">Guardar evidencia</button></div>
           }
         </div>
         <div class="detail-block">
