@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
-import { actualizarUbicacion, agregarUbicacion, buscarUbicacion, eliminarUbicacion, listarUbicaciones } from "../service/Ubicacionservice";
-import { responderError } from "./respuestaError";
+import { actualizarUbicacion, agregarUbicacion, buscarUbicacion, eliminarUbicacion, listarUbicaciones } from "../service/ubicacionservice.js";
+import { responderError } from "./RespuestaError.js";
 
 const ubicacionRouter = Router();
 
