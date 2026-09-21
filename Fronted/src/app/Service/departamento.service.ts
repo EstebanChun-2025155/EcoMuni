@@ -37,10 +37,13 @@ export class DepartamentoService {
   crearPunto(slug: string, datos: NuevoPunto) {
     return this.http.post<{ id: number }>(this.api + slug + '/puntos', datos, this.opciones);
   }
-  subirEvidencia(slug: string, id: number, archivo: File) {
+  subirEvidencia(slug: string, id: number, archivo: File, descripcion: string) {
     return this.http.post<{ id: number }>(this.api + slug + '/reportes/' + id + '/evidencias', archivo, {
-      ...this.opciones, headers: { 'Content-Type': archivo.type }
+      ...this.opciones, params: new HttpParams().set('descripcion', descripcion), headers: { 'Content-Type': archivo.type }
     });
+  }
+  describirEvidencia(slug: string, id: number, idEvidencia: number, descripcion: string) {
+    return this.http.patch<{ id: number }>(this.api + slug + '/reportes/' + id + '/evidencias/' + idEvidencia, { descripcion }, this.opciones);
   }
   urlImagen(url: string | null): string {
     if (!url) return '';
