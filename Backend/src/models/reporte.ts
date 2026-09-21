@@ -1,3 +1,5 @@
+export type PrioridadReporte = "baja" | "media" | "alta";
+
 export interface Reporte {
     idReporte: number;
     idUsuario: number;
@@ -7,8 +9,14 @@ export interface Reporte {
     codigo: string;
     titulo: string;
     descripcion: string;
-    prioridad: string;
-    motivoRechazo: string;
-    fechaReporte: Date;
-    fechaActualizacion: Date;
+    prioridad: PrioridadReporte;
+    estado: string;
+    categoria: string;
+    ubicacion: string;
+    fecha: string;
+    motivoRechazo: string | null;
+    apoyos: number;
+    apoyado: boolean;
+    totalComentarios: number;
+    miniatura: string | null;
 }
