@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
-import { autenticarUsuario, registrarCiudadano } from "../service/authService";
-import { responderError } from "./respuestaError";
-import { buscarUsuario } from "../service/usuarioService";
-import { nombreCookie, opcionesCookie } from "../config/sesion";
+import { autenticarUsuario, registrarCiudadano } from "../service/authService.js";
+import { responderError } from "./RespuestaError.js";
+import { buscarUsuario } from "../service/usuarioService.js";
+import { nombreCookie, opcionesCookie } from "../config/sesion.js";
 
 const authRouter = Router();
 
