@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../Service/auth.service';
 
@@ -12,8 +12,9 @@ interface Departamento {
 @Component({
     selector: 'app-home',
     standalone: true,
-    templateUrl: './home.html',
-    styleUrl: './home.css'
+    imports: [RouterLink],
+    templateUrl: './Home.html',
+    styleUrl: './Home.css'
 })
 export class HomeComponent {
     readonly auth = inject(AuthService);
@@ -35,7 +36,7 @@ export class HomeComponent {
         { slug: 'izabal', nombre: 'Izabal' },
         { slug: 'jalapa', nombre: 'Jalapa' },
         { slug: 'jutiapa', nombre: 'Jutiapa' },
-        { slug: 'peten', nombre: 'Petén' },
+        { slug: 'peten', nombre: 'Petén', imagen: '/Peten.jpg' },
         { slug: 'quetzaltenango', nombre: 'Quetzaltenango',imagen: '/Quetzaltenango.jpg' },
         { slug: 'quiche', nombre: 'Quiché', imagen: '/Quiche.jpeg' },
         { slug: 'retalhuleu', nombre: 'Retalhuleu', imagen: '/Retalhuleu.jpg' },
@@ -47,6 +48,8 @@ export class HomeComponent {
         { slug: 'totonicapan', nombre: 'Totonicapán' },
         { slug: 'zacapa', nombre: 'Zacapa' }
     ];
+
+    disponible(slug: string): boolean { return ['peten', 'quetzaltenango', 'quiche', 'retalhuleu', 'sacatepequez'].includes(slug); }
 
     alternarMenu(): void {
         this.menuAbierto.update(abierto => !abierto);
