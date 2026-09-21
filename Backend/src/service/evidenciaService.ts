@@ -1,150 +1,79 @@
-import { pool } from "../config/database";
-import { Evidencia } from "../models/evidencia";
-import { validarEvidencia } from "../utils/validaciones";
+import { randomUUID } from "node:crypto";
+import { mkdir, writeFile, unlink } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { pool } from "../config/database.js";
+import { transaccion } from "../config/transaccion.js";
+import { ApiError, objeto, texto, entero } from "../utils/apiError.js";
+import { puedeGestionar, type Actor } from "../middleware/autorizacion.js";
+import type { Evidencia } from "../models/evidencia.js";
 
-export const maximoImagen = 5 * 1024 * 1024; // Límite de tamaño (5 MB)
+export const carpetaEvidencias = path.resolve(process.env.EVIDENCE_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), "../../storage/evidencias"));
+export const maximoImagen = 5 * 1024 * 1024;
 
-function validarId(id: number): boolean {
-    return Number.isInteger(id) && id > 0;
+export function extensionImagen(data: unknown, tipo: string | undefined): string {
+    if (!Buffer.isBuffer(data) || data.length === 0 || data.length > maximoImagen) throw new ApiError(400,"Selecciona una imagen de hasta 5 MB.");
+    if (tipo === "image/png" && data.length >= 24 && data.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && data.toString("ascii",12,16)==="IHDR") return "png";
+    if (tipo === "image/jpeg" && data.length >= 4 && data[0]===255 && data[1]===216 && data[2]===255 && data[data.length-2]===255 && data[data.length-1]===217) return "jpg";
+    if (tipo === "image/webp" && data.length >= 20 && data.toString("ascii",0,4)==="RIFF" && data.toString("ascii",8,12)==="WEBP") return "webp";
+    throw new ApiError(415,"Solo se admiten imágenes PNG, JPEG y WebP; el contenido debe coincidir con su formato.");
 }
 
-function validarDatosEvidencia(evidencia: Partial<Evidencia>): Partial<Evidencia> {
-    if (!evidencia) {
-        throw new Error("No se proporcionaron los datos de la evidencia.");
-    }
-
-    const fechaSubidaDate = evidencia.fechaSubida ? new Date(evidencia.fechaSubida) : new Date();
-
-    const errores = validarEvidencia(
-        evidencia.idReporte!,
-        evidencia.urlImagen || "",
-        evidencia.descripcion,
-        fechaSubidaDate
-    );
-
-    if (errores.length > 0) {
-        throw new Error(errores.join(" "));
-    }
-
-    return {
-        ...evidencia,
-        urlImagen: evidencia.urlImagen?.trim(),
-        descripcion: evidencia.descripcion?.trim(),
-        fechaSubida: fechaSubidaDate
-    };
+export async function listarEvidencias(idReporte: number): Promise<Evidencia[]> {
+    const result = await pool.query<Evidencia>('SELECT id_evidencia AS "idEvidencia", url_imagen AS "urlImagen", descripcion FROM evidencia WHERE id_reporte=$1 ORDER BY id_evidencia',[idReporte]);
+    return result.rows;
 }
 
-export async function listarEvidenciasByReporte(departamento: string, idReporte: number) {
-    if (!validarId(idReporte)) {
-        throw new Error("ID de reporte inválido.");
+export async function agregarEvidencia(departamento: string, idReporte: number, data: unknown, tipo: string | undefined, actor: Actor, descripcionEntrada: unknown = undefined) {
+    const descripcion = texto({ descripcion: descripcionEntrada }, "descripcion", 150, false);
+    const extension = extensionImagen(data,tipo);
+    const nombre = randomUUID()+"."+extension;
+    const archivo = path.join(carpetaEvidencias,nombre);
+    let escrito = false;
+    try {
+        return await transaccion(async db => {
+            const reporte = await db.query<{idUsuario:number}>(
+                'SELECT r.id_usuario AS "idUsuario" FROM reporte r JOIN ubicacion u ON u.id_ubicacion=r.id_ubicacion WHERE r.id_reporte=$1 AND lower(btrim(u.departamento))=lower($2) FOR UPDATE OF r',
+                [idReporte,departamento]
+            );
+            if (!reporte.rows[0]) throw new ApiError(404,"El reporte no existe en este departamento.");
+            if (reporte.rows[0].idUsuario !== actor.idUsuario && !puedeGestionar(actor)) throw new ApiError(403,"Solo el autor o un supervisor puede adjuntar evidencias.");
+            const cantidad = await db.query<{total:number}>("SELECT count(*)::integer AS total FROM evidencia WHERE id_reporte=$1",[idReporte]);
+            if (cantidad.rows[0].total >= 5) throw new ApiError(409,"Cada reporte admite un máximo de cinco evidencias.");
+            await mkdir(carpetaEvidencias,{recursive:true});
+            await writeFile(archivo,data as Buffer,{flag:"wx"});
+            escrito = true;
+            const result = await db.query<{id:number}>("INSERT INTO evidencia (id_reporte,url_imagen,descripcion) VALUES ($1,$2,$3) RETURNING id_evidencia AS id",[idReporte,"/api/archivos/"+nombre,descripcion || null]);
+            return result.rows[0];
+        });
+    } catch (error) {
+        if (escrito) await unlink(archivo).catch(() => undefined);
+        throw error;
     }
-
-    const resultado = await pool.query(
-        `select e.id_evidencia as "idEvidencia", e.id_reporte as "idReporte", 
-                e.url_imagen as "urlImagen", e.descripcion, e.fecha_subida as "fechaSubida"
-         from evidencia e
-         join reporte r on r.id_reporte = e.id_reporte
-         join ubicacion u on u.id_ubicacion = r.id_ubicacion
-         where e.id_reporte = $1 and u.departamento = $2
-         order by e.fecha_subida desc`,
-        [idReporte, departamento]
-    );
-
-    return resultado.rows;
 }
 
-export async function buscarEvidencia(departamento: string, id: number): Promise<Evidencia | null> {
-    if (!validarId(id)) {
-        throw new Error("ID de evidencia inválido.");
-    }
-
-    const resultado = await pool.query<Evidencia>(
-        `select e.id_evidencia as "idEvidencia", e.id_reporte as "idReporte", 
-                e.url_imagen as "urlImagen", e.descripcion, e.fecha_subida as "fechaSubida"
-         from evidencia e
-         join reporte r on r.id_reporte = e.id_reporte
-         join ubicacion u on u.id_ubicacion = r.id_ubicacion
-         where e.id_evidencia = $1 and u.departamento = $2`,
-        [id, departamento]
-    );
-
-    return resultado.rows[0] || null;
-}
-
-export async function agregarEvidencia(departamento: string, cuerpo: any, actor: any): Promise<Evidencia> {
-    const datosValidados = validarDatosEvidencia(cuerpo);
-
-    const reporteValido = await pool.query(
-        `select r.id_reporte 
-         from reporte r 
-         join ubicacion u on u.id_ubicacion = r.id_ubicacion 
-         where r.id_reporte = $1 and u.departamento = $2`,
-        [datosValidados.idReporte, departamento]
-    );
-
-    if (reporteValido.rowCount === 0) {
-        throw new Error("El reporte especificado no existe o no pertenece a este departamento.");
-    }
-
-    const resultado = await pool.query<Evidencia>(
-        `insert into evidencia (id_reporte, url_imagen, descripcion, fecha_subida)
-         values ($1, $2, $3, $4)
-         returning id_evidencia as "idEvidencia", id_reporte as "idReporte", 
-                   url_imagen as "urlImagen", descripcion, fecha_subida as "fechaSubida"`,
-        [datosValidados.idReporte, datosValidados.urlImagen, datosValidados.descripcion, datosValidados.fechaSubida]
-    );
-
-    return resultado.rows[0];
-}
-
-export async function actualizarEvidencia(
-    departamento: string,
-    id: number,
-    datos: Partial<Evidencia>
-): Promise<Evidencia | null> {
-    if (!validarId(id)) {
-        throw new Error("ID de evidencia inválido.");
-    }
-
-    const evidenciaExistente = await buscarEvidencia(departamento, id);
-    if (!evidenciaExistente) {
-        throw new Error("La evidencia no existe o no pertenece al departamento.");
-    }
-
-    const evidenciaActualizada = validarDatosEvidencia({
-        ...evidenciaExistente,
-        ...datos,
-        idReporte: evidenciaExistente.idReporte
+export async function describirEvidencia(departamento: string, idReporte: number, idEvidencia: number, entrada: unknown, actor: Actor) {
+    const descripcion = texto(objeto(entrada), "descripcion", 150, false);
+    return transaccion(async db => {
+        const reporte = await db.query<{idUsuario: number}>(
+            'SELECT r.id_usuario AS "idUsuario" FROM reporte r JOIN ubicacion u ON u.id_ubicacion=r.id_ubicacion WHERE r.id_reporte=$1 AND lower(btrim(u.departamento))=lower($2) FOR UPDATE OF r',
+            [idReporte, departamento]
+        );
+        if (!reporte.rows[0]) throw new ApiError(404, "El reporte no existe en este departamento.");
+        if (reporte.rows[0].idUsuario !== actor.idUsuario && !puedeGestionar(actor)) throw new ApiError(403, "Solo el autor o un supervisor puede describir evidencias.");
+        const result = await db.query<{id: number}>(
+            "UPDATE evidencia SET descripcion=$1 WHERE id_evidencia=$2 AND id_reporte=$3 RETURNING id_evidencia AS id",
+            [descripcion || null, entero(idEvidencia), idReporte]
+        );
+        if (!result.rows[0]) throw new ApiError(404, "La evidencia no pertenece a este reporte.");
+        return result.rows[0];
     });
-
-    const resultado = await pool.query<Evidencia>(
-        `update evidencia
-         set url_imagen = $1, descripcion = $2, fecha_subida = $3
-         where id_evidencia = $4
-         returning id_evidencia as "idEvidencia", id_reporte as "idReporte", 
-                   url_imagen as "urlImagen", descripcion, fecha_subida as "fechaSubida"`,
-        [evidenciaActualizada.urlImagen, evidenciaActualizada.descripcion, evidenciaActualizada.fechaSubida, id]
-    );
-
-    return resultado.rows[0] || null;
 }
 
-export async function eliminarEvidencia(departamento: string, id: number): Promise<Evidencia | null> {
-    if (!validarId(id)) {
-        throw new Error("ID de evidencia inválido.");
-    }
-
-    const resultado = await pool.query<Evidencia>(
-        `delete from evidencia e
-         using reporte r, ubicacion u
-         where e.id_reporte = r.id_reporte 
-           and r.id_ubicacion = u.id_ubicacion
-           and e.id_evidencia = $1 
-           and u.departamento = $2
-         returning e.id_evidencia as "idEvidencia", e.id_reporte as "idReporte", 
-                   e.url_imagen as "urlImagen", e.descripcion, e.fecha_subida as "fechaSubida"`,
-        [id, departamento]
-    );
-
-    return resultado.rows[0] || null;
+export async function retirarArchivoEvidencia(url: string): Promise<void> {
+ const nombre=url.startsWith('/api/archivos/')?url.slice('/api/archivos/'.length):'';
+ if(!/^[0-9a-f-]+\.(png|jpg|webp)$/i.test(nombre))return;
+ await unlink(path.join(carpetaEvidencias,nombre)).catch(error=>{
+  if(error?.code!=='ENOENT')console.error('No fue posible retirar un archivo de evidencia.');
+ });
 }
