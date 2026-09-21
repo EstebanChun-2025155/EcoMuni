@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import { pool } from "../config/database";
+import { pool } from "../config/database.js";
 
 export interface Actor {
     idUsuario: number;
