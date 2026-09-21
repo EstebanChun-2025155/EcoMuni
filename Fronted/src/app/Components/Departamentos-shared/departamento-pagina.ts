@@ -1,5 +1,5 @@
 import { DestroyRef, Directive, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, EMPTY, Observable, Subject, catchError, finalize, startWith, switchMap } from 'rxjs';
@@ -23,6 +23,8 @@ export abstract class DepartamentoPagina {
   private readonly recargas = new Subject<void>();
   private readonly seleccion = new BehaviorSubject<number | null>(null);
 
+  private readonly ruta = inject(ActivatedRoute);
+
   readonly panel = signal<PanelDepartamento | null>(null);
   readonly detalle = signal<DetalleReporte | null>(null);
   readonly cargando = signal(false);
@@ -42,7 +44,8 @@ export abstract class DepartamentoPagina {
   comentarioNuevo = '';
   nuevoSeguimiento = { idEstado: null as number | null, observacion: '', motivoRechazo: '' };
   archivo: File | null = null;
-
+  descripcionEvidencia = '';
+  descripcionesEvidencias: Record<number, string> = {};
   constructor(readonly departamento: PortadaDepartamento) {
     this.recargas.pipe(
       startWith(undefined),
@@ -62,6 +65,7 @@ export abstract class DepartamentoPagina {
         this.detalle.set(null);
         this.errorDetalle.set('');
         this.archivo = null;
+        this.descripcionEvidencia = '';
         if (id === null) return EMPTY;
         this.cargandoDetalle.set(true);
         return this.api.detalle(departamento.slug, id).pipe(
@@ -76,7 +80,17 @@ export abstract class DepartamentoPagina {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(detalle => {
       this.detalle.set(detalle);
+      this.descripcionesEvidencias = Object.fromEntries(detalle.evidencias.map(e => [e.idEvidencia, e.descripcion ?? '']));
       this.nuevoSeguimiento = { idEstado: detalle.idEstado, observacion: '', motivoRechazo: '' };
+    });
+    this.abrirDesdeEnlace();
+  }
+
+  private abrirDesdeEnlace(): void {
+    this.ruta.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+      const valor = params.get('reporte');
+      const id = Number(valor);
+      if (valor && Number.isSafeInteger(id) && id > 0 && id <= 2147483647) this.seleccion.next(id);
     });
   }
 
@@ -182,7 +196,7 @@ export abstract class DepartamentoPagina {
   subirEvidencia(): void {
     const detalle = this.detalle();
     if (!detalle || !this.archivo || !detalle.puedeAdjuntar) return;
-    this.guardar(this.api.subirEvidencia(this.departamento.slug, detalle.idReporte, this.archivo),
+    this.guardar(this.api.subirEvidencia(this.departamento.slug, detalle.idReporte, this.archivo, this.descripcionEvidencia),
       () => this.seleccion.next(detalle.idReporte), 'Evidencia guardada.');
   }
 
@@ -192,6 +206,13 @@ export abstract class DepartamentoPagina {
       this.nuevoPunto = puntoVacio();
       this.mostrarNuevoPunto.set(false);
     }, 'Punto de reciclaje guardado.');
+  }
+
+  guardarDescripcionEvidencia(idEvidencia: number): void {
+    const detalle = this.detalle();
+    if (!detalle?.puedeAdjuntar) return;
+    this.guardar(this.api.describirEvidencia(this.departamento.slug, detalle.idReporte, idEvidencia, this.descripcionesEvidencias[idEvidencia] ?? ''),
+      () => this.seleccion.next(detalle.idReporte), 'Descripción guardada.');
   }
 
   cerrarSesion(): void {
