@@ -5,16 +5,25 @@ import rolRouter from "../router/rolRouter";
 import seguimientoRouter from "../router/SeguimientoRouter";
 import apoyoReporteRouter from "../router/ApoyoReporteRouter";
 import comentarioReporteRouter from "../router/ComentarioReporteRouter";
+import departamentoRouter from "../router/DepartamentoRouter";
+import authRouter from "../router/AuthRouter";
 
 const servidor = express();
 
-servidor.use(cors());
+servidor.use(
+    cors({
+        origin: "http://localhost:4200",
+        credentials: true
+    })
+);
 servidor.use(express.json());
 
+servidor.use("/api/auth", authRouter);
 servidor.use("/api/roles", rolRouter);
 servidor.use("/api/seguimientos", seguimientoRouter);
 servidor.use("/api/apoyos", apoyoReporteRouter);
 servidor.use("/api/comentarios", comentarioReporteRouter);
+servidor.use("/api/departamentos", departamentoRouter);
 
 servidor.get("/api", (_req, res) => {
     res.status(200).json({
