@@ -1,8 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { finalize } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { NavbarComponent } from '../navbar/navbar';
 
 interface Departamento {
     slug: string;
@@ -13,26 +12,12 @@ interface Departamento {
 @Component({
     selector: 'app-departamentos',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, NavbarComponent],
     templateUrl: './departamentos.html',
     styleUrl: './departamentos.css'
 })
 export class DepartamentosComponent {
-    readonly auth = inject(AuthService);
     private readonly router = inject(Router);
-
-    readonly cerrando = signal(false);
-    readonly error = signal('');
-    readonly menuAbierto = signal(true);
-    
-    readonly brandName = 'EcoMuni';
-    readonly heroTitle = 'Gestión de Residuos Sostenible';
-    readonly navLinks = [
-        { name: 'About', path: '/about' },
-        { name: 'Locations', path: '/locations' },
-        { name: 'Reportes', path: '/reports' },
-        { name: 'Help', path: '/help' }
-    ];
 
     readonly departamentos: readonly Departamento[] = [
         { slug: 'alta-verapaz', nombre: 'Alta Verapaz' },
@@ -59,49 +44,8 @@ export class DepartamentosComponent {
         { slug: 'zacapa', nombre: 'Zacapa' }
     ];
 
-    alternarMenu(): void {
-        this.menuAbierto.update(abierto => !abierto);
-    }
-
-    onMenuClick(): void {
-        this.alternarMenu();
-    }
-
     onNavigate(path: string): void {
         void this.router.navigateByUrl(path);
-    }
-
-    onLogout(): void {
-        this.cerrarSesion();
-    }
-
-    cerrarSesion(): void {
-        if (this.cerrando()) return;
-
-        this.cerrando.set(true);
-        this.error.set('');
-
-        this.auth.logout()
-            .pipe(finalize(() => this.cerrando.set(false)))
-            .subscribe({
-                next: () => {
-                    void this.router.navigateByUrl('/login', {
-                        replaceUrl: true
-                    });
-                },
-                error: () => {
-                    this.error.set(
-                        'No se pudo cerrar la sesión. Comprueba la conexión e inténtalo otra vez.'
-                    );
-                }
-            });
-    }
-
-    onScrollDown(): void {
-        window.scrollTo({
-            top: window.innerHeight,
-            behavior: 'smooth'
-        });
     }
 
     volverArriba(): void {

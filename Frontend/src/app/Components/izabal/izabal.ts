@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NavbarComponent } from '../navbar/navbar';
 import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
 
 @Component({
   selector: 'app-izabal',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NavbarComponent],
   templateUrl: './izabal.html',
   styleUrl: './izabal.css'
 })

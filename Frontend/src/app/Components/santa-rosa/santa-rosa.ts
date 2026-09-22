@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NavbarComponent } from '../navbar/navbar';
 import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
 
 @Component({
   selector: 'app-santa-rosa',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NavbarComponent],
   templateUrl: './santa-rosa.html',
   styleUrl: './santa-rosa.css'
 })

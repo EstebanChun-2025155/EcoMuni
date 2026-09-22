@@ -1,19 +1,8 @@
 <div class="bg-blur" aria-hidden="true"></div>
-<header class="navbar">
-  <button class="brand-button" type="button" (click)="volverHome()"><img src="/logo.png" alt="" width="36" height="36"><span class="logo-text">EcoMuni</span></button>
-  <div class="navigation-container">
-    <button class="menu-btn" type="button" (click)="alternarMenu()" [attr.aria-expanded]="menuAbierto()" aria-controls="menu-departamento">Menú</button>
-    <nav id="menu-departamento" class="nav-links" [hidden]="!menuAbierto()">
-      <button class="nav-item" type="button" (click)="volverHome()">Departamentos</button>
-      <button class="nav-item active" type="button" (click)="irReportes()">Reportes</button>
-      <a class="nav-item" href="#reciclaje">Puntos de reciclaje</a>
-    </nav>
-  </div>
-  <button class="logout-btn" type="button" [disabled]="cerrando() || guardando()" (click)="cerrarSesion()">{{ cerrando() ? 'Cerrando…' : 'Cerrar sesión' }}</button>
-</header>
+<app-navbar activa="reportes"></app-navbar>
 <main class="department-page">
   <section class="hero" [style.background-image]="'linear-gradient(90deg, rgba(5,35,25,.92), rgba(5,35,25,.25)), url(' + departamento.imagen + ')'">
-    <div class="hero-copy"><button class="breadcrumb" type="button" (click)="volverHome()">← Departamentos</button><p class="eyebrow">Departamento de</p><h1>{{ departamento.nombre }}</h1><p class="hero-description">{{ departamento.frase }}</p></div>
+    <div class="hero-copy"><button class="breadcrumb" type="button" (click)="volverDepartamentos()">← Departamentos</button><p class="eyebrow">Departamento de</p><h1>{{ departamento.nombre }}</h1><p class="hero-description">{{ departamento.frase }}</p></div>
     <div class="hero-stats">
       <div class="stat-card"><span>Cabecera</span><strong>{{ departamento.cabecera }}</strong></div>
       <div class="stat-card"><span>Municipios</span><strong>{{ departamento.municipios }}</strong></div>
@@ -121,7 +110,7 @@
       } @empty { @if (!cargando() && !error()) { <p class="muted">Aún no hay puntos de reciclaje registrados.</p> } }
     </div>
   </section>
-  <footer class="department-footer"><p>EcoMuni · Una misma comunidad, un mismo compromiso.</p><button type="button" (click)="volverHome()">← Volver a departamentos</button></footer>
+  <footer class="department-footer"><p>EcoMuni · Una misma comunidad, un mismo compromiso.</p><button type="button" (click)="volverDepartamentos()">← Volver a departamentos</button></footer>
 </main>
 @if (mostrarNuevoReporte()) {
   <div class="modal-backdrop" (click)="cerrarNuevoReporte()" (keydown.escape)="cerrarNuevoReporte()">

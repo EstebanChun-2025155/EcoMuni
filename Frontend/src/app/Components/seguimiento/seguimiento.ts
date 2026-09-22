@@ -1,25 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../navbar/navbar';
 
 @Component({
   selector: 'app-seguimiento',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NavbarComponent],
   templateUrl: './seguimiento.html',
   styleUrl: './seguimiento.css'
 })
 export class SeguimientoComponent {
 
-  brandName: string = 'EcoMuni';
-
-  navLinks = [
-    { name: 'About', path: '/about' },
-    { name: 'Locations', path: '/locations' },
-    { name: 'Reports', path: '/reports' },
-    { name: 'Help', path: '/help' }
-  ];
-
-  seguimientos = [
+  readonly seguimientos = [
     {
       id: 1,
       reporte: 1,
@@ -46,22 +38,10 @@ export class SeguimientoComponent {
     }
   ];
 
-  onNavigate(path: string): void {
-    console.log('Navegando a:', path);
-  }
-
-  onLogout(): void {
-    console.log('Logout');
-  }
-
   onScrollDown(): void {
     window.scrollBy({
       top: window.innerHeight,
       behavior: 'smooth'
     });
-  }
-
-  viewDetails(id: number): void {
-    console.log('Ver seguimiento:', id);
   }
 }

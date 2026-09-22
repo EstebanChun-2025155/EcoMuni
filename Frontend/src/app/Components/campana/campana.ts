@@ -1,10 +1,10 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { NavbarComponent } from '../navbar/navbar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, EMPTY, catchError, finalize, startWith, switchMap } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
 import { CampanaService } from '../../services/campana.service';
 import type { CampanaRegistro, DatosCampana, EstadoCampana, FiltrosCampana, PanelCampanas, UbicacionCampana } from '../../models/campana';
 
@@ -17,13 +17,12 @@ function lugarVacio(): UbicacionCampana {
 
 @Component({
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, NavbarComponent],
   selector: 'app-campana',
   styleUrl: './campana.css',
   templateUrl: './campana.html',
 })
 export class Campana {
-  readonly auth = inject(AuthService);
   private readonly api = inject(CampanaService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -31,8 +30,6 @@ export class Campana {
   readonly panel = signal<PanelCampanas | null>(null);
   readonly cargando = signal(false);
   readonly guardando = signal(false);
-  readonly cerrando = signal(false);
-  readonly menuAbierto = signal(true);
   readonly mostrarFormulario = signal(false);
   readonly error = signal('');
   readonly mensaje = signal('');
@@ -69,7 +66,6 @@ export class Campana {
   get fechasValidas(): boolean {
     return !!this.formulario.fechaInicio && !!this.formulario.fechaFin && this.formulario.fechaFin >= this.formulario.fechaInicio;
   }
-  alternarMenu(): void { this.menuAbierto.update(abierto => !abierto); }
   recargar(): void { if (!this.guardando()) this.recargas.next(); }
   buscar(): void {
     if (this.guardando()) return;
@@ -129,14 +125,6 @@ export class Campana {
     if (!url) return '';
     if (/^https?:\/\//i.test(url)) return url;
     return url.startsWith('/') && !url.startsWith('//') ? url : '';
-  }
-  cerrarSesion(): void {
-    if (this.cerrando() || this.guardando()) return;
-    this.cerrando.set(true);
-    this.auth.logout().pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.cerrando.set(false))).subscribe({
-      next: () => { void this.router.navigateByUrl('/login', { replaceUrl: true }); },
-      error: error => this.informarError(error)
-    });
   }
   private informarError(error: unknown): void {
     if (error instanceof HttpErrorResponse) {

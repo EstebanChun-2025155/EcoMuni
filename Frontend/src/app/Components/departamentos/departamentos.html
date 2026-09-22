@@ -1,27 +1,6 @@
 <div class="bg-blur"></div>
 
-<header class="navbar">
-  <div class="logo-container">
-    <img src="/logo.png" alt="EcoMuni Logo" class="logo-icon" />
-    <span class="logo-text">{{ brandName }}</span>
-  </div>
-
-  <nav class="nav-links">
-    <button class="menu-btn">Menu</button>
-    <a
-      *ngFor="let link of navLinks"
-      [class.active]="link.name === 'Reportes'"
-      class="nav-item"
-      role="button"
-      tabindex="0">
-      {{ link.name }}
-    </a>
-  </nav>
-
-  <div class="logout-container">
-    <button class="logout-btn">Logout</button>
-  </div>
-</header>
+<app-navbar activa="reportes"></app-navbar>
 
 <main class="departments-content">
   <section class="header-section">
@@ -59,8 +38,6 @@
       </article>
     </li>
   </ul>
-
-  <p class="mensaje-error" *ngIf="error()">{{ error() }}</p>
 
   <footer class="home-footer">
     <p>Gestiona la información ambiental de tu municipio.</p>

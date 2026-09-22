@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, EMPTY, Observable, Subject, catchError, finalize, startWith, switchMap } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
 import { DepartamentoService } from '../../services/departamento.service';
 import type { DetalleReporte, FiltrosReporte, NuevoPunto, NuevoReporte, PanelDepartamento, PortadaDepartamento, Reporte } from '../../models/departamento';
 
@@ -16,7 +15,6 @@ function puntoVacio(): NuevoPunto {
 
 @Directive()
 export abstract class DepartamentoPagina {
-  readonly auth = inject(AuthService);
   readonly api = inject(DepartamentoService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -28,11 +26,9 @@ export abstract class DepartamentoPagina {
   readonly cargando = signal(false);
   readonly cargandoDetalle = signal(false);
   readonly guardando = signal(false);
-  readonly cerrando = signal(false);
   readonly error = signal('');
   readonly errorDetalle = signal('');
   readonly mensaje = signal('');
-  readonly menuAbierto = signal(true);
   readonly mostrarNuevoReporte = signal(false);
   readonly mostrarNuevoPunto = signal(false);
 
@@ -89,9 +85,7 @@ export abstract class DepartamentoPagina {
     return panel ? Math.max(1, Math.ceil(panel.total / panel.porPagina)) : 1;
   }
 
-  alternarMenu(): void { this.menuAbierto.update(valor => !valor); }
-  volverHome(): void { void this.router.navigateByUrl('/home'); }
-  irReportes(): void { document.getElementById('reportes')?.scrollIntoView({ behavior: 'smooth' }); }
+  volverDepartamentos(): void { void this.router.navigateByUrl('/departamentos'); }
 
   recargar(): void {
     if (this.guardando()) return;
@@ -202,18 +196,6 @@ export abstract class DepartamentoPagina {
     if (!detalle?.puedeAdjuntar) return;
     this.guardar(this.api.describirEvidencia(this.departamento.slug, detalle.idReporte, idEvidencia, this.descripcionesEvidencias[idEvidencia] ?? ''),
       () => this.seleccion.next(detalle.idReporte), 'Descripción guardada.');
-  }
-
-  cerrarSesion(): void {
-    if (this.cerrando() || this.guardando()) return;
-    this.cerrando.set(true);
-    this.auth.logout().pipe(
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => this.cerrando.set(false))
-    ).subscribe({
-      next: () => { void this.router.navigateByUrl('/login', { replaceUrl: true }); },
-      error: error => this.informarError(error)
-    });
   }
 
   private guardar(peticion: Observable<{ id: number }>, alGuardar: (r: { id: number }) => void, mensaje = 'Cambios guardados correctamente.'): void {

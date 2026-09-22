@@ -1,15 +1,5 @@
 <div class="bg-blur" aria-hidden="true"></div>
-<header class="navbar">
-  <a class="brand" routerLink="/home"><img src="/logo.png" alt="" width="36" height="36"><span>EcoMuni</span></a>
-  <div class="navigation-container">
-    <button class="nav-item" type="button" aria-controls="menu-campanas" [attr.aria-expanded]="menuAbierto()" (click)="alternarMenu()">Menú</button>
-    <nav id="menu-campanas" class="nav-links" aria-label="Navegación principal" [hidden]="!menuAbierto()">
-      <a class="nav-item" routerLink="/home">Departamentos</a>
-      <span class="nav-item active" aria-current="page">Campañas</span>
-    </nav>
-  </div>
-  <button class="logout-btn" type="button" [disabled]="cerrando() || guardando()" (click)="cerrarSesion()">{{ cerrando() ? 'Cerrando…' : 'Cerrar sesión' }}</button>
-</header>
+<app-navbar></app-navbar>
 
 <main class="campaign-page">
   <section class="hero" aria-labelledby="titulo-campanas">
@@ -64,7 +54,7 @@
       <div class="pagination"><button class="secondary-btn" type="button" [disabled]="cargando() || guardando() || filtros.pagina <= 1" (click)="cambiarPagina(-1)">Anterior</button><span>Página {{ filtros.pagina }} de {{ paginas }} · {{ datos.total }} campañas</span><button class="secondary-btn" type="button" [disabled]="cargando() || guardando() || filtros.pagina >= paginas" (click)="cambiarPagina(1)">Siguiente</button></div>
     }
   </section>
-  <footer><p>EcoMuni · Trabajando por una Guatemala más limpia.</p><a routerLink="/home">Volver a departamentos</a></footer>
+  <footer><p>EcoMuni · Trabajando por una Guatemala más limpia.</p><a routerLink="/departamentos">Volver a departamentos</a></footer>
 </main>
 
 @if (mostrarFormulario() && puedeGestionar) {

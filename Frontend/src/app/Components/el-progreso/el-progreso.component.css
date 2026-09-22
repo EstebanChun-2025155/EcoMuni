@@ -906,3 +906,6 @@ a.nav-item { text-decoration: none; }
 
 .navigation-container { max-width: 100%; }
 .nav-links { flex-wrap: wrap; min-width: 0; }
+
+/* Espacio para la navbar compartida (position: fixed) */
+:host { padding-top: 110px; }

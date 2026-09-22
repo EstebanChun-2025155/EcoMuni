@@ -126,6 +126,46 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'departamentos/peten',
+    loadComponent: () => import('./Components/peten/peten').then(m => m.Peten),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/quetzaltenango',
+    loadComponent: () => import('./Components/quetzaltenango/quetzaltenango').then(m => m.Quetzaltenango),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/quiche',
+    loadComponent: () => import('./Components/quiche/quiche').then(m => m.Quiche),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/retalhuleu',
+    loadComponent: () => import('./Components/retalhuleu/retalhuleu').then(m => m.Retalhuleu),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/sacatepequez',
+    loadComponent: () => import('./Components/sacatepequez/sacatepequez').then(m => m.Sacatepequez),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'acerca-de',
+    loadComponent: () => import('./Components/acerca-de/acerca-de').then(m => m.AcercaDeComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'ubicaciones',
+    loadComponent: () => import('./Components/ubicaciones/ubicaciones').then(m => m.UbicacionesComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'ayuda',
+    loadComponent: () => import('./Components/ayuda/ayuda').then(m => m.AyudaComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'departamentos/:slug',
     redirectTo: '/departamentos',
     pathMatch: 'full'

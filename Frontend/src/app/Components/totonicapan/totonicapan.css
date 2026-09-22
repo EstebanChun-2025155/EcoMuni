@@ -898,3 +898,5 @@ a.nav-item { text-decoration: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 #reportes, #reciclaje { scroll-margin-top: 100px; }
 @media (prefers-reduced-motion: reduce) { .report-card { transition: none; } .report-card:hover { transform: none; } }
+/* Espacio para la navbar compartida (position: fixed) */
+:host { padding-top: 110px; }
