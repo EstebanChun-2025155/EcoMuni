@@ -147,3 +147,45 @@ main {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ========== Detalle de reporte ========== */
+
+/* Cuadro "Este reporte todavía no tiene evidencias": ancho completo para que
+   el texto se lea a lo largo (gana a las reglas de componente por especificidad) */
+.detail-block .no-evidence {
+  display: block;
+  width: 100%;
+  flex-basis: 100%;
+  grid-column: 1 / -1;
+  box-sizing: border-box;
+  padding: 18px 22px;
+  text-align: left;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+/* Input de archivo con el diseño del proyecto y botón tipo píldora */
+input[type='file'] {
+  padding: 10px;
+  border: 1px solid #ffffff38;
+  border-radius: 12px;
+  background: #0b4a39;
+  color: white;
+}
+
+input[type='file']::file-selector-button {
+  margin-right: 12px;
+  padding: 9px 16px;
+  border: 1px solid #ffffff50;
+  border-radius: 20px;
+  background: #103e30bb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.5s ease, transform 0.5s ease;
+}
+
+input[type='file']::file-selector-button:hover {
+  background: #17513e;
+  transform: translateY(-2px);
+}
