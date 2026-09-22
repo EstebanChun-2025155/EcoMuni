@@ -14,7 +14,7 @@
     </button>
     <a *ngFor="let link of enlaces"
        class="nav-item"
-       [class.active]="activa() === 'reportes' && link.name === 'Reportes'"
+       [class.active]="activa() === link.clave"
        [routerLink]="link.path">
       {{ link.name }}
     </a>

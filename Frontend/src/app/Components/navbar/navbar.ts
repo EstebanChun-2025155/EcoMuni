@@ -4,16 +4,17 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
-export type VistaNavbar = 'inicio' | 'reportes' | '';
+export type VistaNavbar = 'inicio' | 'reportes' | 'campanas' | 'seguimiento' | '';
 
 interface EnlaceNavbar {
   name: string;
   path: string;
+  clave: VistaNavbar;
 }
 
 /**
- * Barra de navegación compartida por home, departamentos
- * y las vistas de detalle de cada departamento.
+ * Barra de navegación compartida por home, campañas, seguimiento,
+ * departamentos y las vistas de detalle de cada departamento.
  */
 @Component({
   selector: 'app-navbar',
@@ -33,9 +34,9 @@ export class NavbarComponent {
   readonly error = signal('');
 
   readonly enlaces: readonly EnlaceNavbar[] = [
-    { name: 'Campañas', path: '/campana' },
-    { name: 'Seguimiento', path: '/seguimiento' },
-    { name: 'Reportes', path: '/departamentos' }
+    { name: 'Campañas', path: '/campana', clave: 'campanas' },
+    { name: 'Seguimiento', path: '/seguimiento', clave: 'seguimiento' },
+    { name: 'Reportes', path: '/departamentos', clave: 'reportes' }
   ];
 
   cerrarSesion(): void {

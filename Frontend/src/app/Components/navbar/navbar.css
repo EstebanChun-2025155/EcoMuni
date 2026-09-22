@@ -1,4 +1,4 @@
-/* Navbar compartida: home, departamentos y las17 vistas de detalle */
+/* Navbar compartida: home, campañas, seguimiento, departamentos y detalle */
 
 .navbar {
   position: fixed;
@@ -16,6 +16,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 25px;
+  gap: 0;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.4);
   z-index: 10;
@@ -43,9 +44,10 @@
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 15px;
 }
 
+/* Pestaña Inicio */
 .menu-btn {
   background-color: transparent;
   border: 1px solid transparent;
@@ -55,11 +57,13 @@
   color: #112a18;
   cursor: pointer;
   box-shadow: none;
-  transition: background-color 0.2s;
+  transition: background-color 0.5s ease, transform 0.5s ease,
+    box-shadow 0.5s ease;
 }
 
 .menu-btn:hover {
   background-color: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
 }
 
 .menu-btn.active {
@@ -67,17 +71,34 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
+/* Pestañas Campañas / Seguimiento / Reportes */
 .nav-item {
   text-decoration: none;
   color: #2b3a2f;
   font-weight: 600;
   font-size: 0.95rem;
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0);
+  background-color: transparent;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: color 0.5s ease, background-color 0.5s ease,
+    border-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
 }
 
 .nav-item:hover {
   color: #000000;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.nav-item.active {
+  background-color: #ffffff;
+  color: #112a18;
+  border-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
 /* Botón Cerrar sesión */
@@ -90,75 +111,19 @@
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(255, 92, 92, 0.4);
-  transition: background-color 0.2s, transform 0.1s;
+  transition: background-color 0.5s ease, transform 0.5s ease,
+    box-shadow 0.5s ease;
 }
 
 .logout-btn:hover {
   background-color: #e04848;
-  transform: scale(1.03);
+  transform: translateY(-2px) scale(1.03);
 }
 
 .logout-btn:disabled {
   opacity: 0.65;
   cursor: wait;
-}
-
-/* Enlaces del menú central */
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-/* Efecto de botón con borde blanco al acercar el cursor */
-.nav-item {
-  text-decoration: none;
-  color: #2b3a2f;
-  font-weight: 600;
-  font-size: 0.95rem;
-  padding: 6px 14px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.nav-item:hover {
-  color: #000000;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.nav-item.active {
-  background-color: #ffffff;
-  color: #112a18;
-  border-color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
-}
-
-.navbar {
-  gap: 0;
-}
-
-.nav-links {
-  gap: 15px;
-}
-
-.nav-item {
-  background-color: transparent;
-  border-color: transparent;
-}
-
-.menu-btn {
-  background-color: transparent;
-  border-color: transparent;
-  box-shadow: none;
-}
-
-.menu-btn.active {
-  background-color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  transform: none;
 }
 
 /* Contenedor del botón y aviso de error de sesión */
