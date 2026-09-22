@@ -11,7 +11,13 @@ const departamentos = new Map([
     ["huehuetenango", "Huehuetenango"],
     ["izabal", "Izabal"],
     ["jalapa", "Jalapa"],
-    ["jutiapa", "Jutiapa"]
+    ["jutiapa", "Jutiapa"],
+    ["san-marcos", "San Marcos"],
+    ["santa-rosa", "Santa Rosa"],
+    ["solola", "Sololá"],
+    ["suchitepequez", "Suchitepéquez"],
+    ["totonicapan", "Totonicapán"],
+    ["zacapa", "Zacapa"]
 ]);
 
 export function nombreDepartamento(slug: unknown): string {

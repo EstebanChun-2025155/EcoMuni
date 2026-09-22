@@ -36,6 +36,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'seguimiento',
+    loadComponent: () => import('./Components/seguimiento/seguimiento').then(m => m.SeguimientoComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'departamentos/alta-verapaz',
     loadComponent: () => import('./Components/alta-verapaz/alta-verapaz.component').then(m => m.AltaVerapazComponent),
     canActivate: [authGuard]
@@ -88,6 +93,36 @@ export const routes: Routes = [
   {
     path: 'departamentos/jutiapa',
     loadComponent: () => import('./Components/jutiapa/jutiapa').then(m => m.Jutiapa),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/san-marcos',
+    loadComponent: () => import('./Components/san-marcos/san-marcos').then(m => m.SanMarcos),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/santa-rosa',
+    loadComponent: () => import('./Components/santa-rosa/santa-rosa').then(m => m.SantaRosa),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/solola',
+    loadComponent: () => import('./Components/solola/solola').then(m => m.Solola),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/suchitepequez',
+    loadComponent: () => import('./Components/suchitepequez/suchitepequez').then(m => m.Suchitepequez),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/totonicapan',
+    loadComponent: () => import('./Components/totonicapan/totonicapan').then(m => m.Totonicapan),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'departamentos/zacapa',
+    loadComponent: () => import('./Components/zacapa/zacapa').then(m => m.Zacapa),
     canActivate: [authGuard]
   },
   {

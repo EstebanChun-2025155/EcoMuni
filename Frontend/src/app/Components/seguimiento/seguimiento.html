@@ -1,0 +1,85 @@
+<div class="bg-blur"></div>
+
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/logo.png" alt="EcoMuni Logo" class="logo-icon" />
+    <span class="logo-text">{{ brandName }}</span>
+  </div>
+
+  <nav class="nav-links">
+    <button class="menu-btn" (click)="onNavigate('/home')">Menu</button>
+
+    <a
+      *ngFor="let link of navLinks"
+      (click)="onNavigate(link.path)"
+      [class.active]="link.name === 'Reports'"
+      class="nav-item">
+      {{ link.name }}
+    </a>
+  </nav>
+
+  <div class="logout-container">
+    <button class="logout-btn" (click)="onLogout()">Logout</button>
+  </div>
+</header>
+
+<main class="main-content">
+
+  <div class="header-section">
+    <h1 class="page-title">Seguimiento de Reportes</h1>
+
+    <p class="page-description">
+      Consulta el estado y los cambios realizados en los reportes ambientales
+      registrados por los ciudadanos.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+
+    <div class="custom-card" *ngFor="let seguimiento of seguimientos">
+
+      <div class="card-info">
+
+        <span class="badge">
+          Estado {{ seguimiento.estado }}
+        </span>
+
+        <h3>Seguimiento #{{ seguimiento.id }}</h3>
+
+        <p>
+          <strong>Reporte:</strong>
+          #{{ seguimiento.reporte }}
+        </p>
+
+        <p>
+          <strong>Usuario:</strong>
+          #{{ seguimiento.usuario }}
+        </p>
+
+        <p>
+          {{ seguimiento.observacion }}
+        </p>
+
+        <p>
+          <strong>Fecha:</strong>
+          {{ seguimiento.fecha }}
+        </p>
+
+      </div>
+
+      <button
+        class="action-card-btn"
+        (click)="viewDetails(seguimiento.id)">
+        Ver Detalle
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="scroll-container" (click)="onScrollDown()">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-icon">&#8595;</div>
+  </div>
+
+</main>
