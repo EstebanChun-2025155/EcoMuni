@@ -1,0 +1,35 @@
+<header class="navbar">
+  <a class="logo-container" routerLink="/home" aria-label="EcoMuni · Ir al inicio">
+    <img src="/logo.png" alt="EcoMuni Logo" class="logo-icon" />
+    <span class="logo-text">EcoMuni</span>
+  </a>
+
+  <nav class="nav-links">
+    <button
+      type="button"
+      class="menu-btn"
+      [class.active]="activa() === 'inicio'"
+      routerLink="/home">
+      Inicio
+    </button>
+    <a *ngFor="let link of enlaces"
+       class="nav-item"
+       [class.active]="activa() === link.clave"
+       [routerLink]="link.path">
+      {{ link.name }}
+    </a>
+  </nav>
+
+  <div class="logout-container">
+    <button
+      type="button"
+      class="logout-btn"
+      [disabled]="cerrando()"
+      (click)="cerrarSesion()">
+      {{ cerrando() ? 'Cerrando…' : 'Cerrar sesión' }}
+    </button>
+    @if (error()) {
+      <p class="logout-error" role="alert">{{ error() }}</p>
+    }
+  </div>
+</header>

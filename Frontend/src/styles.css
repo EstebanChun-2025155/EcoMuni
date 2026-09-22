@@ -1,0 +1,213 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #173e2d;
+}
+
+/* Fondo compartido por TODAS las vistas: idéntico estilo y posición (el de Home/Departamentos) */
+.bg-blur {
+  position: fixed;
+  inset: -8px;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(#123e3155, #10392ecc),
+    url('/bosque.png') center / cover no-repeat;
+  filter: blur(4px);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+/* ========== Fase de diseño: suavidad en scroll, hover y animaciones ========== */
+
+/* Scroll suave en toda la app */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Transiciones suaves (0.5s) en todos los botones */
+button {
+  transition: transform 0.5s ease, background-color 0.5s ease,
+    color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+
+button:not(:disabled):active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.15s;
+}
+
+input,
+select,
+textarea,
+a {
+  transition: color 0.5s ease, background-color 0.5s ease,
+    border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Animaciones de entrada con suavidad */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes suave-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Cada vista entra con un fundido suave */
+main {
+  animation: aparecer 0.5s ease-out both;
+}
+
+/* Los bloques destacados entran con un desplazamiento suave */
+.header-section,
+.hero,
+.pagina,
+.section-heading,
+.filters,
+.campaign-section,
+.detail-block,
+.stat-card,
+.workspace,
+.empty-state,
+.pagination,
+.home-footer {
+  animation: suave-entrada 0.55s ease-out both;
+}
+
+/* Tarjetas con entrada escalonada */
+.cards-grid > *,
+.campaign-grid > * {
+  animation: suave-entrada 0.6s ease-out both;
+}
+
+.cards-grid > *:nth-child(2),
+.campaign-grid > *:nth-child(2) { animation-delay: 0.05s; }
+.cards-grid > *:nth-child(3),
+.campaign-grid > *:nth-child(3) { animation-delay: 0.1s; }
+.cards-grid > *:nth-child(4),
+.campaign-grid > *:nth-child(4) { animation-delay: 0.15s; }
+.cards-grid > *:nth-child(5),
+.campaign-grid > *:nth-child(5) { animation-delay: 0.2s; }
+.cards-grid > *:nth-child(6),
+.campaign-grid > *:nth-child(6) { animation-delay: 0.25s; }
+.cards-grid > *:nth-child(7),
+.campaign-grid > *:nth-child(7) { animation-delay: 0.3s; }
+.cards-grid > *:nth-child(8),
+.campaign-grid > *:nth-child(8) { animation-delay: 0.35s; }
+.cards-grid > *:nth-child(9),
+.campaign-grid > *:nth-child(9) { animation-delay: 0.4s; }
+.cards-grid > *:nth-child(10),
+.campaign-grid > *:nth-child(10) { animation-delay: 0.45s; }
+.cards-grid > *:nth-child(11),
+.campaign-grid > *:nth-child(11) { animation-delay: 0.5s; }
+.cards-grid > *:nth-child(12),
+.campaign-grid > *:nth-child(12) { animation-delay: 0.55s; }
+
+/* Respeto por quien tenga reducido el movimiento */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========== Detalle de reporte ========== */
+
+/* Cuadro "Este reporte todavía no tiene evidencias": ancho completo para que
+   el texto se lea a lo largo (gana a las reglas de componente por especificidad) */
+.detail-block .no-evidence {
+  display: block;
+  width: 100%;
+  flex-basis: 100%;
+  grid-column: 1 / -1;
+  box-sizing: border-box;
+  padding: 18px 22px;
+  text-align: left;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+/* Input de archivo con el diseño del proyecto y botón tipo píldora */
+input[type='file'] {
+  padding: 10px;
+  border: 1px solid #ffffff38;
+  border-radius: 12px;
+  background: #0b4a39;
+  color: white;
+}
+
+input[type='file']::file-selector-button {
+  margin-right: 12px;
+  padding: 9px 16px;
+  border: 1px solid #ffffff50;
+  border-radius: 20px;
+  background: #103e30bb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.5s ease, transform 0.5s ease;
+}
+
+input[type='file']::file-selector-button:hover {
+  background: #17513e;
+  transform: translateY(-2px);
+}
+
+/* ========== Foco de casillas: borde verde que aparece con fade suave ========== */
+
+@keyframes foco-verde {
+  from {
+    outline-color: transparent;
+    box-shadow: 0 0 0 2px rgba(202, 235, 147, 0);
+  }
+  to {
+    outline-color: #caeb93;
+    box-shadow: 0 0 3px 2px rgba(202, 235, 147, 0.5);
+  }
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+input:focus,
+select:focus,
+textarea:focus {
+  animation: foco-verde 0.4s ease-out forwards;
+}

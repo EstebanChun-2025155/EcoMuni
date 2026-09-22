@@ -1,0 +1,41 @@
+<div class="bg-blur" aria-hidden="true"></div>
+<app-navbar></app-navbar>
+
+<main class="main-content">
+  <section class="header-section">
+    <h1 class="page-title">Categorías</h1>
+    <p class="page-description">Categorías activas disponibles al crear reportes.</p>
+  </section>
+
+  @if (error()) {
+    <div class="notice" role="alert">
+      <p>{{ error() }}</p>
+      <button type="button" (click)="recargar()">Reintentar</button>
+    </div>
+  }
+  @if (cargando()) {
+    <p role="status">Cargando…</p>
+  }
+
+  <div class="cards-grid" [attr.aria-busy]="cargando()">
+    @for (item of datos().items; track item.idCategoria) {
+      <article class="custom-card">
+        <div class="card-info">
+          <h3>{{ item.categoria }}</h3>
+          <p>{{ item.descripcion || 'Sin descripción.' }}</p>
+          <p>{{ item.total }} reportes en los departamentos habilitados</p>
+        </div>
+      </article>
+    } @empty {
+      @if (!cargando() && !error()) {
+        <p>No hay registros disponibles.</p>
+      }
+    }
+  </div>
+
+  <nav class="pagination" aria-label="Paginación">
+    <button type="button" [disabled]="cargando() || datos().pagina <= 1" (click)="cambiarPagina(-1)">Anterior</button>
+    <span>Página {{ datos().pagina }} de {{ paginas }}</span>
+    <button type="button" [disabled]="cargando() || datos().pagina >= paginas" (click)="cambiarPagina(1)">Siguiente</button>
+  </nav>
+</main>
