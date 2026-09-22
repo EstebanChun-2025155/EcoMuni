@@ -166,6 +166,21 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'reportes',
+    loadComponent: () => import('./Components/reports/reports').then(m => m.ReportsComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'categorias',
+    loadComponent: () => import('./Components/categories/categories').then(m => m.CategoriesComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'evidencias',
+    loadComponent: () => import('./Components/evidences/evidences').then(m => m.EvidencesComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'departamentos/:slug',
     redirectTo: '/departamentos',
     pathMatch: 'full'
