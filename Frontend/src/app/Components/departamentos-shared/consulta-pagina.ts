@@ -17,7 +17,7 @@ export abstract class ConsultaPagina<T> {
   readonly cargando = signal(false);
   readonly error = signal('');
 
-  constructor(recurso: 'reportes' | 'categorias' | 'evidencias' | 'ubicaciones') {
+  constructor(recurso: 'categorias' | 'evidencias' | 'ubicaciones') {
     this.paginasSolicitadas.pipe(
       switchMap(pagina => {
         this.cargando.set(true);

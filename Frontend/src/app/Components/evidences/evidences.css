@@ -89,18 +89,6 @@
   padding: 0 5px;
 }
 
-.loc-name {
-  color: #ffffff;
-  font-size: 1.1rem;
-  font-weight: bold;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-}
-
-.evidence-date {
-  color: #e2e8f0;
-  font-size: 0.9nd;
-  font-size: 0.9rem;
-}
 .evidence-image {
   width: 100%;
   max-height: 200px;

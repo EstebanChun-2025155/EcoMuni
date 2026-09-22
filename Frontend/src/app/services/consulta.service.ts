@@ -8,7 +8,7 @@ export class ConsultaService {
   private readonly api = 'http://localhost:3000/api/consulta/';
   private readonly opciones = { withCredentials: true };
 
-  listar<T>(recurso: 'reportes' | 'categorias' | 'evidencias' | 'ubicaciones', pagina: number) {
+  listar<T>(recurso: 'categorias' | 'evidencias' | 'ubicaciones', pagina: number) {
     return this.http.get<Pagina<T>>(this.api + recurso, { ...this.opciones, params: { pagina } });
   }
 }
