@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
-import { AuthService } from '../../Service/auth.service';
+import { AuthService } from '../../services/auth.service';
 
 interface Departamento {
     slug: string;

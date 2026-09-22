@@ -5,6 +5,12 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "strict": true,
-    "types": ["node"]
-  }
+    "esModuleInterop": true,
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }

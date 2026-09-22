@@ -42,7 +42,7 @@
         <button
           type="button"
           class="card-image-wrapper"
-          (click)="onNavigate('/' + departamento.slug)"
+          (click)="onNavigate('/departamentos/' + departamento.slug)"
           [attr.aria-label]="'Ver ' + departamento.nombre">
           <span class="card-number">{{ i + 1 }}</span>
           <span class="image-placeholder">

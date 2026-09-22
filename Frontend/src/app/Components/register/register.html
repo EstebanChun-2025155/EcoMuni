@@ -1,0 +1,81 @@
+<div class="bg-blur" aria-hidden="true"></div>
+
+<main class="card-container">
+    <section class="form-side" aria-labelledby="titulo-registro">
+        <h1 id="titulo-registro">Crear cuenta</h1>
+        <p class="descripcion">Únete a EcoMuni como ciudadano.</p>
+
+        @if (registrado()) {
+            <p class="mensaje-exito" role="status">
+                Cuenta creada correctamente. Ya puedes iniciar sesión.
+            </p>
+            <a class="enlace" routerLink="/login">Ir al login</a>
+        } @else {
+            <form #formulario="ngForm" (ngSubmit)="registrar(formulario)"
+                [attr.aria-busy]="cargando()">
+
+                <fieldset [disabled]="cargando()">
+                    <legend class="sr-only">Datos de registro</legend>
+
+                    <div class="input-group">
+                        <label for="nombres">Nombres</label>
+                        <input id="nombres" name="nombres" type="text"
+                            [(ngModel)]="datos.nombres" required maxlength="60"
+                            autocomplete="given-name" />
+                    </div>
+
+                    <div class="input-group">
+                        <label for="apellidos">Apellidos</label>
+                        <input id="apellidos" name="apellidos" type="text"
+                            [(ngModel)]="datos.apellidos" required maxlength="60"
+                            autocomplete="family-name" />
+                    </div>
+
+                    <div class="input-group">
+                        <label for="correo">Correo electrónico</label>
+                        <input id="correo" name="correo" type="email"
+                            [(ngModel)]="datos.correo" required email maxlength="120"
+                            autocomplete="email" />
+                    </div>
+
+                    <div class="input-group">
+                        <label for="telefono">Teléfono — opcional</label>
+                        <input id="telefono" name="telefono" type="tel"
+                            [(ngModel)]="datos.telefono" maxlength="20"
+                            pattern="[0-9]+" autocomplete="tel" />
+                    </div>
+
+                    <div class="input-group">
+                        <label for="contrasena">Contraseña</label>
+                        <input id="contrasena" name="contrasena" type="password"
+                            [(ngModel)]="datos.contrasena" required minlength="8"
+                            autocomplete="new-password" aria-describedby="ayuda-clave" />
+                        <small id="ayuda-clave">
+                            Mínimo 8 caracteres: mayúscula, minúscula, número
+                            y un símbolo como ! o @.
+                        </small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="confirmarContrasena">Confirmar contraseña</label>
+                        <input id="confirmarContrasena" name="confirmarContrasena"
+                            type="password" [(ngModel)]="datos.confirmarContrasena"
+                            required autocomplete="new-password" />
+                    </div>
+                </fieldset>
+
+                @if (error()) {
+                    <p class="mensaje-error" role="alert">{{ error() }}</p>
+                }
+
+                <button class="submit-btn" type="submit" [disabled]="cargando()">
+                    {{ cargando() ? 'Creando cuenta…' : 'Registrarse' }}
+                </button>
+            </form>
+
+            <a class="enlace" routerLink="/login">Ya tengo cuenta. Iniciar sesión</a>
+        }
+    </section>
+
+    <div class="image-side" aria-hidden="true"></div>
+</main>

@@ -1,16 +1,18 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import campanaRoutes from './routes/campana.routes';
+import "dotenv/config";
+import { pool, probarConexion } from "./config/database";
+import { iniciarServidor } from "./server/server";
+import { prepararCatalogos } from "./service/catalogoService";
 
-dotenv.config();
+async function main(): Promise<void> {
+    try {
+        await probarConexion();
+        await prepararCatalogos();
+        iniciarServidor();
+    } catch (error) {
+        console.error("No se pudo iniciar EcoMuni:", error);
+        await pool.end();
+        process.exitCode = 1;
+    }
+}
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
-
-app.use('/api/campanas', campanaRoutes);
-
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor EcoMuni corriendo en http://localhost:${PORT}`);
-});
+void main();

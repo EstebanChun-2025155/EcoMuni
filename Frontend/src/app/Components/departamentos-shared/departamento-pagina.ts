@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, EMPTY, Observable, Subject, catchError, finalize, startWith, switchMap } from 'rxjs';
-import { AuthService } from '../../Service/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { DepartamentoService } from '../../services/departamento.service';
 import type { DetalleReporte, FiltrosReporte, NuevoPunto, NuevoReporte, PanelDepartamento, PortadaDepartamento, Reporte } from '../../models/departamento';
 
