@@ -189,3 +189,25 @@ input[type='file']::file-selector-button:hover {
   background: #17513e;
   transform: translateY(-2px);
 }
+
+/* ========== Foco de casillas: borde verde que aparece con fade suave ========== */
+
+@keyframes foco-verde {
+  from {
+    outline-color: transparent;
+    box-shadow: 0 0 0 2px rgba(202, 235, 147, 0);
+  }
+  to {
+    outline-color: #caeb93;
+    box-shadow: 0 0 3px 2px rgba(202, 235, 147, 0.5);
+  }
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+input:focus,
+select:focus,
+textarea:focus {
+  animation: foco-verde 0.4s ease-out forwards;
+}
