@@ -10,7 +10,7 @@
     </div>
   </section>
   @if (error()) { <div class="notice notice-error" role="alert"><p>{{ error() }}</p><button class="secondary-btn" type="button" [disabled]="guardando()" (click)="recargar()">Recargar datos</button></div> }
-  @if (mensaje()) { <p class="notice" role="status">{{ mensaje() }}</p> }
+  <div class="notificacion exito" [class.mostrar]="!!mensaje()" role="status">{{ mensaje() }}</div>
   <section id="reportes" class="workspace">
     <div class="reports-panel" [attr.aria-busy]="cargando()">
       <div class="section-heading"><div><p class="section-kicker">Participación ciudadana</p><h2>Reportes ambientales</h2><p>Consulta incidencias ambientales en {{ departamento.nombre }}.</p></div><button class="primary-btn" type="button" [disabled]="cargando() || guardando() || !panel()" (click)="abrirNuevoReporte()">+ Nuevo reporte</button></div>
@@ -116,7 +116,7 @@
   <div class="modal-backdrop" (click)="cerrarNuevoReporte()" (keydown.escape)="cerrarNuevoReporte()">
     <section class="new-report-modal" role="dialog" aria-modal="true" aria-labelledby="titulo-nuevo" (click)="$event.stopPropagation()">
       <div class="modal-header"><div><p class="section-kicker">Reporte ambiental</p><h2 id="titulo-nuevo">Nuevo reporte en {{ departamento.nombre }}</h2></div><button class="close-detail" type="button" aria-label="Cerrar formulario" [disabled]="guardando()" (click)="cerrarNuevoReporte()">×</button></div>
-      @if (error()) { <p class="notice notice-error" role="alert">{{ error() }}</p> }
+      <div class="notificacion" [class.mostrar]="!!error()" role="alert">{{ error() }}</div>
       <form #reporteForm="ngForm" (ngSubmit)="registrarReporte()"><fieldset class="form-grid" [disabled]="guardando()">
         <label class="full-field"><span>Título</span><input name="titulo" required maxlength="100" [(ngModel)]="nuevoReporte.titulo" placeholder="Ej. Acumulación de basura"></label>
         <label><span>Categoría</span><select name="categoria" required [(ngModel)]="nuevoReporte.idCategoria"><option [ngValue]="null">Selecciona una categoría</option>@for (categoria of panel()?.categorias ?? []; track categoria.idCategoria) { <option [ngValue]="categoria.idCategoria">{{ categoria.categoria }}</option> }</select></label>

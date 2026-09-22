@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
@@ -20,22 +20,55 @@ export class LoginComponent {
   contrasena = '';
 
   readonly cargando = signal(false);
-  readonly error = signal('');
+  readonly notificacion = signal('');
+  readonly notificacionExito = signal(false);
+  readonly notificacionVisible = signal(false);
+
+  private temporizador?: ReturnType<typeof setTimeout>;
+
+  constructor() {
+    const estado = this.router.getCurrentNavigation()?.extras.state;
+    if (estado?.['registro'] === 'exitoso') {
+      this.notificar('Cuenta creada correctamente.', true);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.temporizador) clearTimeout(this.temporizador);
+  }
+
+  private notificar(texto: string, exito = false): void {
+    this.notificacion.set(texto);
+    this.notificacionExito.set(exito);
+    this.notificacionVisible.set(true);
+    if (this.temporizador) clearTimeout(this.temporizador);
+    this.temporizador = setTimeout(() => this.notificacionVisible.set(false), 4000);
+  }
 
   ingresar(formulario: NgForm): void {
     if (this.cargando()) return;
 
-    this.error.set('');
-
     if (formulario.invalid) {
       formulario.control.markAllAsTouched();
-      this.error.set('Ingresa un correo válido y tu contraseña.');
+    }
+
+    const correo = this.correo.trim();
+    if (!correo || !this.contrasena) {
+      this.notificar('Completa correctamente los campos obligatorios.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      this.notificar('Correo inválido.');
+      return;
+    }
+    if (formulario.invalid) {
+      this.notificar('Completa correctamente los campos obligatorios.');
       return;
     }
 
     this.cargando.set(true);
 
-    this.auth.login(this.correo.trim(), this.contrasena)
+    this.auth.login(correo, this.contrasena)
       .pipe(finalize(() => this.cargando.set(false)))
       .subscribe({
         next: () => {
@@ -50,7 +83,7 @@ export class LoginComponent {
               ? 'No se pudo conectar con el servidor.'
               : respuesta.error?.mensaje;
 
-          this.error.set(
+          this.notificar(
             typeof mensaje === 'string'
               ? mensaje
               : 'No fue posible iniciar sesión. Inténtalo nuevamente.'

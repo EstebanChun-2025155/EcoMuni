@@ -2,7 +2,7 @@ import { DestroyRef, Directive, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, EMPTY, Observable, Subject, catchError, finalize, startWith, switchMap } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, Subject, catchError, finalize, startWith, switchMap, timer } from 'rxjs';
 import { DepartamentoService } from '../../services/departamento.service';
 import type { DetalleReporte, FiltrosReporte, NuevoPunto, NuevoReporte, PanelDepartamento, PortadaDepartamento, Reporte } from '../../models/departamento';
 
@@ -210,6 +210,7 @@ export abstract class DepartamentoPagina {
       next: resultado => {
         alGuardar(resultado);
         this.mensaje.set(mensaje);
+        timer(5000).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.mensaje.set(''));
         this.recargas.next();
       },
       error: error => this.informarError(error)

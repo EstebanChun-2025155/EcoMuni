@@ -27,13 +27,6 @@ small {
     outline-offset: 4px;
 }
 
-.mensaje-exito {
-    padding: 16px;
-    border-radius: 10px;
-    background: #e7f5df;
-    color: #214b26;
-}
-
 .sr-only {
     position: absolute;
     width: 1px;
@@ -43,3 +36,4 @@ small {
     clip-path: inset(50%);
     white-space: nowrap;
 }
+

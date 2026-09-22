@@ -7,7 +7,7 @@
     <div class="hero-note"><span aria-hidden="true">♻</span><strong>Una comunidad.<br>Muchas formas de ayudar.</strong><p>Consulta jornadas, actividades y proyectos de todos los departamentos.</p></div>
   </section>
 
-  @if (mensaje()) { <p class="notice" role="status">{{ mensaje() }}</p> }
+  <div class="notificacion exito" [class.mostrar]="!!mensaje()" role="status">{{ mensaje() }}</div>
   @if (error() && !mostrarFormulario()) { <div class="notice notice-error" role="alert"><p>{{ error() }}</p><button class="secondary-btn" type="button" (click)="recargar()">Reintentar</button></div> }
 
   <section class="campaign-section" aria-labelledby="titulo-listado" [attr.aria-busy]="cargando()">
@@ -61,7 +61,7 @@
   <div class="modal-backdrop" (click)="cerrarFormulario()" (keydown.escape)="cerrarFormulario()">
     <section class="campaign-modal" role="dialog" aria-modal="true" aria-labelledby="titulo-formulario" (click)="$event.stopPropagation()">
       <div class="modal-header"><div><p class="eyebrow">Gestión de campañas</p><h2 id="titulo-formulario">{{ editando === null ? 'Nueva campaña' : 'Editar campaña' }}</h2></div><button class="close-btn" type="button" aria-label="Cerrar formulario" [disabled]="guardando()" (click)="cerrarFormulario()">×</button></div>
-      @if (error()) { <p class="notice notice-error" role="alert">{{ error() }}</p> }
+      <div class="notificacion" [class.mostrar]="!!error()" role="alert">{{ error() }}</div>
       <form #campanaForm="ngForm" (ngSubmit)="guardar()">
         <fieldset class="form-grid" [disabled]="guardando()">
           <label class="full-field"><span>Título</span><input name="titulo" required maxlength="100" [(ngModel)]="formulario.titulo"></label>

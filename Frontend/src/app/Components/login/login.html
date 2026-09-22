@@ -1,9 +1,12 @@
 <div class="bg-blur" aria-hidden="true"></div>
 
+<div class="notificacion" [class.mostrar]="notificacionVisible()" [class.exito]="notificacionExito()" role="alert" aria-live="assertive">
+  {{ notificacion() }}
+</div>
+
 <main class="card-container">
   <section class="form-side" aria-labelledby="titulo-login">
-    <h1 id="titulo-login">Iniciar sesión</h1>
-    <p class="descripcion">Bienvenido a EcoMuni</p>
+    <h1 id="titulo-login">Bienvenido a EcoMuni</h1>
 
     <form
       #formulario="ngForm"
@@ -40,10 +43,6 @@
         />
       </div>
 
-      @if (error()) {
-        <p class="mensaje-error" role="alert">{{ error() }}</p>
-      }
-
       <button
         class="submit-btn"
         type="submit"
@@ -52,10 +51,9 @@
         {{ cargando() ? 'Verificando…' : 'Ingresar' }}
       </button>
     </form>
-    <a class="registro-link" routerLink="/register">
-      ¿No tienes cuenta? Regístrate
-    </a>
   </section>
 
   <div class="image-side" aria-hidden="true"></div>
 </main>
+
+<a class="btn-inferior" routerLink="/register">¿No tienes cuenta? Regístrate</a>

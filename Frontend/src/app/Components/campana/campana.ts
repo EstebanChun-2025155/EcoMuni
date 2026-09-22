@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, EMPTY, catchError, finalize, startWith, switchMap } from 'rxjs';
+import { Subject, EMPTY, catchError, finalize, startWith, switchMap, timer } from 'rxjs';
 import { CampanaService } from '../../services/campana.service';
 import type { CampanaRegistro, DatosCampana, EstadoCampana, FiltrosCampana, PanelCampanas, UbicacionCampana } from '../../models/campana';
 
@@ -111,6 +111,7 @@ export class Campana {
         this.editando = null;
         this.conUbicacion = false;
         this.mensaje.set('Campaña guardada correctamente.');
+        timer(5000).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.mensaje.set(''));
         this.filtros = { pagina: 1, busqueda: '', estado: '' };
         this.recargas.next();
       },

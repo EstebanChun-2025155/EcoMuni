@@ -12,7 +12,7 @@
 .card-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  width: min(850px, 100%);
+  width: min(920px, 100%);
   min-height: 470px;
   background: #437059;
   border-radius: 25px;
@@ -29,7 +29,7 @@
 }
 
 h1 {
-  margin: 0;
+  margin: 0 0 26px;
   font-size: clamp(1.8rem, 4vw, 2.5rem);
 }
 
@@ -54,8 +54,8 @@ label {
 input {
   width: 100%;
   border: 1px solid transparent;
-  border-radius: 12px;
-  padding: 14px 16px;
+  border-radius: 999px;
+  padding: 14px 22px;
   background: #f1f3f0;
   color: #17291e;
 }
@@ -68,7 +68,7 @@ button:focus-visible {
 
 .submit-btn {
   border: 0;
-  border-radius: 12px;
+  border-radius: 999px;
   padding: 14px;
   background: #cde69c;
   color: #243b1c;
@@ -83,14 +83,6 @@ button:focus-visible {
 .submit-btn:disabled {
   opacity: 0.65;
   cursor: wait;
-}
-
-.mensaje-error {
-  margin: 0;
-  padding: 12px;
-  border-radius: 8px;
-  background: #fff0ee;
-  color: #8b2020;
 }
 
 .image-side {
@@ -112,13 +104,29 @@ button:focus-visible {
   }
 }
 
-.registro-link {
-    margin-top: 20px;
-    color: white;
-    text-align: center;
+.btn-inferior {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 14px 32px;
+  border-radius: 999px;
+  background: #cde69c;
+  color: #243b1c;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  z-index: 50;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.registro-link:focus-visible {
-    outline: 3px solid #cde69c;
-    outline-offset: 4px;
+.btn-inferior:hover {
+  background: #bad687;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.btn-inferior:focus-visible {
+  outline: 3px solid #cde69c;
+  outline-offset: 4px;
 }

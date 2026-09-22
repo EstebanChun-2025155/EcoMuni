@@ -21,15 +21,6 @@ button:focus-visible {
     outline-offset: 4px;
 }
 
-.mensaje-error {
-    flex-basis: 100%;
-    margin: 0;
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: #fff0ee;
-    color: #8b2020;
-}
-
 .departments-content {
     width: min(1100px, 92%);
     margin: 0 auto;
