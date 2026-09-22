@@ -1,0 +1,61 @@
+<div class="bg-blur" aria-hidden="true"></div>
+
+<main class="card-container">
+  <section class="form-side" aria-labelledby="titulo-login">
+    <h1 id="titulo-login">Iniciar sesión</h1>
+    <p class="descripcion">Bienvenido a EcoMuni</p>
+
+    <form
+      #formulario="ngForm"
+      (ngSubmit)="ingresar(formulario)"
+      [attr.aria-busy]="cargando()"
+    >
+      <div class="input-group">
+        <label for="correo">Correo electrónico</label>
+        <input
+          id="correo"
+          name="correo"
+          type="email"
+          autocomplete="username"
+          placeholder="nombre@correo.com"
+          [(ngModel)]="correo"
+          required
+          email
+          maxlength="120"
+          [disabled]="cargando()"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="contrasena">Contraseña</label>
+        <input
+          id="contrasena"
+          name="contrasena"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Tu contraseña"
+          [(ngModel)]="contrasena"
+          required
+          [disabled]="cargando()"
+        />
+      </div>
+
+      @if (error()) {
+        <p class="mensaje-error" role="alert">{{ error() }}</p>
+      }
+
+      <button
+        class="submit-btn"
+        type="submit"
+        [disabled]="cargando()"
+      >
+        {{ cargando() ? 'Verificando…' : 'Ingresar' }}
+      </button>
+    </form>
+    <a class="registro-link" routerLink="/register">
+      ¿No tienes cuenta? Regístrate
+    </a>
+  </section>
+
+  <div class="image-side" aria-hidden="true"></div>
+</main>

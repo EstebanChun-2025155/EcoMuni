@@ -68,3 +68,11 @@ export async function describirEvidencia(departamento: string, idReporte: number
         return result.rows[0];
     });
 }
+
+export async function retirarArchivoEvidencia(url: string): Promise<void> {
+    const nombre = url.startsWith("/api/archivos/") ? url.slice("/api/archivos/".length) : "";
+    if (!/^[0-9a-f-]+\.(png|jpg|webp)$/i.test(nombre)) return;
+    await unlink(path.join(carpetaEvidencias, nombre)).catch(error => {
+        if (error?.code !== "ENOENT") console.error("No fue posible retirar un archivo de evidencia.");
+    });
+}

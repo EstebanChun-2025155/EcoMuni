@@ -7,6 +7,11 @@ import authRouter from "../router/authRouter";
 import departamentoRouter from "../router/departamentoRouter";
 import campanaRouter from "../router/campanaRouter";
 import estadoReporteRouter from "../router/estadoReporte.routes";
+import categoriaRouter from "../router/categoriaRouter";
+import reporteRouter from "../router/reporteRouter";
+import evidenciaRouter from "../router/evidenciaRouter";
+import consultaRouter from "../router/consultaRouter";
+import { pool } from "../config/database";
 import { middlewareSesion } from "../config/sesion";
 import { exigirSesion, exigirGestion, exigirAdmin } from "../middleware/autorizacion";
 import { carpetaEvidencias } from "../service/evidenciaService";
@@ -35,7 +40,15 @@ servidor.use("/api/auth",authRouter);
 servidor.use("/api/departamentos",departamentoRouter);
 servidor.use("/api/campanas",campanaRouter);
 servidor.use("/api/estados",estadoReporteRouter);
-servidor.use("/api/archivos",exigirSesion,express.static(carpetaEvidencias,{
+servidor.use("/api/categorias",categoriaRouter);
+servidor.use("/api/reportes",reporteRouter);
+servidor.use("/api/evidencias",evidenciaRouter);
+servidor.use("/api/consulta",exigirSesion,consultaRouter);
+servidor.use("/api/archivos",exigirSesion,async(req,res,next)=>{
+    const existe=await pool.query("SELECT id_evidencia FROM evidencia WHERE url_imagen=$1 LIMIT 1",["/api/archivos"+req.path]);
+    if(!existe.rows.length){res.status(404).json({mensaje:"Archivo no encontrado."});return;}
+    next();
+},express.static(carpetaEvidencias,{
     index:false,dotfiles:"deny",fallthrough:false,
     setHeaders: res => res.setHeader("Cache-Control","private, max-age=3600")
 }));

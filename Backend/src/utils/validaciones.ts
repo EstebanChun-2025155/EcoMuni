@@ -126,3 +126,36 @@ export function validarUsuario(
 
     return errores;
 }
+
+export function validarCategoria(
+    nombre?: unknown,
+    descripcion?: unknown,
+    estado?: unknown
+): string[] {
+
+    const errores: string[] = [];
+    const nombresValidos = [
+        "basurero clandestino",
+        "acumulacion de basura",
+        "quema de residuos",
+        "contaminacion de area publica",
+        "desechos peligrosos",
+        "otro"
+    ];
+
+    if (typeof nombre !== "string" || !nombresValidos.includes(nombre.trim())) {
+        errores.push("Categoría inválida.");
+    }
+
+    if (descripcion !== null && descripcion !== undefined) {
+        if (typeof descripcion !== "string" || descripcion.trim().length > 200 || descripcion.includes("\0")) {
+            errores.push("Descripción inválida; admite hasta 200 caracteres.");
+        }
+    }
+
+    if (estado !== "activa" && estado !== "inactiva") {
+        errores.push("Estado de categoría inválido.");
+    }
+
+    return errores;
+}

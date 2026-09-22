@@ -1,6 +1,6 @@
 import { ApiError } from "../utils/apiError";
 
-const departamentos = new Map([
+export const departamentos = new Map([
     ["alta-verapaz", "Alta Verapaz"],
     ["baja-verapaz", "Baja Verapaz"],
     ["chimaltenango", "Chimaltenango"],
