@@ -22,7 +22,7 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    component: DepartamentosComponent,
+    loadComponent: () => import('./Components/home/Home').then(m => m.HomeComponent),
     canActivate: [authGuard]
   },
   {
