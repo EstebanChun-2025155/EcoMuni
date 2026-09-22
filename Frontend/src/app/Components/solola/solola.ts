@@ -17,7 +17,7 @@ export class Solola extends DepartamentoPagina {
       nombre: 'Sololá',
       cabecera: 'Sololá',
       municipios: 19,
-      imagen: '/solola.jpg',
+      imagen: '/Solola.jpg',
       frase: 'El lago de Atitlán y sus ecosistemas dependen del compromiso de cada ciudadano.'
     });
   }

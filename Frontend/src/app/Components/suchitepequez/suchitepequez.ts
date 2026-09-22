@@ -17,7 +17,7 @@ export class Suchitepequez extends DepartamentoPagina {
       nombre: 'Suchitepéquez',
       cabecera: 'Mazatenango',
       municipios: 21,
-      imagen: '/suchitepequez.jpg',
+      imagen: '/Suchitepequez.jpg',
       frase: 'La conservación de nuestros recursos naturales impulsa el desarrollo sostenible.'
     });
   }

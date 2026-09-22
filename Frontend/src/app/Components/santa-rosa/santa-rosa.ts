@@ -17,7 +17,7 @@ export class SantaRosa extends DepartamentoPagina {
       nombre: 'Santa Rosa',
       cabecera: 'Cuilapa',
       municipios: 14,
-      imagen: '/santa-rosa.jpg',
+      imagen: '/Santa-Rosa.jpg',
       frase: 'Cuidar nuestros bosques, ríos y playas es responsabilidad de todos.'
     });
   }

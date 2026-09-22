@@ -17,7 +17,7 @@ export class ChiquimulaComponent extends DepartamentoPagina {
       "nombre": "Chiquimula",
       "cabecera": "Chiquimula",
       "municipios": 7,
-      "imagen": "/Chiquimula.png",
+      "imagen": "/Chiquimula.jpg",
       "frase": "Tradición, naturaleza y comunidades comprometidas con un futuro más verde."
     });
   }

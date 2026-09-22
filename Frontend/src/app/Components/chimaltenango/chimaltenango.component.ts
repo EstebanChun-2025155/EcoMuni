@@ -17,7 +17,7 @@ export class ChimaltenangoComponent extends DepartamentoPagina {
       "nombre": "Chimaltenango",
       "cabecera": "Chimaltenango",
       "municipios": 7,
-      "imagen": "/Chimaltenango.png",
+      "imagen": "/Chimaltenango.jpg",
       "frase": "Tradición, naturaleza y comunidades comprometidas con un futuro más verde."
     });
   }

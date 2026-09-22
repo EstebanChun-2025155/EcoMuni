@@ -17,7 +17,7 @@ export class ElProgresoComponent extends DepartamentoPagina {
       "nombre": "El Progreso",
       "cabecera": "El Progreso",
       "municipios": 7,
-      "imagen": "/El-Progreso.png",
+      "imagen": "/El-Progreso.jpg",
       "frase": "Tradición, naturaleza y comunidades comprometidas con un futuro más verde."
     });
   }

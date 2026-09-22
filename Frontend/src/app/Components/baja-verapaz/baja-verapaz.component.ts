@@ -17,7 +17,7 @@ export class BajaVerapazComponent extends DepartamentoPagina {
       "nombre": "Baja Verapaz",
       "cabecera": "Baja Verapaz",
       "municipios": 7,
-      "imagen": "/Baja-Verapaz.png",
+      "imagen": "/Baja-Verapaz.jpg",
       "frase": "Tradición, naturaleza y comunidades comprometidas con un futuro más verde."
     });
   }

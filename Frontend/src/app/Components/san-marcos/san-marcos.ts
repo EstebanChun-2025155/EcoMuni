@@ -17,7 +17,7 @@ export class SanMarcos extends DepartamentoPagina {
       nombre: 'San Marcos',
       cabecera: 'San Marcos',
       municipios: 30,
-      imagen: '/san-marcos.jpg',
+      imagen: '/San-Marcos-La-Laguna.png',
       frase: 'Desde los volcanes hasta la costa, proteger el ambiente fortalece el futuro de nuestras comunidades.'
     });
   }

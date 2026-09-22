@@ -17,7 +17,7 @@ export class Zacapa extends DepartamentoPagina {
       nombre: 'Zacapa',
       cabecera: 'Zacapa',
       municipios: 11,
-      imagen: '/zacapa.jpg',
+      imagen: '/Zacapa.jpg',
       frase: 'El uso responsable del agua y la protección de los ecosistemas benefician a toda la región.'
     });
   }

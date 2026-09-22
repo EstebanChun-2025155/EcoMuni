@@ -17,7 +17,7 @@ export class Totonicapan extends DepartamentoPagina {
       nombre: 'Totonicapán',
       cabecera: 'Totonicapán',
       municipios: 8,
-      imagen: '/totonicapan.jpg',
+      imagen: '/Totonicapan.jpg',
       frase: 'Los bosques comunales son un ejemplo de conservación y trabajo conjunto.'
     });
   }
