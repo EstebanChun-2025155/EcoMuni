@@ -63,9 +63,11 @@
     }
   </div>
 
-  <div class="scroll-container" (click)="onScrollDown()">
-    <span class="scroll-text">Scroll</span>
-    <div class="scroll-icon">&#8595;</div>
-  </div>
+  @if (hayScroll()) {
+    <div class="scroll-container" (click)="onScrollDown()">
+      <span class="scroll-text">Scroll</span>
+      <div class="scroll-icon">&#8595;</div>
+    </div>
+  }
 
 </main>

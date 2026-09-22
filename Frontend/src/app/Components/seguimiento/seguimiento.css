@@ -112,24 +112,39 @@
 }
 
 .scroll-container {
-  width: 100px;
+  width: fit-content;
   margin: 45px auto 0;
-
   display: flex;
-  flex-direction: column;
   align-items: center;
-
-  color: white;
+  gap: 10px;
+  background-color: #ffffff;
+  padding: 6px 18px;
+  border-radius: 30px;
   cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.5s ease;
+}
+
+.scroll-container:hover {
+  transform: scale(1.05);
 }
 
 .scroll-text {
-  font-size: 13px;
-  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #112a18;
 }
 
 .scroll-icon {
-  font-size: 24px;
+  background-color: #000000;
+  color: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
 }
 .notice {
   padding: 1rem;
