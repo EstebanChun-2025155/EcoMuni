@@ -29,10 +29,10 @@ export class DepartamentosComponent {
 
     readonly departamentos: readonly Departamento[] = [
         { slug: 'alta-verapaz', nombre: 'Alta Verapaz', imagen: '/Alta-Verapaz.png' },
-        { slug: 'baja-verapaz', nombre: 'Baja Verapaz' },
-        { slug: 'chimaltenango', nombre: 'Chimaltenango' },
-        { slug: 'chiquimula', nombre: 'Chiquimula' },
-        { slug: 'el-progreso', nombre: 'El Progreso' },
+        { slug: 'baja-verapaz', nombre: 'Baja Verapaz', imagen: '/Baja-Verapaz.jpg' },
+        { slug: 'chimaltenango', nombre: 'Chimaltenango', imagen: '/Chimaltenango.jpg' },
+        { slug: 'chiquimula', nombre: 'Chiquimula', imagen: '/Chiquimula.jpg' },
+        { slug: 'el-progreso', nombre: 'El Progreso', imagen: '/El-Progreso.jpg' },
         { slug: 'escuintla', nombre: 'Escuintla', imagen: '/Escuintla.png' },
         { slug: 'guatemala', nombre: 'Guatemala', imagen: '/Capital.jpg' },
         { slug: 'huehuetenango', nombre: 'Huehuetenango', imagen: '/Huehuetenango.png' },
@@ -45,11 +45,11 @@ export class DepartamentosComponent {
         { slug: 'retalhuleu', nombre: 'Retalhuleu', imagen: '/Retalhuleu.jpg' },
         { slug: 'sacatepequez', nombre: 'Sacatepéquez', imagen: '/Sacatepeques.jpg' },
         { slug: 'san-marcos', nombre: 'San Marcos', imagen: '/San-Marcos-La-Laguna.png' },
-        { slug: 'santa-rosa', nombre: 'Santa Rosa' },
-        { slug: 'solola', nombre: 'Sololá' },
-        { slug: 'suchitepequez', nombre: 'Suchitepéquez' },
-        { slug: 'totonicapan', nombre: 'Totonicapán' },
-        { slug: 'zacapa', nombre: 'Zacapa' }
+        { slug: 'santa-rosa', nombre: 'Santa Rosa', imagen: '/Santa-Rosa.jpg' },
+        { slug: 'solola', nombre: 'Sololá', imagen: '/Solola.jpg' },
+        { slug: 'suchitepequez', nombre: 'Suchitepéquez', imagen: '/Suchitepequez.jpg' },
+        { slug: 'totonicapan', nombre: 'Totonicapán', imagen: '/Totonicapan.jpg' },
+        { slug: 'zacapa', nombre: 'Zacapa', imagen: '/Zacapa.jpg' }
     ];
 
     onNavigate(path: string): void {
