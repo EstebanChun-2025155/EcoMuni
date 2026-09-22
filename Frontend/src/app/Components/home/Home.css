@@ -10,19 +10,10 @@
   min-height: 0;
   color: #fff;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
-.bg-blur {
-  position: fixed;
-    inset: -8px;
-    z-index: -1;
-    pointer-events: none;
-    background:
-        linear-gradient(#123e3155, #10392ecc),
-        url('/bosque.png') center / cover no-repeat;
-    filter: blur(4px);
-}
+
 
 /* Contenido Principal (Hero Text y Scroll) */
 .hero-content {
@@ -87,10 +78,30 @@
   font-size: 0.8rem;
 }
 
-.bg-blur {
-  inset: -8px;
-  background:
-    linear-gradient(#123e3155, #10392ecc),
-    url('/bosque.png') center / cover no-repeat;
-  filter: blur(4px);
+
+/* Footer con enlaces anidados: Acerca de · Ubicaciones · Ayuda */
+.home-footer {
+  padding: 30px 8% 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  background: rgba(10, 35, 24, 0.55);
+  backdrop-filter: blur(6px);
+}
+.home-footer .footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 26px;
+}
+.home-footer .footer-links a {
+  color: #e1efdf;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.home-footer .footer-links a:hover {
+  color: #caeb93;
+  text-decoration: underline;
 }

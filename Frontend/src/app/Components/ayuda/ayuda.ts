@@ -7,6 +7,7 @@ import { NavbarComponent } from '../navbar/navbar';
   standalone: true,
   imports: [NavbarComponent, RouterLink],
   template: `
+    <div class="bg-blur"></div>
     <app-navbar></app-navbar>
     <main class="pagina">
       <p class="eyebrow">EcoMuni</p>
@@ -16,7 +17,7 @@ import { NavbarComponent } from '../navbar/navbar';
          2. Entra a <em>Reportes</em> y elige tu departamento.<br>
          3. Crea un reporte describiendo el problema y adjunta evidencia.<br>
          4. Sigue el estado de tu reporte en <em>Seguimiento</em>.<br>
-         5. Revisa las iniciativas vigientes en <em>Campañas</em>.</p>
+         5. Revisa las iniciativas vigentes en <em>Campañas</em>.</p>
       <p>Si tienes dudas, contacta al administrador de tu municipio.</p>
       <a routerLink="/home">← Volver al inicio</a>
     </main>
@@ -28,7 +29,6 @@ import { NavbarComponent } from '../navbar/navbar';
       position: relative;
       color: #fff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(#123e3155, #10392ecc), url('/bosque.png') center / cover no-repeat fixed;
     }
     .pagina { max-width: 760px; margin: 0 auto; padding: 130px 24px 60px; }
     .eyebrow { color: #caeb93; font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 10px; }

@@ -35,10 +35,7 @@ export class NavbarComponent {
   readonly enlaces: readonly EnlaceNavbar[] = [
     { name: 'Campañas', path: '/campana' },
     { name: 'Seguimiento', path: '/seguimiento' },
-    { name: 'Reportes', path: '/departamentos' },
-    { name: 'Acerca de', path: '/acerca-de' },
-    { name: 'Ubicaciones', path: '/ubicaciones' },
-    { name: 'Ayuda', path: '/ayuda' }
+    { name: 'Reportes', path: '/departamentos' }
   ];
 
   cerrarSesion(): void {

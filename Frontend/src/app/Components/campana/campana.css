@@ -1,6 +1,6 @@
 :host { display:block; min-height:100dvh; position:relative; isolation:isolate; padding:22px 0 30px; color:#fff; }
 * { box-sizing:border-box; }
-.bg-blur { position:fixed; inset:-8px; z-index:-1; background:linear-gradient(#123e3155,#10392edd),url('/bosque.png') center/cover no-repeat; filter:blur(4px); }
+
 button,input,select,textarea { font:inherit; }
 button,a { -webkit-tap-highlight-color:transparent; }
 button { cursor:pointer; }

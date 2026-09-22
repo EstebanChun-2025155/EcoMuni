@@ -6,9 +6,18 @@
 <!-- Contenido Principal del Home -->
 <main class="hero-content">
   <h1 class="hero-title" [innerHTML]="heroTitle"></h1>
-  
+
   <div class="scroll-container" (click)="onScrollDown()">
     <span class="scroll-text">Scroll</span>
     <div class="scroll-icon">&#8595;</div>
   </div>
 </main>
+
+<!-- Enlaces anidados: vistas relacionadas con el inicio -->
+<footer class="home-footer">
+  <nav class="footer-links" aria-label="Información del sitio">
+    <a routerLink="/acerca-de">Acerca de</a>
+    <a routerLink="/ubicaciones">Ubicaciones</a>
+    <a routerLink="/ayuda">Ayuda</a>
+  </nav>
+</footer>

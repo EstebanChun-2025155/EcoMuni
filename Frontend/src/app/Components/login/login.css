@@ -7,15 +7,7 @@
   isolation: isolate;
 }
 
-.bg-blur {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(#10291f55, #10291f55),
-    url('/bosque.png') center / cover no-repeat;
-  filter: blur(4px);
-}
+
 
 .card-container {
   display: grid;

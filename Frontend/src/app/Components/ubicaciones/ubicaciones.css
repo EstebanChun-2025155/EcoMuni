@@ -5,17 +5,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.bg-blur {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: url('/fondo.png') no-repeat center center / cover;
-  filter: blur(4px);
-  transform: scale(1.05);
-  z-index: -1;
-}
+
 
 .header-section {
   text-align: center;

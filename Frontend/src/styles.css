@@ -15,6 +15,18 @@ body {
   background: #173e2d;
 }
 
+/* Fondo compartido por TODAS las vistas: idéntico estilo y posición (el de Home/Departamentos) */
+.bg-blur {
+  position: fixed;
+  inset: -8px;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(#123e3155, #10392ecc),
+    url('/bosque.png') center / cover no-repeat;
+  filter: blur(4px);
+}
+
 button,
 input {
   font: inherit;
