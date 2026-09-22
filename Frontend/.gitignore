@@ -5,6 +5,12 @@
 /tmp
 /out-tsc
 /bazel-out
+*.tsbuildinfo
+# Nunca compilar los fuentes a JS junto al .ts
+/src/**/*.js
+/src/**/*.js.map
+/src/**/*.d.ts
+!/src/**/*.ts
 
 # Node
 /node_modules
