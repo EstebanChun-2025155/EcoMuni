@@ -44,7 +44,7 @@ export class DepartamentosComponent {
         { slug: 'quiche', nombre: 'Quiché', imagen: '/Quiche.jpeg' },
         { slug: 'retalhuleu', nombre: 'Retalhuleu', imagen: '/Retalhuleu.jpg' },
         { slug: 'sacatepequez', nombre: 'Sacatepéquez', imagen: '/Sacatepeques.jpg' },
-        { slug: 'san-marcos', nombre: 'San Marcos' },
+        { slug: 'san-marcos', nombre: 'San Marcos', imagen: '/San-Marcos-La-Laguna.png' },
         { slug: 'santa-rosa', nombre: 'Santa Rosa' },
         { slug: 'solola', nombre: 'Sololá' },
         { slug: 'suchitepequez', nombre: 'Suchitepéquez' },
