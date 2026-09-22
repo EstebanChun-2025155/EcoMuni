@@ -6,6 +6,7 @@ import usuarioRouter from "../router/usuarioRouter";
 import authRouter from "../router/authRouter";
 import departamentoRouter from "../router/departamentoRouter";
 import campanaRouter from "../router/campanaRouter";
+import estadoReporteRouter from "../router/estadoReporte.routes";
 import { middlewareSesion } from "../config/sesion";
 import { exigirSesion, exigirGestion, exigirAdmin } from "../middleware/autorizacion";
 import { carpetaEvidencias } from "../service/evidenciaService";
@@ -33,6 +34,7 @@ servidor.use(middlewareSesion);
 servidor.use("/api/auth",authRouter);
 servidor.use("/api/departamentos",departamentoRouter);
 servidor.use("/api/campanas",campanaRouter);
+servidor.use("/api/estados",estadoReporteRouter);
 servidor.use("/api/archivos",exigirSesion,express.static(carpetaEvidencias,{
     index:false,dotfiles:"deny",fallthrough:false,
     setHeaders: res => res.setHeader("Cache-Control","private, max-age=3600")
