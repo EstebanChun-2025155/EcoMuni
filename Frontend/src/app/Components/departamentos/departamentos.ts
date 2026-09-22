@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar';
+import { AuthService } from '../../services/auth.service';
 
 interface Departamento {
     slug: string;
@@ -18,24 +19,31 @@ interface Departamento {
 })
 export class DepartamentosComponent {
     private readonly router = inject(Router);
+    private readonly auth = inject(AuthService);
+
+    /** Nombre real de la sesión activa (lo carga el authGuard). */
+    readonly nombreUsuario = computed(() => {
+        const usuario = this.auth.usuario();
+        return usuario ? `${usuario.nombres} ${usuario.apellidos}` : '';
+    });
 
     readonly departamentos: readonly Departamento[] = [
-        { slug: 'alta-verapaz', nombre: 'Alta Verapaz' },
+        { slug: 'alta-verapaz', nombre: 'Alta Verapaz', imagen: '/Alta-Verapaz.png' },
         { slug: 'baja-verapaz', nombre: 'Baja Verapaz' },
         { slug: 'chimaltenango', nombre: 'Chimaltenango' },
         { slug: 'chiquimula', nombre: 'Chiquimula' },
         { slug: 'el-progreso', nombre: 'El Progreso' },
-        { slug: 'escuintla', nombre: 'Escuintla' },
-        { slug: 'guatemala', nombre: 'Guatemala' },
-        { slug: 'huehuetenango', nombre: 'Huehuetenango' },
-        { slug: 'izabal', nombre: 'Izabal' },
-        { slug: 'jalapa', nombre: 'Jalapa' },
-        { slug: 'jutiapa', nombre: 'Jutiapa' },
-        { slug: 'peten', nombre: 'Petén' },
-        { slug: 'quetzaltenango', nombre: 'Quetzaltenango' },
-        { slug: 'quiche', nombre: 'Quiché' },
-        { slug: 'retalhuleu', nombre: 'Retalhuleu' },
-        { slug: 'sacatepequez', nombre: 'Sacatepéquez' },
+        { slug: 'escuintla', nombre: 'Escuintla', imagen: '/Escuintla.png' },
+        { slug: 'guatemala', nombre: 'Guatemala', imagen: '/Capital.jpg' },
+        { slug: 'huehuetenango', nombre: 'Huehuetenango', imagen: '/Huehuetenango.png' },
+        { slug: 'izabal', nombre: 'Izabal', imagen: '/Izabal.png' },
+        { slug: 'jalapa', nombre: 'Jalapa', imagen: '/Jalapa.png' },
+        { slug: 'jutiapa', nombre: 'Jutiapa', imagen: '/Jutiapa.png' },
+        { slug: 'peten', nombre: 'Petén', imagen: '/Peten.jpg' },
+        { slug: 'quetzaltenango', nombre: 'Quetzaltenango', imagen: '/Quetzaltenango.jpg' },
+        { slug: 'quiche', nombre: 'Quiché', imagen: '/Quiche.jpeg' },
+        { slug: 'retalhuleu', nombre: 'Retalhuleu', imagen: '/Retalhuleu.jpg' },
+        { slug: 'sacatepequez', nombre: 'Sacatepéquez', imagen: '/Sacatepeques.jpg' },
         { slug: 'san-marcos', nombre: 'San Marcos' },
         { slug: 'santa-rosa', nombre: 'Santa Rosa' },
         { slug: 'solola', nombre: 'Sololá' },

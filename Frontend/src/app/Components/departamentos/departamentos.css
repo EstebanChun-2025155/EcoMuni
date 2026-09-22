@@ -14,16 +14,7 @@
     padding: 24px 0;
 }
 
-.bg-blur {
-    position: fixed;
-    inset: -8px;
-    z-index: -1;
-    pointer-events: none;
-    background:
-        linear-gradient(#123e3155, #10392ecc),
-        url('/bosque.png') center / cover no-repeat;
-    filter: blur(4px);
-}
+
 
 button:focus-visible {
     outline: 3px solid #255c35;
@@ -241,12 +232,14 @@ h1 {
     }
 
 
-    .bg-blur {
-        inset: -8px;
-        background:
-            linear-gradient(#123e3155, #10392ecc),
-            url('/bosque.png') center / cover no-repeat;
-        filter: blur(4px);
-    }
+    
 
+}
+/* Imagen real del departamento cuando existe en public/ */
+.card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
