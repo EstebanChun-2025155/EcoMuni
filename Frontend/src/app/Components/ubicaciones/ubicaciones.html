@@ -37,7 +37,7 @@
   </div>
   <nav class="pagination" aria-label="Paginación">
     <button type="button" [disabled]="cargando() || datos().pagina <= 1" (click)="cambiarPagina(-1)">Anterior</button>
-    <span>Página {{ datos().pagina }} de {{ paginas }} · {{ datos().total }} registros</span>
+    <span>Página {{ datos().pagina }} de {{ paginas }}</span>
     <button type="button" [disabled]="cargando() || datos().pagina >= paginas" (click)="cambiarPagina(1)">Siguiente</button>
   </nav>
 </main>
