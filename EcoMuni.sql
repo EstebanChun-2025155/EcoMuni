@@ -190,7 +190,11 @@ values (
     'Carlos',
     'Mendez',
     'admin@ecomuni.com',
-    crypt('Admin123!', gen_salt('bf', 12)),
+-- NOTA: los hashes son bcrypt ($2b$, costo 12), compatibles con el backend
+-- (bcryptjs). No usar crypt()/gen_salt() de pgcrypto: esos hashes no los
+-- verifica el login y las cuentas semilla quedarían inaccesibles.
+-- Admin / Admin123!
+    '$2b$12$EGONMHhAzCvqUF2OrfKjYORvUa8e6G11cpQtFriZAoYo5PGWdmw7a',
     '5555-1001',
     'activo'
 );
@@ -211,7 +215,8 @@ values (
     'Andrea',
     'Lopez',
     'supervisor@ecomuni.com',
-    crypt('Supervisor123!', gen_salt('bf', 12)),
+    -- Supervisor / Supervisor123!
+    '$2b$12$zSrmcuyL7ltqpGrnCdYDZ.jueIMMWx.Zf16UWTjV9xz4ahnyXH7Jq',
     '5555-1002',
     'activo'
 );
@@ -232,7 +237,8 @@ values (
     'Luis',
     'Garcia',
     'ciudadano@ecomuni.com',
-    crypt('Ciudadano123!', gen_salt('bf', 12)),
+    -- Ciudadano / Ciudadano123!
+    '$2b$12$TPMWP2EByihMTnX9w.e6SOLXQUWKvq7KuzhNS/MJaKQ6ENSlbEvj6',
     '5555-1003',
     'activo'
 );
