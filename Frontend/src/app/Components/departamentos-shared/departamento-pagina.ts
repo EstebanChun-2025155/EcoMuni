@@ -1,4 +1,4 @@
-import { DestroyRef, Directive, inject, signal } from '@angular/core';
+import { DestroyRef, Directive, inject, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -51,12 +51,13 @@ function puntoVacio(): NuevoPunto {
 }
 
 @Directive()
-export abstract class DepartamentoPagina {
+export abstract class DepartamentoPagina implements OnDestroy {
   readonly api = inject(DepartamentoService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly recargas = new Subject<void>();
   private readonly seleccion = new BehaviorSubject<number | null>(null);
+  private temporizador?: ReturnType<typeof setTimeout>;
 
   readonly panel = signal<PanelDepartamento | null>(null);
   readonly detalle = signal<DetalleReporte | null>(null);
@@ -66,6 +67,10 @@ export abstract class DepartamentoPagina {
   readonly error = signal('');
   readonly errorDetalle = signal('');
   readonly mensaje = signal('');
+  readonly notificacion = signal('');
+  readonly notificacionVisible = signal(false);
+  readonly notificacionExito = signal(false);
+  readonly editandoEvidencia = signal<number | null>(null);
   readonly mostrarNuevoReporte = signal(false);
   readonly mostrarNuevoPunto = signal(false);
 
@@ -125,6 +130,10 @@ export abstract class DepartamentoPagina {
       });
   }
 
+  ngOnDestroy(): void {
+    if (this.temporizador) clearTimeout(this.temporizador);
+  }
+
   get puedeGestionar(): boolean {
     return this.panel()?.puedeGestionar ?? false;
   }
@@ -160,11 +169,15 @@ export abstract class DepartamentoPagina {
   abrirDetalle(reporte: Reporte): void {
     if (this.guardando()) return;
     this.comentarioNuevo = '';
+    this.editandoEvidencia.set(null);
     this.seleccion.next(reporte.idReporte);
   }
 
   cerrarDetalle(): void {
-    if (!this.guardando()) this.seleccion.next(null);
+    if (!this.guardando()) {
+      this.editandoEvidencia.set(null);
+      this.seleccion.next(null);
+    }
   }
 
   abrirNuevoReporte(): void {
@@ -176,7 +189,71 @@ export abstract class DepartamentoPagina {
     if (!this.guardando()) this.mostrarNuevoReporte.set(false);
   }
 
+  private notificar(texto: string, exito = false): void {
+    this.notificacionExito.set(exito);
+    this.notificacion.set(texto);
+    this.notificacionVisible.set(true);
+    if (this.temporizador) clearTimeout(this.temporizador);
+    this.temporizador = setTimeout(() => this.notificacionVisible.set(false), 4000);
+  }
+
+  private faltanCampos(): void {
+    this.notificar('Completa correctamente los campos obligatorios.');
+  }
+
   registrarReporte(): void {
+    const titulo = this.nuevoReporte.titulo.trim();
+    const municipio = this.nuevoReporte.municipio.trim();
+    const zona = this.nuevoReporte.zona.trim();
+    const direccion = this.nuevoReporte.direccion.trim();
+    const referencia = this.nuevoReporte.referencia.trim();
+    const descripcion = this.nuevoReporte.descripcion.trim();
+
+    if (!titulo) {
+      this.faltanCampos();
+      return;
+    }
+    if (titulo.length < 5) {
+      this.notificar('El título debe tener mínimo 5 caracteres.');
+      return;
+    }
+    if (!/[\p{L}]/u.test(titulo)) {
+      this.notificar('El título debe ser texto, no números.');
+      return;
+    }
+    if (!municipio) {
+      this.faltanCampos();
+      return;
+    }
+    if (/\d/.test(municipio)) {
+      this.notificar('El municipio debe ser texto, no números.');
+      return;
+    }
+    if (zona && !/^[0-9A-Za-z -]+$/.test(zona)) {
+      this.notificar('Zona inválida.');
+      return;
+    }
+    if (direccion && /^\d+$/.test(direccion)) {
+      this.notificar('La dirección debe ser texto, no números.');
+      return;
+    }
+    if (referencia && /^\d+$/.test(referencia)) {
+      this.notificar('La referencia debe ser texto, no números.');
+      return;
+    }
+    if (!descripcion) {
+      this.faltanCampos();
+      return;
+    }
+    if (descripcion.length < 10) {
+      this.notificar('La descripción debe tener mínimo 10 caracteres.');
+      return;
+    }
+    if (!/[\p{L}]/u.test(descripcion)) {
+      this.notificar('La descripción debe contener texto.');
+      return;
+    }
+
     this.guardar(
       this.api.crear(this.departamento.slug, { ...this.nuevoReporte }),
       (resultado) => {
@@ -247,7 +324,11 @@ export abstract class DepartamentoPagina {
         this.archivo,
         this.descripcionEvidencia,
       ),
-      () => this.seleccion.next(detalle.idReporte),
+      () => {
+        this.editandoEvidencia.set(null);
+        this.seleccion.next(detalle.idReporte);
+        this.notificar('Evidencia guardada.', true);
+      },
       'Evidencia guardada.',
     );
   }
@@ -264,6 +345,14 @@ export abstract class DepartamentoPagina {
     );
   }
 
+  editarEvidencia(idEvidencia: number): void {
+    if (!this.guardando()) this.editandoEvidencia.set(idEvidencia);
+  }
+
+  cancelarEdicionEvidencia(): void {
+    if (!this.guardando()) this.editandoEvidencia.set(null);
+  }
+
   guardarDescripcionEvidencia(idEvidencia: number): void {
     const detalle = this.detalle();
     if (!detalle?.puedeAdjuntar) return;
@@ -274,7 +363,11 @@ export abstract class DepartamentoPagina {
         idEvidencia,
         this.descripcionesEvidencias[idEvidencia] ?? '',
       ),
-      () => this.seleccion.next(detalle.idReporte),
+      () => {
+        this.editandoEvidencia.set(null);
+        this.seleccion.next(detalle.idReporte);
+        this.notificar('Evidencia guardada.', true);
+      },
       'Descripción guardada.',
     );
   }

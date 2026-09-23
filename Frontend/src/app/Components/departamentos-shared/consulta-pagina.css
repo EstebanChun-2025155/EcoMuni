@@ -27,7 +27,7 @@
   font-size: clamp(1.8rem, 4vw, 2.5rem);
 }
 .page-description {
-  color: #f0f0f0;
+  color: #d7d2c7;
   margin-top: 1rem;
 }
 .cards-grid {
@@ -40,9 +40,9 @@
   width: auto;
   min-width: 0;
   padding: 1.5rem;
-  border: 1px solid #668774;
+  border: 1px solid rgba(215, 210, 199, 0.35);
   border-radius: 20px;
-  background: #123c2e;
+  background: #1f3b2c;
   color: #fff;
   overflow-wrap: anywhere;
   transition:
@@ -52,8 +52,8 @@
 }
 .custom-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 18px 40px #001b1266;
-  border-color: #8fb3a0;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(215, 210, 199, 0.7);
 }
 .card-info {
   display: flex;
@@ -66,16 +66,18 @@
   text-align: center;
   margin-top: 1rem;
   padding: 0.75rem;
-  color: #123c2e;
-  background: #d4e978;
+  color: #1f3b2c;
+  background: #d7d2c7;
   border-radius: 12px;
   transition:
     transform 0.5s ease,
-    background-color 0.5s ease;
+    background-color 0.5s ease,
+    color 0.5s ease;
 }
 .action-card-btn:hover {
   transform: translateY(-2px);
-  background: #e0f28a;
+  background: #6b7f3a;
+  color: #ffffff;
 }
 .pagination {
   display: flex;
@@ -88,9 +90,9 @@
 }
 .pagination button {
   padding: 0.75rem 1.25rem;
-  border: 1px solid #ffffff50;
+  border: 1px solid rgba(215, 210, 199, 0.45);
   border-radius: 20px;
-  background: #103e30bb;
+  background: rgba(31, 59, 44, 0.73);
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -99,7 +101,7 @@
     transform 0.5s ease;
 }
 .pagination button:hover:not(:disabled) {
-  background: #17513e;
+  background: #4a3a2a;
   transform: translateY(-2px);
 }
 .notice button {
@@ -113,13 +115,13 @@ button:disabled {
 }
 .notice {
   padding: 1rem;
-  background: #67342a;
+  background: #4a3a2a;
   color: white;
   border-radius: 12px;
 }
 a:focus-visible,
 button:focus-visible {
-  outline: 3px solid #d4e978;
+  outline: 3px solid #6b7f3a;
   outline-offset: 3px;
 }
 @media (max-width: 700px) {
