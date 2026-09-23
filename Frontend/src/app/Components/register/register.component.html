@@ -1,0 +1,326 @@
+<div class="bg-blur" aria-hidden="true"></div>
+
+<div
+  class="notificacion"
+  [class.mostrar]="notificacionVisible()"
+  role="alert"
+  aria-live="assertive"
+>
+  {{ notificacion() }}
+</div>
+
+<main class="card-container">
+  <section class="form-side" aria-labelledby="titulo-registro">
+    <h1 id="titulo-registro">Crear cuenta</h1>
+    <p class="tagline">Plataforma municipal de gestión ambiental · Guatemala</p>
+
+    <form #formulario="ngForm" (ngSubmit)="registrar(formulario)" [attr.aria-busy]="cargando()">
+      <fieldset [disabled]="cargando()">
+        <legend class="sr-only">Datos de registro</legend>
+
+        <div class="input-group">
+          <label for="nombres">Nombres</label>
+          <div class="campo-clave">
+            <svg
+              class="icono-campo"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <input
+              id="nombres"
+              name="nombres"
+              type="text"
+              [(ngModel)]="datos.nombres"
+              required
+              maxlength="60"
+              autocomplete="given-name"
+            />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="apellidos">Apellidos</label>
+          <div class="campo-clave">
+            <svg
+              class="icono-campo"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <input
+              id="apellidos"
+              name="apellidos"
+              type="text"
+              [(ngModel)]="datos.apellidos"
+              required
+              maxlength="60"
+              autocomplete="family-name"
+            />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="correo">Correo electrónico</label>
+          <div class="campo-clave">
+            <svg
+              class="icono-campo"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m22 7-10 6L2 7" />
+            </svg>
+            <input
+              id="correo"
+              name="correo"
+              type="email"
+              [(ngModel)]="datos.correo"
+              required
+              email
+              maxlength="120"
+              autocomplete="email"
+            />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="telefono">Teléfono — opcional</label>
+          <div class="campo-clave">
+            <svg
+              class="icono-campo"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              />
+            </svg>
+            <input
+              id="telefono"
+              name="telefono"
+              type="tel"
+              [(ngModel)]="datos.telefono"
+              maxlength="20"
+              pattern="[0-9]+"
+              autocomplete="tel"
+            />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="contrasena">Contraseña</label>
+          <div class="campo-clave">
+            <svg
+              class="icono-campo"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <input
+              id="contrasena"
+              name="contrasena"
+              [type]="mostrarContrasena() ? 'text' : 'password'"
+              [(ngModel)]="datos.contrasena"
+              required
+              minlength="8"
+              autocomplete="new-password"
+              [attr.aria-describedby]="datos.contrasena ? 'ayuda-clave' : null"
+            />
+            <button
+              type="button"
+              class="ojo-btn"
+              (click)="alternarContrasena()"
+              [attr.aria-label]="mostrarContrasena() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              @if (mostrarContrasena()) {
+                <svg
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M2 12Q12 19 22 12" />
+                  <path d="M6 14.5l-1.5 2" />
+                  <path d="M12 15.8v2.2" />
+                  <path d="M18 14.5l1.5 2" />
+                </svg>
+              } @else {
+                <svg
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              }
+            </button>
+          </div>
+          @if (datos.contrasena) {
+            <div class="fuerza-clave" id="ayuda-clave" aria-live="polite">
+              <div class="barra-fuerza" [class]="'nivel-' + nivelFuerza()">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <ul class="reglas-clave">
+                <li [class.ok]="reglas().largo">8 caracteres</li>
+                <li [class.ok]="reglas().mayuscula">Mayúscula</li>
+                <li [class.ok]="reglas().minuscula">Minúscula</li>
+                <li [class.ok]="reglas().numero">Número</li>
+                <li [class.ok]="reglas().simbolo">Símbolo</li>
+              </ul>
+            </div>
+          }
+        </div>
+
+        <div class="input-group">
+          <label for="confirmarContrasena">Confirmar contraseña</label>
+          <div class="campo-clave">
+            <svg
+              class="icono-campo"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <input
+              id="confirmarContrasena"
+              name="confirmarContrasena"
+              [type]="mostrarConfirmacion() ? 'text' : 'password'"
+              [(ngModel)]="datos.confirmarContrasena"
+              required
+              autocomplete="new-password"
+            />
+            <button
+              type="button"
+              class="ojo-btn"
+              (click)="alternarConfirmacion()"
+              [attr.aria-label]="
+                mostrarConfirmacion() ? 'Ocultar contraseña' : 'Mostrar contraseña'
+              "
+            >
+              @if (mostrarConfirmacion()) {
+                <svg
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M2 12Q12 19 22 12" />
+                  <path d="M6 14.5l-1.5 2" />
+                  <path d="M12 15.8v2.2" />
+                  <path d="M18 14.5l1.5 2" />
+                </svg>
+              } @else {
+                <svg
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              }
+            </button>
+          </div>
+        </div>
+      </fieldset>
+
+      <button class="submit-btn" type="submit" [disabled]="cargando()">
+        @if (cargando()) {
+          <svg
+            class="spinner"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+          </svg>
+        }
+        {{ cargando() ? 'Creando cuenta…' : 'Registrarse' }}
+      </button>
+    </form>
+  </section>
+
+  <div class="image-side" aria-hidden="true"></div>
+</main>
+
+<a class="btn-inferior" routerLink="/login">¿Ya tienes cuenta? Iniciar sesión</a>

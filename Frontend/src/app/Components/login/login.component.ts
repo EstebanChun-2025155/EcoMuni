@@ -9,8 +9,8 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login',
   standalone: true,
   imports: [FormsModule, RouterLink],
-  templateUrl: './login.html',
-  styleUrl: './login.css'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
 })
 export class LoginComponent implements OnDestroy {
   private readonly auth = inject(AuthService);
@@ -23,6 +23,7 @@ export class LoginComponent implements OnDestroy {
   readonly notificacion = signal('');
   readonly notificacionExito = signal(false);
   readonly notificacionVisible = signal(false);
+  readonly mostrarContrasena = signal(false);
 
   private temporizador?: ReturnType<typeof setTimeout>;
 
@@ -35,6 +36,10 @@ export class LoginComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     if (this.temporizador) clearTimeout(this.temporizador);
+  }
+
+  alternarContrasena(): void {
+    this.mostrarContrasena.update((valor) => !valor);
   }
 
   private notificar(texto: string, exito = false): void {
@@ -68,7 +73,8 @@ export class LoginComponent implements OnDestroy {
 
     this.cargando.set(true);
 
-    this.auth.login(correo, this.contrasena)
+    this.auth
+      .login(correo, this.contrasena)
       .pipe(finalize(() => this.cargando.set(false)))
       .subscribe({
         next: () => {
@@ -86,9 +92,9 @@ export class LoginComponent implements OnDestroy {
           this.notificar(
             typeof mensaje === 'string'
               ? mensaje
-              : 'No fue posible iniciar sesión. Inténtalo nuevamente.'
+              : 'No fue posible iniciar sesión. Inténtalo nuevamente.',
           );
-        }
+        },
       });
   }
 }
