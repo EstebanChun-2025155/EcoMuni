@@ -1,3 +1,15 @@
+:root {
+  --eco-verde: #1f3b2c;
+  --eco-tierra: #4a3a2a;
+  --eco-oliva: #6b7f3a;
+  --eco-taupe: #8b7b5a;
+  --eco-arena: #d7d2c7;
+
+  --eco-error: #8b2020;
+  --eco-error-suave: #fdecea;
+  --eco-error-oscuro: #6f1a1a;
+}
+
 *,
 *::before,
 *::after {
@@ -12,7 +24,7 @@ body {
 
 body {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #032107;
+  background: var(--eco-verde);
 }
 
 h1,
@@ -28,7 +40,7 @@ h4 {
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(rgba(3, 33, 7, 0.55), rgba(3, 33, 7, 0.85)),
+    linear-gradient(rgba(31, 59, 44, 0.55), rgba(31, 59, 44, 0.85)),
     url('/bosque-real.jpg') center / cover no-repeat;
   filter: blur(20px);
 }
@@ -188,18 +200,18 @@ main {
 
 input[type='file'] {
   padding: 10px;
-  border: 1px solid rgba(167, 220, 178, 0.25);
+  border: 1px solid rgba(215, 210, 199, 0.25);
   border-radius: 12px;
-  background: #235434;
+  background: var(--eco-tierra);
   color: white;
 }
 
 input[type='file']::file-selector-button {
   margin-right: 12px;
   padding: 9px 16px;
-  border: 1px solid rgba(167, 220, 178, 0.35);
+  border: 1px solid rgba(215, 210, 199, 0.35);
   border-radius: 20px;
-  background: rgba(3, 33, 7, 0.73);
+  background: rgba(31, 59, 44, 0.73);
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -209,18 +221,18 @@ input[type='file']::file-selector-button {
 }
 
 input[type='file']::file-selector-button:hover {
-  background: #3a7658;
+  background: var(--eco-tierra);
   transform: translateY(-2px);
 }
 
 @keyframes foco-verde {
   from {
     outline-color: transparent;
-    box-shadow: 0 0 0 2px rgba(167, 220, 178, 0);
+    box-shadow: 0 0 0 2px rgba(215, 210, 199, 0);
   }
   to {
-    outline-color: #81be4d;
-    box-shadow: 0 0 3px 2px rgba(129, 190, 77, 0.5);
+    outline-color: var(--eco-oliva);
+    box-shadow: 0 0 3px 2px rgba(107, 127, 58, 0.5);
   }
 }
 
@@ -242,7 +254,7 @@ textarea:focus {
   max-width: min(92vw, 560px);
   padding: 14px 26px;
   border-radius: 999px;
-  background: #d32f2f;
+  background: var(--eco-error);
   color: #ffffff;
   font-weight: 600;
   text-align: center;
@@ -260,7 +272,7 @@ textarea:focus {
 }
 
 .notificacion.exito {
-  background: #235434;
+  background: var(--eco-tierra);
   color: #ffffff;
 }
 

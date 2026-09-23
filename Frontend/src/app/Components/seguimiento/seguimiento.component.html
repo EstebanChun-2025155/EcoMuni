@@ -1,62 +1,130 @@
-<div class="bg-blur"></div>
-
+<div class="bg-blur" aria-hidden="true"></div>
 <app-navbar activa="seguimiento"></app-navbar>
 
-<main class="main-content">
-  <div class="header-section">
-    <h1 class="page-title">Seguimiento de Reportes</h1>
-
-    <p class="page-description">Consulta el estado y los cambios de tus reportes ambientales.</p>
+<header class="encabezado">
+  <div class="caja-cristal">
+    <h1>Seguimiento de Reportes</h1>
+    <p>Consulta el estado y los cambios de tus reportes ambientales.</p>
   </div>
+</header>
 
-  @if (error()) {
-    <div class="notice" role="alert">
-      <p>{{ error() }}</p>
-    </div>
-  }
-
-  @if (cargando()) {
-    <p role="status">Cargando…</p>
-  }
-
-  <div class="cards-grid">
-    @for (seguimiento of seguimientos(); track seguimiento.idSeguimiento) {
-      <div class="custom-card">
-        <div class="card-info">
-          <span class="badge">{{ seguimiento.estado }}</span>
-
-          <h3>{{ seguimiento.titulo }}</h3>
-
-          <p>
-            <strong>Reporte:</strong>
-            #{{ seguimiento.idReporte }} · {{ seguimiento.departamento }}
-          </p>
-
-          <p>
-            {{ seguimiento.observacion ?? 'Sin observaciones registradas.' }}
-          </p>
-
-          <p>
-            <strong>Fecha:</strong>
-            {{ seguimiento.fecha }}
-          </p>
-
-          <button type="button" class="ver-reporte" (click)="verReporte(seguimiento.slug)">
-            Ver reporte
-          </button>
+<main>
+  <section class="seccion seccion-blanco">
+    <div class="seccion-contenido">
+      @if (error()) {
+        <div class="aviso" role="alert">
+          <p>{{ error() }}</p>
         </div>
-      </div>
-    } @empty {
-      @if (!cargando() && !error()) {
-        <p role="status">Aún no hay seguimientos de tus reportes.</p>
       }
-    }
-  </div>
+      @if (cargando()) {
+        <p class="cargando" role="status">Cargando seguimiento…</p>
+      }
 
-  @if (hayScroll()) {
-    <div class="scroll-container" (click)="onScrollDown()">
-      <span class="scroll-text">Scroll</span>
-      <div class="scroll-icon">&#8595;</div>
+      @if (seguimientos().length) {
+        <div class="resumen">
+          <div class="estadistica estadistica-total">
+            <span class="estadistica-punto"></span>
+            <span class="estadistica-num">{{ seguimientos().length }}</span>
+            <span class="estadistica-label">Reportes totales</span>
+          </div>
+          @for (dato of porEstado(); track dato.estado) {
+            <div class="estadistica">
+              <span
+                class="estadistica-punto"
+                [style.background-color]="colorEstado(dato.estado)"
+              ></span>
+              <span class="estadistica-num">{{ dato.total }}</span>
+              <span class="estadistica-label">{{ dato.estado }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      <div class="rejilla" [attr.aria-busy]="cargando()">
+        @for (seguimiento of seguimientos(); track seguimiento.idSeguimiento) {
+          <article class="tarjeta">
+            <div class="tarjeta-cabecera">
+              <span class="chip">
+                <span
+                  class="punto"
+                  [style.background-color]="colorEstado(seguimiento.estado)"
+                ></span>
+                {{ seguimiento.estado }}
+              </span>
+              <span class="reporte-id">#{{ seguimiento.idReporte }}</span>
+            </div>
+            <h3>{{ seguimiento.titulo }}</h3>
+            <p class="observacion">
+              {{ seguimiento.observacion ?? 'Sin observaciones registradas.' }}
+            </p>
+            <div class="tarjeta-meta">
+              <span class="meta-item">
+                <svg class="meta-icono" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="16" rx="3" />
+                  <path d="M8 3v4M16 3v4M3 10h18" />
+                </svg>
+                {{ seguimiento.fecha }}
+              </span>
+              <span class="meta-item">
+                <svg class="meta-icono" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11Z" />
+                  <circle cx="12" cy="10" r="2.6" />
+                </svg>
+                {{ seguimiento.departamento }}
+              </span>
+            </div>
+            <button type="button" class="btn btn-claro" (click)="verReporte(seguimiento.slug)">
+              Ver reporte
+            </button>
+          </article>
+        } @empty {
+          @if (!cargando() && !error()) {
+            <div class="vacio" role="status">
+              <svg viewBox="0 0 260 260" aria-hidden="true" focusable="false">
+                <circle cx="130" cy="130" r="118" fill="#D7D2C7" />
+                <ellipse cx="130" cy="224" rx="86" ry="10" fill="#4A3A2A" opacity="0.35" />
+                <rect x="70" y="64" width="88" height="116" rx="12" fill="#ffffff" />
+                <rect x="86" y="88" width="56" height="9" rx="4.5" fill="#D7D2C7" />
+                <rect x="86" y="108" width="56" height="9" rx="4.5" fill="#D7D2C7" />
+                <rect x="86" y="128" width="36" height="9" rx="4.5" fill="#D7D2C7" />
+                <circle
+                  cx="172"
+                  cy="156"
+                  r="30"
+                  fill="rgba(215,210,199,0.5)"
+                  stroke="#1F3B2C"
+                  stroke-width="9"
+                />
+                <rect
+                  x="190"
+                  y="178"
+                  width="14"
+                  height="40"
+                  rx="7"
+                  fill="#1F3B2C"
+                  transform="rotate(-43 197 198)"
+                />
+                <ellipse
+                  cx="140"
+                  cy="48"
+                  rx="17"
+                  ry="9"
+                  fill="#6B7F3A"
+                  transform="rotate(-24 140 48)"
+                />
+                <path
+                  d="M140 48 Q152 42 164 44"
+                  stroke="#1F3B2C"
+                  stroke-width="3"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <p>No hay reportes disponibles.</p>
+            </div>
+          }
+        }
+      </div>
     </div>
-  }
+  </section>
 </main>

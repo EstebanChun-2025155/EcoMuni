@@ -35,7 +35,7 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(rgba(3, 33, 7, 0.38), rgba(3, 33, 7, 0.72));
+  background: linear-gradient(rgba(31, 59, 44, 0.38), rgba(31, 59, 44, 0.72));
   z-index: 1;
 }
 
@@ -44,7 +44,7 @@
   z-index: 2;
   padding: 42px 60px;
   border-radius: 28px;
-  background: rgba(167, 220, 178, 0.1);
+  background: rgba(215, 210, 199, 0.1);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
@@ -106,13 +106,13 @@
 
 .scroll-container {
   position: absolute;
-  bottom: 25px;
+  bottom: 108px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: #a7dcb2;
+  background-color: #d7d2c7;
   padding: 6px 18px;
   border-radius: 30px;
   cursor: pointer;
@@ -123,7 +123,7 @@
 }
 
 .scroll-container:hover {
-  background-color: #81be4d;
+  background-color: #6b7f3a;
 }
 
 @keyframes rebote {
@@ -139,12 +139,12 @@
 .scroll-text {
   font-weight: bold;
   font-size: 0.9rem;
-  color: #032107;
+  color: #1f3b2c;
 }
 
 .scroll-icon {
-  background-color: #032107;
-  color: #a7dcb2;
+  background-color: #1f3b2c;
+  color: #d7d2c7;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -154,21 +154,60 @@
   font-size: 0.8rem;
 }
 
+.ola {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  z-index: 2;
+  pointer-events: none;
+  line-height: 0;
+}
+
+.ola svg {
+  display: block;
+  width: 100%;
+  height: 90px;
+}
+
+.kicker {
+  margin: 0 0 10px;
+  text-align: center;
+  color: #6b7f3a;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.acerca-texto .kicker {
+  text-align: left;
+}
+
 section[id] {
   scroll-margin-top: 110px;
 }
 
 .seccion {
   padding: 90px 8%;
-  color: #3a7658;
+  color: #4a3a2a;
 }
 
 .seccion-blanco {
-  background: #f7faf7;
+  background: #d7d2c7;
 }
 
 .seccion-blanco-alterno {
-  background: #edf2ee;
+  background: #1f3b2c;
+}
+
+.seccion-blanco-alterno .seccion-contenido > h2 {
+  color: #ffffff;
+}
+
+.seccion-blanco-alterno .seccion-subtitulo,
+.seccion-blanco-alterno .seccion-vacio {
+  color: #d7d2c7;
 }
 
 .seccion-contenido {
@@ -179,21 +218,31 @@ section[id] {
 .seccion-contenido > h2 {
   text-align: center;
   font-size: clamp(1.7rem, 3vw, 2.4rem);
-  color: #032107;
-  margin-bottom: 12px;
+  color: #1f3b2c;
+  margin: 0 0 4px;
+}
+
+.seccion-contenido > h2::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin: 14px auto 0;
+  border-radius: 999px;
+  background: #6b7f3a;
 }
 
 .seccion-subtitulo {
   text-align: center;
-  color: #3a7658;
+  color: #4a3a2a;
   font-size: 1.05rem;
   max-width: 640px;
-  margin: 0 auto 44px;
+  margin: 16px auto 44px;
 }
 
 .seccion-vacio {
   text-align: center;
-  color: #3a7658;
+  color: #4a3a2a;
   padding: 12px 0;
 }
 
@@ -221,14 +270,24 @@ section[id] {
 
 .acerca-texto h2 {
   font-size: clamp(1.7rem, 3vw, 2.4rem);
-  color: #032107;
+  color: #1f3b2c;
   margin-bottom: 16px;
+}
+
+.acerca-texto h2::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin-top: 14px;
+  border-radius: 999px;
+  background: #6b7f3a;
 }
 
 .acerca-texto p {
   font-size: 1.05rem;
   line-height: 1.7;
-  color: #3a7658;
+  color: #4a3a2a;
   margin-bottom: 14px;
 }
 
@@ -240,9 +299,9 @@ section[id] {
 }
 
 .chip {
-  background: #a7dcb2;
-  color: #032107;
-  border: none;
+  background: #6b7f3a;
+  color: #ffffff;
+  border: 1px solid #6b7f3a;
   padding: 8px 18px;
   border-radius: 999px;
   font-weight: 600;
@@ -290,30 +349,42 @@ section[id] {
 }
 
 .carrusel-tarjeta {
+  position: relative;
   flex: 0 0 320px;
   min-height: 200px;
   background: #ffffff;
   border-radius: 20px;
-  padding: 24px 22px;
-  box-shadow: 0 6px 18px rgba(3, 33, 7, 0.1);
+  padding: 28px 22px 24px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(31, 59, 44, 0.1);
   transition:
     transform 0.4s,
     box-shadow 0.4s;
 }
 
+.carrusel-tarjeta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: #6b7f3a;
+}
+
 .carrusel-tarjeta:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 28px rgba(3, 33, 7, 0.18);
+  box-shadow: 0 14px 28px rgba(31, 59, 44, 0.18);
 }
 
 .carrusel-tarjeta h3 {
-  color: #032107;
+  color: #1f3b2c;
   font-size: 1.15rem;
   margin-bottom: 8px;
 }
 
 .carrusel-tarjeta p {
-  color: #3a7658;
+  color: #4a3a2a;
   font-size: 0.92rem;
   line-height: 1.5;
   min-height: 4.2em;
@@ -322,8 +393,8 @@ section[id] {
 .carrusel-total {
   display: inline-block;
   margin-top: 14px;
-  background: #a7dcb2;
-  color: #032107;
+  background: #6b7f3a;
+  color: #ffffff;
   font-size: 0.8rem;
   font-weight: 600;
   padding: 5px 14px;
@@ -343,7 +414,7 @@ section[id] {
   margin: 0;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(3, 33, 7, 0.2);
+  box-shadow: 0 8px 20px rgba(31, 59, 44, 0.2);
   transition: transform 0.4s;
 }
 
@@ -372,8 +443,8 @@ section[id] {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #a7dcb2;
-  color: #032107;
+  background: #1f3b2c;
+  color: #d7d2c7;
   padding: 14px 30px;
   border-radius: 999px;
   font-weight: 700;
@@ -382,12 +453,16 @@ section[id] {
   box-shadow:
     0 12px 30px rgba(0, 0, 0, 0.45),
     0 0 0 6px rgba(255, 255, 255, 0.9);
-  transition: transform 0.3s;
+  transition:
+    transform 0.3s,
+    background-color 0.3s;
   z-index: 2;
 }
 
 .mosaico-btn:hover {
   transform: translate(-50%, -50%) scale(1.06);
+  background: #4a3a2a;
+  color: #ffffff;
 }
 
 @media (max-width: 900px) {
@@ -402,7 +477,7 @@ section[id] {
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  background: #032107;
+  background: #1f3b2c;
 }
 
 .home-footer .footer-links {
@@ -413,14 +488,14 @@ section[id] {
 }
 
 .home-footer .footer-links a {
-  color: #a7dcb2;
+  color: #d7d2c7;
   text-decoration: none;
   font-weight: 600;
   font-size: 0.95rem;
 }
 
 .home-footer .footer-links a:hover {
-  color: #81be4d;
+  color: #6b7f3a;
   text-decoration: underline;
 }
 
