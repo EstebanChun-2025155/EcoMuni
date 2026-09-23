@@ -1,7 +1,9 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { FechaCortaPipe } from '../../pipes/fecha-corta.pipe';
+import { EstadoCampanaPipe } from '../../pipes/estado-campana.pipe';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, EMPTY, catchError, finalize, startWith, switchMap, timer } from 'rxjs';
@@ -33,7 +35,7 @@ function lugarVacio(): UbicacionCampana {
 
 @Component({
   standalone: true,
-  imports: [FormsModule, RouterLink, NavbarComponent],
+  imports: [FormsModule, NavbarComponent, FechaCortaPipe, EstadoCampanaPipe],
   selector: 'app-campana',
   styleUrl: './campana.component.css',
   templateUrl: './campana.component.html',
@@ -132,7 +134,58 @@ export class Campana {
     if (!this.guardando()) this.mostrarFormulario.set(false);
   }
   guardar(): void {
-    if (this.guardando() || this.cargando() || !this.puedeGestionar || !this.fechasValidas) return;
+    if (this.guardando() || this.cargando() || !this.puedeGestionar) return;
+
+    const titulo = this.formulario.titulo.trim();
+    const organizador = this.formulario.organizador.trim();
+    const descripcion = this.formulario.descripcion.trim();
+    const imagenUrl = (this.formulario.imagenUrl ?? '').trim();
+
+    if (!titulo || !organizador || !descripcion) {
+      this.error.set('Completa correctamente los campos obligatorios.');
+      return;
+    }
+    if (titulo.length < 5) {
+      this.error.set('El título debe tener mínimo 5 caracteres.');
+      return;
+    }
+    if (!/[\p{L}]/u.test(titulo)) {
+      this.error.set('El título debe ser texto, no números.');
+      return;
+    }
+    if (!/[\p{L}]/u.test(organizador)) {
+      this.error.set('El organizador debe ser texto, no números.');
+      return;
+    }
+    if (!this.fechasValidas) {
+      this.error.set('La fecha final debe ser igual o posterior a la inicial.');
+      return;
+    }
+    if (descripcion.length < 10) {
+      this.error.set('La descripción debe tener mínimo 10 caracteres.');
+      return;
+    }
+    if (!/[\p{L}]/u.test(descripcion)) {
+      this.error.set('La descripción debe contener texto.');
+      return;
+    }
+    if (imagenUrl && !/^https?:\/\/.+/i.test(imagenUrl)) {
+      this.error.set('La imagen debe ser una URL válida (https://...).');
+      return;
+    }
+    if (this.conUbicacion) {
+      const departamento = this.lugar.departamento.trim();
+      const municipio = this.lugar.municipio.trim();
+      if (!departamento || !municipio) {
+        this.error.set('Completa correctamente los campos obligatorios.');
+        return;
+      }
+      if (/\d/.test(municipio)) {
+        this.error.set('El municipio debe ser texto, no números.');
+        return;
+      }
+    }
+
     this.guardando.set(true);
     this.error.set('');
     const datos: DatosCampana = {
@@ -161,17 +214,6 @@ export class Campana {
         },
         error: (error) => this.informarError(error),
       });
-  }
-  fechaLegible(fecha: string): string {
-    return fecha.split('-').reverse().join('/');
-  }
-  nombreEstado(estado: EstadoCampana): string {
-    return {
-      borrador: 'Borrador',
-      publicada: 'Publicada',
-      finalizada: 'Finalizada',
-      cancelada: 'Cancelada',
-    }[estado];
   }
   imagenSegura(url: string | null): string {
     if (!url) return '';
