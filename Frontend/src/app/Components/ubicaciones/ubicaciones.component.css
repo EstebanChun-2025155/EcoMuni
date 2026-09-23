@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.header-section {
+  text-align: center;
+  max-width: 800px;
+  margin-bottom: 30px;
+}
+
+.main-content {
+  padding-top: 120px;
+}

@@ -18,20 +18,22 @@ export abstract class ConsultaPagina<T> {
   readonly error = signal('');
 
   constructor(recurso: 'categorias' | 'evidencias' | 'ubicaciones') {
-    this.paginasSolicitadas.pipe(
-      switchMap(pagina => {
-        this.cargando.set(true);
-        this.error.set('');
-        return this.servicio.listar<T>(recurso, pagina).pipe(
-          catchError(error => {
-            this.informar(error);
-            return EMPTY;
-          }),
-          finalize(() => this.cargando.set(false))
-        );
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(datos => this.datos.set(datos));
+    this.paginasSolicitadas
+      .pipe(
+        switchMap((pagina) => {
+          this.cargando.set(true);
+          this.error.set('');
+          return this.servicio.listar<T>(recurso, pagina).pipe(
+            catchError((error) => {
+              this.informar(error);
+              return EMPTY;
+            }),
+            finalize(() => this.cargando.set(false)),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((datos) => this.datos.set(datos));
   }
 
   get paginas(): number {
@@ -53,7 +55,7 @@ export abstract class ConsultaPagina<T> {
     this.error.set(
       error instanceof HttpErrorResponse && typeof error.error?.mensaje === 'string'
         ? error.error.mensaje
-        : 'No se pudo conectar con el servidor. Inténtalo nuevamente.'
+        : 'No se pudo conectar con el servidor. Inténtalo nuevamente.',
     );
     if (error instanceof HttpErrorResponse && error.status === 401) {
       void this.router.navigateByUrl('/login');

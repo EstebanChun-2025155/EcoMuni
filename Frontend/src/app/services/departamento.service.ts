@@ -1,6 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import type { DetalleReporte, FiltrosReporte, NuevoPunto, NuevoReporte, PanelDepartamento } from '../models/departamento';
+import type {
+  DetalleReporte,
+  FiltrosReporte,
+  NuevoPunto,
+  NuevoReporte,
+  PanelDepartamento,
+} from '../models/departamento';
 
 @Injectable({ providedIn: 'root' })
 export class DepartamentoService {
@@ -23,10 +29,18 @@ export class DepartamentoService {
     return this.http.post<{ id: number }>(this.api + slug + '/reportes', datos, this.opciones);
   }
   comentar(slug: string, id: number, comentario: string) {
-    return this.http.post<{ id: number }>(this.api + slug + '/reportes/' + id + '/comentarios', { comentario }, this.opciones);
+    return this.http.post<{ id: number }>(
+      this.api + slug + '/reportes/' + id + '/comentarios',
+      { comentario },
+      this.opciones,
+    );
   }
   seguir(slug: string, id: number, datos: object) {
-    return this.http.post<{ id: number }>(this.api + slug + '/reportes/' + id + '/seguimientos', datos, this.opciones);
+    return this.http.post<{ id: number }>(
+      this.api + slug + '/reportes/' + id + '/seguimientos',
+      datos,
+      this.opciones,
+    );
   }
   apoyar(slug: string, id: number, activo: boolean) {
     const url = this.api + slug + '/reportes/' + id + '/apoyo';
@@ -38,18 +52,28 @@ export class DepartamentoService {
     return this.http.post<{ id: number }>(this.api + slug + '/puntos', datos, this.opciones);
   }
   subirEvidencia(slug: string, id: number, archivo: File, descripcion: string) {
-    return this.http.post<{ id: number }>(this.api + slug + '/reportes/' + id + '/evidencias', archivo, {
-      ...this.opciones, params: new HttpParams().set('descripcion', descripcion), headers: { 'Content-Type': archivo.type }
-    });
+    return this.http.post<{ id: number }>(
+      this.api + slug + '/reportes/' + id + '/evidencias',
+      archivo,
+      {
+        ...this.opciones,
+        params: new HttpParams().set('descripcion', descripcion),
+        headers: { 'Content-Type': archivo.type },
+      },
+    );
   }
   describirEvidencia(slug: string, id: number, idEvidencia: number, descripcion: string) {
-    return this.http.patch<{ id: number }>(this.api + slug + '/reportes/' + id + '/evidencias/' + idEvidencia, { descripcion }, this.opciones);
+    return this.http.patch<{ id: number }>(
+      this.api + slug + '/reportes/' + id + '/evidencias/' + idEvidencia,
+      { descripcion },
+      this.opciones,
+    );
   }
   urlImagen(url: string | null): string {
     if (!url) return '';
     if (url.startsWith('/api/archivos/')) return this.origen + url;
     if (/^https?:\/\//i.test(url)) return url;
-    // Compatibilidad con referencias locales ya existentes.
+
     return url.startsWith('/') && !url.startsWith('//') ? url : '';
   }
 }

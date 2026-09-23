@@ -9,6 +9,6 @@ export const authGuard: CanActivateFn = () => {
 
   return auth.obtenerSesion().pipe(
     map(() => true),
-    catchError(() => of(router.createUrlTree(['/login'])))
+    catchError(() => of(router.createUrlTree(['/login']))),
   );
 };

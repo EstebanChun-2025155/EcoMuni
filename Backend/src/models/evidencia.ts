@@ -1,5 +1,5 @@
 export interface Evidencia {
-    idEvidencia: number;
-    urlImagen: string;
-    descripcion: string | null;
+  idEvidencia: number;
+  urlImagen: string;
+  descripcion: string | null;
 }

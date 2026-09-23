@@ -1,0 +1,177 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.main-content {
+  min-height: 100vh;
+  box-sizing: border-box;
+
+  padding: 110px 5% 40px;
+
+  position: relative;
+  z-index: 1;
+}
+
+.header-section {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 45px;
+}
+
+.page-title {
+  color: white;
+  font-size: 42px;
+  margin-bottom: 15px;
+}
+
+.page-description {
+  color: #e4f5eb;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 330px));
+  justify-content: center;
+  gap: 25px;
+}
+
+.custom-card {
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 25px;
+  box-sizing: border-box;
+
+  background: rgba(8, 70, 45, 0.78);
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(190, 230, 205, 0.25);
+  border-radius: 20px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.card-info {
+  color: white;
+}
+
+.badge {
+  display: inline-block;
+
+  background: #4c9bd4;
+  color: white;
+
+  padding: 6px 12px;
+  border-radius: 15px;
+
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+
+.card-info h3 {
+  font-size: 22px;
+  margin: 5px 0 18px;
+}
+
+.card-info p {
+  color: #e2f1e8;
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+.card-info strong {
+  color: white;
+}
+
+.action-card-btn {
+  border: none;
+
+  background: #bde6cd;
+  color: #145c3c;
+
+  padding: 11px 18px;
+  border-radius: 20px;
+
+  font-weight: bold;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.action-card-btn:hover {
+  transform: translateY(-2px);
+}
+
+.scroll-container {
+  width: fit-content;
+  margin: 45px auto 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff;
+  padding: 6px 18px;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.5s ease;
+}
+
+.scroll-container:hover {
+  transform: scale(1.05);
+}
+
+.scroll-text {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #112a18;
+}
+
+.scroll-icon {
+  background-color: #000000;
+  color: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+}
+.notice {
+  padding: 1rem;
+  background: #67342a;
+  color: white;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.ver-reporte {
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 12px;
+  background: #d4e978;
+  color: #123c2e;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.custom-card {
+  transition:
+    transform 0.5s ease,
+    box-shadow 0.5s ease,
+    border-color 0.5s ease;
+}
+.custom-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px #001b1266;
+  border-color: #8fb3a0;
+}

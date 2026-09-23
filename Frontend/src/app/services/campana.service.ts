@@ -9,7 +9,10 @@ export class CampanaService {
   private readonly opciones = { withCredentials: true };
 
   listar(filtros: FiltrosCampana) {
-    const params = new HttpParams().set('pagina', filtros.pagina).set('busqueda', filtros.busqueda).set('estado', filtros.estado);
+    const params = new HttpParams()
+      .set('pagina', filtros.pagina)
+      .set('busqueda', filtros.busqueda)
+      .set('estado', filtros.estado);
     return this.http.get<PanelCampanas>(this.api, { ...this.opciones, params });
   }
   guardar(datos: DatosCampana, id: number | null) {

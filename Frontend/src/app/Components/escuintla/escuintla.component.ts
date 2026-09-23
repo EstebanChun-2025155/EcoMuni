@@ -1,6 +1,6 @@
 ﻿import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NavbarComponent } from '../navbar/navbar';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
 
 @Component({
@@ -8,17 +8,17 @@ import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina'
   standalone: true,
   imports: [FormsModule, NavbarComponent],
   templateUrl: './escuintla.component.html',
-  styleUrl: './escuintla.component.css'
+  styleUrl: './escuintla.component.css',
 })
 export class EscuintlaComponent extends DepartamentoPagina {
   constructor() {
     super({
-      "slug": "escuintla",
-      "nombre": "Escuintla",
-      "cabecera": "Escuintla",
-      "municipios": 7,
-      "imagen": "/Escuintla.png",
-      "frase": "Tradición, naturaleza y comunidades comprometidas con un futuro más verde."
+      slug: 'escuintla',
+      nombre: 'Escuintla',
+      cabecera: 'Escuintla',
+      municipios: 7,
+      imagen: '/Escuintla.png',
+      frase: 'Tradición, naturaleza y comunidades comprometidas con un futuro más verde.',
     });
   }
 }

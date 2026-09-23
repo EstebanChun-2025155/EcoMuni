@@ -16,12 +16,12 @@ interface RespuestaSesion {
 }
 
 export interface DatosRegistro {
-    nombres: string;
-    apellidos: string;
-    correo: string;
-    contrasena: string;
-    confirmarContrasena: string;
-    telefono?: string;
+  nombres: string;
+  apellidos: string;
+  correo: string;
+  contrasena: string;
+  confirmarContrasena: string;
+  telefono?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -33,43 +33,30 @@ export class AuthService {
   readonly usuario = this.usuarioActual.asReadonly();
 
   login(correo: string, contrasena: string) {
-    return this.http.post<RespuestaSesion>(
-      `${this.api}/login`,
-      { correo, contrasena },
-      { withCredentials: true }
-    ).pipe(
-      tap(respuesta => this.usuarioActual.set(respuesta.usuario))
-    );
+    return this.http
+      .post<RespuestaSesion>(`${this.api}/login`, { correo, contrasena }, { withCredentials: true })
+      .pipe(tap((respuesta) => this.usuarioActual.set(respuesta.usuario)));
   }
 
   obtenerSesion() {
-    return this.http.get<RespuestaSesion>(
-      `${this.api}/me`,
-      { withCredentials: true }
-    ).pipe(
-      tap(respuesta => this.usuarioActual.set(respuesta.usuario)),
-      catchError(error => {
+    return this.http.get<RespuestaSesion>(`${this.api}/me`, { withCredentials: true }).pipe(
+      tap((respuesta) => this.usuarioActual.set(respuesta.usuario)),
+      catchError((error) => {
         this.usuarioActual.set(null);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
   logout() {
-    return this.http.post<void>(
-      `${this.api}/logout`,
-      {},
-      { withCredentials: true }
-    ).pipe(
-      tap(() => this.usuarioActual.set(null))
-    );
+    return this.http
+      .post<void>(`${this.api}/logout`, {}, { withCredentials: true })
+      .pipe(tap(() => this.usuarioActual.set(null)));
   }
 
   register(datos: DatosRegistro) {
-    return this.http.post<{ mensaje: string }>(
-        `${this.api}/register`,
-        datos,
-        { withCredentials: true }
-    );
-}
+    return this.http.post<{ mensaje: string }>(`${this.api}/register`, datos, {
+      withCredentials: true,
+    });
+  }
 }

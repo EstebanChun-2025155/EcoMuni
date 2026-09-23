@@ -2,15 +2,52 @@ import { DestroyRef, Directive, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, EMPTY, Observable, Subject, catchError, finalize, startWith, switchMap, timer } from 'rxjs';
+import {
+  BehaviorSubject,
+  EMPTY,
+  Observable,
+  Subject,
+  catchError,
+  finalize,
+  startWith,
+  switchMap,
+  timer,
+} from 'rxjs';
 import { DepartamentoService } from '../../services/departamento.service';
-import type { DetalleReporte, FiltrosReporte, NuevoPunto, NuevoReporte, PanelDepartamento, PortadaDepartamento, Reporte } from '../../models/departamento';
+import type {
+  DetalleReporte,
+  FiltrosReporte,
+  NuevoPunto,
+  NuevoReporte,
+  PanelDepartamento,
+  PortadaDepartamento,
+  Reporte,
+} from '../../models/departamento';
 
 function reporteVacio(): NuevoReporte {
-  return { titulo: '', descripcion: '', idCategoria: null, prioridad: 'media', municipio: '', zona: '', direccion: '', referencia: '' };
+  return {
+    titulo: '',
+    descripcion: '',
+    idCategoria: null,
+    prioridad: 'media',
+    municipio: '',
+    zona: '',
+    direccion: '',
+    referencia: '',
+  };
 }
 function puntoVacio(): NuevoPunto {
-  return { nombre: '', materiales: '', municipio: '', zona: '', direccion: '', referencia: '', descripcion: '', horario: '', telefono: '' };
+  return {
+    nombre: '',
+    materiales: '',
+    municipio: '',
+    zona: '',
+    direccion: '',
+    referencia: '',
+    descripcion: '',
+    horario: '',
+    telefono: '',
+  };
 }
 
 @Directive()
@@ -41,51 +78,64 @@ export abstract class DepartamentoPagina {
   descripcionEvidencia = '';
   descripcionesEvidencias: Record<number, string> = {};
   constructor(readonly departamento: PortadaDepartamento) {
-    this.recargas.pipe(
-      startWith(undefined),
-      switchMap(() => {
-        this.cargando.set(true);
-        this.error.set('');
-        return this.api.cargar(departamento.slug, { ...this.filtros }).pipe(
-          catchError(error => { this.informarError(error); return EMPTY; }),
-          finalize(() => this.cargando.set(false))
-        );
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(panel => this.panel.set(panel));
+    this.recargas
+      .pipe(
+        startWith(undefined),
+        switchMap(() => {
+          this.cargando.set(true);
+          this.error.set('');
+          return this.api.cargar(departamento.slug, { ...this.filtros }).pipe(
+            catchError((error) => {
+              this.informarError(error);
+              return EMPTY;
+            }),
+            finalize(() => this.cargando.set(false)),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((panel) => this.panel.set(panel));
 
-    this.seleccion.pipe(
-      switchMap(id => {
-        this.detalle.set(null);
-        this.errorDetalle.set('');
-        this.archivo = null;
-        this.descripcionEvidencia = '';
-        if (id === null) return EMPTY;
-        this.cargandoDetalle.set(true);
-        return this.api.detalle(departamento.slug, id).pipe(
-          catchError(error => {
-            this.errorDetalle.set(this.mensajeError(error));
-            this.redirigirSiExpirada(error);
-            return EMPTY;
-          }),
-          finalize(() => this.cargandoDetalle.set(false))
+    this.seleccion
+      .pipe(
+        switchMap((id) => {
+          this.detalle.set(null);
+          this.errorDetalle.set('');
+          this.archivo = null;
+          this.descripcionEvidencia = '';
+          if (id === null) return EMPTY;
+          this.cargandoDetalle.set(true);
+          return this.api.detalle(departamento.slug, id).pipe(
+            catchError((error) => {
+              this.errorDetalle.set(this.mensajeError(error));
+              this.redirigirSiExpirada(error);
+              return EMPTY;
+            }),
+            finalize(() => this.cargandoDetalle.set(false)),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((detalle) => {
+        this.detalle.set(detalle);
+        this.descripcionesEvidencias = Object.fromEntries(
+          detalle.evidencias.map((e) => [e.idEvidencia, e.descripcion ?? '']),
         );
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(detalle => {
-      this.detalle.set(detalle);
-      this.descripcionesEvidencias = Object.fromEntries(detalle.evidencias.map(e => [e.idEvidencia, e.descripcion ?? '']));
-      this.nuevoSeguimiento = { idEstado: detalle.idEstado, observacion: '', motivoRechazo: '' };
-    });
+        this.nuevoSeguimiento = { idEstado: detalle.idEstado, observacion: '', motivoRechazo: '' };
+      });
   }
 
-  get puedeGestionar(): boolean { return this.panel()?.puedeGestionar ?? false; }
+  get puedeGestionar(): boolean {
+    return this.panel()?.puedeGestionar ?? false;
+  }
   get paginas(): number {
     const panel = this.panel();
     return panel ? Math.max(1, Math.ceil(panel.total / panel.porPagina)) : 1;
   }
 
-  volverDepartamentos(): void { void this.router.navigateByUrl('/departamentos'); }
+  volverDepartamentos(): void {
+    void this.router.navigateByUrl('/departamentos');
+  }
 
   recargar(): void {
     if (this.guardando()) return;
@@ -95,7 +145,7 @@ export abstract class DepartamentoPagina {
 
   aplicarFiltros(): void {
     this.filtros.pagina = 1;
-    this.panel.update(panel => panel ? { ...panel, reportes: [], total: 0 } : null);
+    this.panel.update((panel) => (panel ? { ...panel, reportes: [], total: 0 } : null));
     this.recargas.next();
   }
 
@@ -129,13 +179,13 @@ export abstract class DepartamentoPagina {
   registrarReporte(): void {
     this.guardar(
       this.api.crear(this.departamento.slug, { ...this.nuevoReporte }),
-      resultado => {
+      (resultado) => {
         this.nuevoReporte = reporteVacio();
         this.mostrarNuevoReporte.set(false);
         this.filtros = { pagina: 1, idEstado: null, idCategoria: null, prioridad: '' };
         this.seleccion.next(resultado.id);
       },
-      'Reporte guardado. Puedes adjuntar fotografías desde su detalle.'
+      'Reporte guardado. Puedes adjuntar fotografías desde su detalle.',
     );
   }
 
@@ -143,23 +193,30 @@ export abstract class DepartamentoPagina {
     const detalle = this.detalle();
     const comentario = this.comentarioNuevo.trim();
     if (!detalle || !comentario) return;
-    this.guardar(this.api.comentar(this.departamento.slug, detalle.idReporte, comentario),
-      () => { this.comentarioNuevo = ''; this.seleccion.next(detalle.idReporte); });
+    this.guardar(this.api.comentar(this.departamento.slug, detalle.idReporte, comentario), () => {
+      this.comentarioNuevo = '';
+      this.seleccion.next(detalle.idReporte);
+    });
   }
 
   alternarApoyo(): void {
     const detalle = this.detalle();
     if (!detalle) return;
-    this.guardar(this.api.apoyar(this.departamento.slug, detalle.idReporte, !detalle.apoyado),
-      () => this.seleccion.next(detalle.idReporte));
+    this.guardar(this.api.apoyar(this.departamento.slug, detalle.idReporte, !detalle.apoyado), () =>
+      this.seleccion.next(detalle.idReporte),
+    );
   }
 
   registrarSeguimiento(): void {
     const detalle = this.detalle();
     if (!detalle || !this.puedeGestionar) return;
-    this.guardar(this.api.seguir(this.departamento.slug, detalle.idReporte, {
-      ...this.nuevoSeguimiento, idEstadoAnterior: detalle.idEstado
-    }), () => this.seleccion.next(detalle.idReporte));
+    this.guardar(
+      this.api.seguir(this.departamento.slug, detalle.idReporte, {
+        ...this.nuevoSeguimiento,
+        idEstadoAnterior: detalle.idEstado,
+      }),
+      () => this.seleccion.next(detalle.idReporte),
+    );
   }
 
   seleccionarArchivo(evento: Event): void {
@@ -167,7 +224,11 @@ export abstract class DepartamentoPagina {
     const archivo = input.files?.[0] ?? null;
     this.archivo = null;
     if (!archivo) return;
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(archivo.type) || archivo.size > 5 * 1024 * 1024 || archivo.size === 0) {
+    if (
+      !['image/png', 'image/jpeg', 'image/webp'].includes(archivo.type) ||
+      archivo.size > 5 * 1024 * 1024 ||
+      archivo.size === 0
+    ) {
       this.error.set('Selecciona una imagen PNG, JPEG o WebP de hasta 5 MB.');
       input.value = '';
       return;
@@ -179,54 +240,84 @@ export abstract class DepartamentoPagina {
   subirEvidencia(): void {
     const detalle = this.detalle();
     if (!detalle || !this.archivo || !detalle.puedeAdjuntar) return;
-    this.guardar(this.api.subirEvidencia(this.departamento.slug, detalle.idReporte, this.archivo, this.descripcionEvidencia),
-      () => this.seleccion.next(detalle.idReporte), 'Evidencia guardada.');
+    this.guardar(
+      this.api.subirEvidencia(
+        this.departamento.slug,
+        detalle.idReporte,
+        this.archivo,
+        this.descripcionEvidencia,
+      ),
+      () => this.seleccion.next(detalle.idReporte),
+      'Evidencia guardada.',
+    );
   }
 
   registrarPunto(): void {
     if (!this.puedeGestionar) return;
-    this.guardar(this.api.crearPunto(this.departamento.slug, { ...this.nuevoPunto }), () => {
-      this.nuevoPunto = puntoVacio();
-      this.mostrarNuevoPunto.set(false);
-    }, 'Punto de reciclaje guardado.');
+    this.guardar(
+      this.api.crearPunto(this.departamento.slug, { ...this.nuevoPunto }),
+      () => {
+        this.nuevoPunto = puntoVacio();
+        this.mostrarNuevoPunto.set(false);
+      },
+      'Punto de reciclaje guardado.',
+    );
   }
 
   guardarDescripcionEvidencia(idEvidencia: number): void {
     const detalle = this.detalle();
     if (!detalle?.puedeAdjuntar) return;
-    this.guardar(this.api.describirEvidencia(this.departamento.slug, detalle.idReporte, idEvidencia, this.descripcionesEvidencias[idEvidencia] ?? ''),
-      () => this.seleccion.next(detalle.idReporte), 'Descripción guardada.');
+    this.guardar(
+      this.api.describirEvidencia(
+        this.departamento.slug,
+        detalle.idReporte,
+        idEvidencia,
+        this.descripcionesEvidencias[idEvidencia] ?? '',
+      ),
+      () => this.seleccion.next(detalle.idReporte),
+      'Descripción guardada.',
+    );
   }
 
-  private guardar(peticion: Observable<{ id: number }>, alGuardar: (r: { id: number }) => void, mensaje = 'Cambios guardados correctamente.'): void {
+  private guardar(
+    peticion: Observable<{ id: number }>,
+    alGuardar: (r: { id: number }) => void,
+    mensaje = 'Cambios guardados correctamente.',
+  ): void {
     if (this.guardando() || this.cargando() || this.cargandoDetalle()) return;
     this.guardando.set(true);
     this.error.set('');
     this.mensaje.set('');
-    peticion.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => this.guardando.set(false))
-    ).subscribe({
-      next: resultado => {
-        alGuardar(resultado);
-        this.mensaje.set(mensaje);
-        timer(5000).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.mensaje.set(''));
-        this.recargas.next();
-      },
-      error: error => this.informarError(error)
-    });
+    peticion
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.guardando.set(false)),
+      )
+      .subscribe({
+        next: (resultado) => {
+          alGuardar(resultado);
+          this.mensaje.set(mensaje);
+          timer(5000)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => this.mensaje.set(''));
+          this.recargas.next();
+        },
+        error: (error) => this.informarError(error),
+      });
   }
 
   private mensajeError(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
-      if (error.status === 0) return 'No se pudo conectar con el servidor. Comprueba que el backend esté iniciado.';
+      if (error.status === 0)
+        return 'No se pudo conectar con el servidor. Comprueba que el backend esté iniciado.';
       if (typeof error.error?.mensaje === 'string') return error.error.mensaje;
     }
     return 'No fue posible completar la operación.';
   }
 
   private redirigirSiExpirada(error: unknown): void {
-    if (error instanceof HttpErrorResponse && error.status === 401) void this.router.navigateByUrl('/login');
+    if (error instanceof HttpErrorResponse && error.status === 401)
+      void this.router.navigateByUrl('/login');
   }
 
   private informarError(error: unknown): void {

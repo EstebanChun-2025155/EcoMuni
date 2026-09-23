@@ -1,6 +1,6 @@
 ﻿import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NavbarComponent } from '../navbar/navbar';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina';
 
 @Component({
@@ -8,17 +8,17 @@ import { DepartamentoPagina } from '../departamentos-shared/departamento-pagina'
   standalone: true,
   imports: [FormsModule, NavbarComponent],
   templateUrl: './chimaltenango.component.html',
-  styleUrl: './chimaltenango.component.css'
+  styleUrl: './chimaltenango.component.css',
 })
 export class ChimaltenangoComponent extends DepartamentoPagina {
   constructor() {
     super({
-      "slug": "chimaltenango",
-      "nombre": "Chimaltenango",
-      "cabecera": "Chimaltenango",
-      "municipios": 7,
-      "imagen": "/Chimaltenango.jpg",
-      "frase": "Tradición, naturaleza y comunidades comprometidas con un futuro más verde."
+      slug: 'chimaltenango',
+      nombre: 'Chimaltenango',
+      cabecera: 'Chimaltenango',
+      municipios: 7,
+      imagen: '/Chimaltenango.jpg',
+      frase: 'Tradición, naturaleza y comunidades comprometidas con un futuro más verde.',
     });
   }
 }

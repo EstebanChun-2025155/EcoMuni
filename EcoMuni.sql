@@ -236,3 +236,12 @@ values (
     '5555-1003',
     'activo'
 );
+
+insert into Categoria (categoria, descripcion) values
+    ('basurero clandestino', 'Vertedero informal instalado fuera de los puntos autorizados, a cielo abierto.'),
+    ('acumulacion de basura', 'Acumulacion de residuos en calles, parques o predios que ensucia y bloquea el entorno.'),
+    ('quema de residuos', 'Quema de basura al aire libre: libera humo toxico y contamina el aire que respiramos.'),
+    ('contaminacion de area publica', 'Vertido de residuos o liquidos en vias y espacios comunes que contamina el sector.'),
+    ('desechos peligrosos', 'Residuos peligrosos (quimicos, baterias, aceites) mal manejados que danan la salud y el suelo.'),
+    ('otro', 'Situaciones ambientales que no encajan en las categorias anteriores.')
+on conflict (categoria) do nothing;

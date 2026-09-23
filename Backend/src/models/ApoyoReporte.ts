@@ -1,4 +1,4 @@
 export interface ApoyoReporte {
-    idReporte: number;
-    idUsuario: number;
+  idReporte: number;
+  idUsuario: number;
 }

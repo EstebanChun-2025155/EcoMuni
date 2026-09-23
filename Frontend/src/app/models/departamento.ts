@@ -6,8 +6,14 @@ export interface PortadaDepartamento {
   frase: string;
   imagen: string;
 }
-export interface Categoria { idCategoria: number; categoria: string; }
-export interface EstadoReporte { idEstado: number; nombre: string; }
+export interface Categoria {
+  idCategoria: number;
+  categoria: string;
+}
+export interface EstadoReporte {
+  idEstado: number;
+  nombre: string;
+}
 export interface Reporte {
   idReporte: number;
   idUsuario: number;
@@ -29,7 +35,14 @@ export interface Reporte {
 }
 export interface DetalleReporte extends Reporte {
   comentarios: { idComentario: number; autor: string; fecha: string; texto: string }[];
-  seguimientos: { idSeguimiento: number; idEstado: number; estado: string; autor: string; fecha: string; observacion: string | null }[];
+  seguimientos: {
+    idSeguimiento: number;
+    idEstado: number;
+    estado: string;
+    autor: string;
+    fecha: string;
+    observacion: string | null;
+  }[];
   evidencias: { idEvidencia: number; urlImagen: string; descripcion: string | null }[];
   puedeAdjuntar: boolean;
 }

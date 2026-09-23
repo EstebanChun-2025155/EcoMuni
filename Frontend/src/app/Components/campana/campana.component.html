@@ -1,0 +1,310 @@
+<div class="bg-blur" aria-hidden="true"></div>
+<app-navbar activa="campanas"></app-navbar>
+
+<main class="campaign-page">
+  <section class="hero" aria-labelledby="titulo-campanas">
+    <div>
+      <a class="back-link" routerLink="/home">← Volver a home</a>
+      <p class="eyebrow">Participación y ambiente</p>
+      <h1 id="titulo-campanas">Campañas</h1>
+      <p class="hero-description">
+        Conoce las iniciativas que unen a nuestras comunidades por una Guatemala más limpia.
+      </p>
+    </div>
+    <div class="hero-note">
+      <span aria-hidden="true">♻</span><strong>Una comunidad.<br />Muchas formas de ayudar.</strong>
+      <p>Consulta jornadas, actividades y proyectos de todos los departamentos.</p>
+    </div>
+  </section>
+
+  <div class="notificacion exito" [class.mostrar]="!!mensaje()" role="status">{{ mensaje() }}</div>
+  @if (error() && !mostrarFormulario()) {
+    <div class="notice notice-error" role="alert">
+      <p>{{ error() }}</p>
+      <button class="secondary-btn" type="button" (click)="recargar()">Reintentar</button>
+    </div>
+  }
+
+  <section class="campaign-section" aria-labelledby="titulo-listado" [attr.aria-busy]="cargando()">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Iniciativas de EcoMuni</p>
+        <h2 id="titulo-listado">Explora las campañas</h2>
+        <p>Encuentra actividades por nombre, organizador o lugar.</p>
+      </div>
+      @if (puedeGestionar) {
+        <button
+          class="primary-btn"
+          type="button"
+          [disabled]="cargando() || guardando()"
+          (click)="abrirFormulario()"
+        >
+          + Nueva campaña
+        </button>
+      }
+    </div>
+    <form class="filters" (ngSubmit)="buscar()">
+      <label class="search-field"
+        ><span>Buscar campaña</span
+        ><input
+          name="busqueda"
+          maxlength="100"
+          [(ngModel)]="filtros.busqueda"
+          [disabled]="guardando()"
+          placeholder="Ej. limpieza, reciclaje o municipio"
+      /></label>
+      <label
+        ><span>Estado</span
+        ><select name="estadoFiltro" [(ngModel)]="filtros.estado" [disabled]="guardando()">
+          <option value="">Todos</option>
+          @for (estado of estadosVisibles; track estado) {
+            <option [value]="estado">{{ nombreEstado(estado) }}</option>
+          }
+        </select></label
+      >
+      <button class="secondary-btn" type="submit" [disabled]="cargando() || guardando()">
+        Buscar
+      </button>
+    </form>
+    @if (cargando()) {
+      <p class="loading" role="status">Cargando campañas…</p>
+    }
+    @if (!cargando() && !error()) {
+      <div class="campaign-grid">
+        @for (campana of panel()?.campanas ?? []; track campana.idCampana) {
+          <article class="campaign-card">
+            <div class="campaign-cover">
+              @if (imagenSegura(campana.imagenUrl); as imagen) {
+                <img [src]="imagen" [alt]="campana.titulo" loading="lazy" decoding="async" />
+              } @else {
+                <div class="cover-placeholder" aria-hidden="true">
+                  <span>♻</span>
+                  <p>EcoMuni · Acción ambiental</p>
+                </div>
+              }
+              <span
+                class="status-badge"
+                [class.draft]="campana.estado === 'borrador'"
+                [class.finished]="campana.estado === 'finalizada'"
+                [class.cancelled]="campana.estado === 'cancelada'"
+                >{{ nombreEstado(campana.estado) }}</span
+              >
+            </div>
+            <div class="campaign-body">
+              <p class="campaign-dates">
+                <time [attr.datetime]="campana.fechaInicio">{{
+                  fechaLegible(campana.fechaInicio)
+                }}</time>
+                —
+                <time [attr.datetime]="campana.fechaFin">{{ fechaLegible(campana.fechaFin) }}</time>
+              </p>
+              <h3>{{ campana.titulo }}</h3>
+              <p class="description">{{ campana.descripcion }}</p>
+              <dl>
+                <dt>Organiza</dt>
+                <dd>{{ campana.organizador }}</dd>
+                <dt>Ubicación</dt>
+                <dd>
+                  @if (campana.ubicacion; as lugar) {
+                    {{ lugar.municipio }}, {{ lugar.departamento }}
+                    @if (lugar.zona) {
+                      <span>Zona {{ lugar.zona }}</span>
+                    }
+                    @if (lugar.direccion) {
+                      <span>{{ lugar.direccion }}</span>
+                    }
+                    @if (lugar.referencia) {
+                      <span>Referencia: {{ lugar.referencia }}</span>
+                    }
+                  } @else {
+                    Sin ubicación específica
+                  }
+                </dd>
+              </dl>
+              @if (puedeGestionar) {
+                <button
+                  class="secondary-btn edit-btn"
+                  type="button"
+                  [disabled]="guardando()"
+                  (click)="abrirFormulario(campana)"
+                >
+                  Editar campaña
+                </button>
+              }
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-state">
+            <span aria-hidden="true">♻</span>
+            <h3>No hay campañas para mostrar</h3>
+            <p>Prueba otra búsqueda o consulta nuevamente más adelante.</p>
+          </div>
+        }
+      </div>
+    }
+    @if (panel(); as datos) {
+      <div class="pagination">
+        <button
+          class="secondary-btn"
+          type="button"
+          [disabled]="cargando() || guardando() || filtros.pagina <= 1"
+          (click)="cambiarPagina(-1)"
+        >
+          Anterior</button
+        ><span>Página {{ filtros.pagina }} de {{ paginas }} · {{ datos.total }} campañas</span
+        ><button
+          class="secondary-btn"
+          type="button"
+          [disabled]="cargando() || guardando() || filtros.pagina >= paginas"
+          (click)="cambiarPagina(1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    }
+  </section>
+  <footer>
+    <p>EcoMuni · Trabajando por una Guatemala más limpia.</p>
+    <button type="button" routerLink="/departamentos">← Volver a departamentos</button>
+  </footer>
+</main>
+
+@if (mostrarFormulario() && puedeGestionar) {
+  <div class="modal-backdrop" (click)="cerrarFormulario()" (keydown.escape)="cerrarFormulario()">
+    <section
+      class="campaign-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-formulario"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Gestión de campañas</p>
+          <h2 id="titulo-formulario">
+            {{ editando === null ? 'Nueva campaña' : 'Editar campaña' }}
+          </h2>
+        </div>
+        <button
+          class="close-btn"
+          type="button"
+          aria-label="Cerrar formulario"
+          [disabled]="guardando()"
+          (click)="cerrarFormulario()"
+        >
+          ×
+        </button>
+      </div>
+      <div class="notificacion" [class.mostrar]="!!error()" role="alert">{{ error() }}</div>
+      <form #campanaForm="ngForm" (ngSubmit)="guardar()">
+        <fieldset class="form-grid" [disabled]="guardando()">
+          <label class="full-field"
+            ><span>Título</span
+            ><input name="titulo" required maxlength="100" [(ngModel)]="formulario.titulo"
+          /></label>
+          <label class="full-field"
+            ><span>Organizador</span
+            ><input
+              name="organizador"
+              required
+              maxlength="100"
+              [(ngModel)]="formulario.organizador"
+          /></label>
+          <label
+            ><span>Fecha de inicio</span
+            ><input name="fechaInicio" type="date" required [(ngModel)]="formulario.fechaInicio"
+          /></label>
+          <label
+            ><span>Fecha de finalización</span
+            ><input
+              name="fechaFin"
+              type="date"
+              required
+              [min]="formulario.fechaInicio"
+              [(ngModel)]="formulario.fechaFin"
+          /></label>
+          @if (formulario.fechaInicio && formulario.fechaFin && !fechasValidas) {
+            <p class="notice notice-error full-field" role="alert">
+              La fecha final debe ser igual o posterior a la inicial.
+            </p>
+          }
+          <label
+            ><span>Estado</span
+            ><select name="estado" required [(ngModel)]="formulario.estado">
+              @for (estado of estados; track estado) {
+                <option [value]="estado">{{ nombreEstado(estado) }}</option>
+              }
+            </select></label
+          >
+          <label
+            ><span>URL de imagen — opcional</span
+            ><input
+              name="imagenUrl"
+              type="url"
+              maxlength="300"
+              pattern="https?://.+"
+              [(ngModel)]="formulario.imagenUrl"
+              placeholder="https://..."
+          /></label>
+          <label class="full-field"
+            ><span>Descripción</span
+            ><textarea
+              name="descripcion"
+              required
+              maxlength="500"
+              rows="4"
+              [(ngModel)]="formulario.descripcion"
+            ></textarea>
+          </label>
+          <label class="checkbox-field full-field"
+            ><input name="conUbicacion" type="checkbox" [(ngModel)]="conUbicacion" /><span
+              >Agregar una ubicación específica</span
+            ></label
+          >
+          @if (conUbicacion) {
+            <label
+              ><span>Departamento</span
+              ><input
+                name="departamento"
+                required
+                maxlength="60"
+                [(ngModel)]="lugar.departamento"
+                placeholder="Ej. Guatemala"
+            /></label>
+            <label
+              ><span>Municipio</span
+              ><input name="municipio" required maxlength="80" [(ngModel)]="lugar.municipio"
+            /></label>
+            <label
+              ><span>Zona — opcional</span
+              ><input name="zona" maxlength="15" [(ngModel)]="lugar.zona"
+            /></label>
+            <label
+              ><span>Dirección — opcional</span
+              ><input name="direccion" maxlength="200" [(ngModel)]="lugar.direccion"
+            /></label>
+            <label class="full-field"
+              ><span>Referencia — opcional</span
+              ><input name="referencia" maxlength="200" [(ngModel)]="lugar.referencia"
+            /></label>
+          }
+          <p class="form-note full-field">
+            Las campañas publicadas y finalizadas son visibles para los ciudadanos. Los borradores y
+            las canceladas quedan visibles para gestión.
+          </p>
+          <div class="modal-actions full-field">
+            <button class="secondary-btn" type="button" (click)="cerrarFormulario()">
+              Cancelar</button
+            ><button
+              class="primary-btn"
+              type="submit"
+              [disabled]="campanaForm.invalid || !fechasValidas"
+            >
+              {{ guardando() ? 'Guardando…' : 'Guardar campaña' }}
+            </button>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+  </div>
+}
