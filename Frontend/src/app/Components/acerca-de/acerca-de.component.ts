@@ -37,7 +37,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
         padding: 130px 24px 60px;
       }
       .eyebrow {
-        color: #caeb93;
+        color: #d7d2c7;
         font-size: 0.8rem;
         font-weight: 800;
         text-transform: uppercase;
@@ -56,7 +56,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
       a {
         display: inline-block;
         margin-top: 10px;
-        color: #caeb93;
+        color: #d7d2c7;
         font-weight: 600;
       }
     `,
