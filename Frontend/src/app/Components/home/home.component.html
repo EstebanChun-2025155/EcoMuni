@@ -1,0 +1,149 @@
+<app-navbar activa="inicio"></app-navbar>
+
+<main class="hero-content">
+  <video
+    class="hero-video"
+    src="/video1.mp4"
+    poster="/bosque-real.jpg"
+    autoplay
+    muted
+    loop
+    playsinline
+    aria-hidden="true"
+  ></video>
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <div class="hero-caja">
+    <h1 class="hero-title">
+      @for (frase of frases; track frase; let i = $index) {
+        <span class="hero-frase" [innerHTML]="frase" [style.animation-delay.ms]="i * 4000"></span>
+      }
+    </h1>
+  </div>
+
+  <div class="scroll-container" (click)="onScrollDown()">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-icon">&#8595;</div>
+  </div>
+</main>
+
+<section id="acerca" class="seccion seccion-blanco reveal">
+  <div class="acerca-grid">
+    <div class="acerca-texto">
+      <h2>Acerca de EcoMuni</h2>
+      <p>
+        EcoMuni es la plataforma municipal de gestión ambiental de Guatemala. Nace para acercar a la
+        ciudadanía con su municipio: reportar problemas ambientales, dar seguimiento a cada caso y
+        visibilizar el trabajo de quienes cuidan su comunidad.
+      </p>
+      <p>
+        Nuestra misión es convertir la participación ciudadana en acciones medibles que mantengan
+        limpios, verdes y vivos los espacios que compartimos.
+      </p>
+      <div class="chips" aria-hidden="true">
+        <span class="chip">Reporta</span>
+        <span class="chip">Da seguimiento</span>
+        <span class="chip">Resuelve</span>
+      </div>
+    </div>
+    <div class="acerca-svg" aria-hidden="true">
+      <svg viewBox="0 0 420 300" role="img" aria-hidden="true" focusable="false">
+        <circle cx="210" cy="150" r="140" fill="#3a7658" />
+        <ellipse cx="210" cy="243" rx="152" ry="13" fill="#a7dcb2" />
+
+        <path d="M194 243 L200 214 L220 214 L226 243 Z" fill="#032107" />
+        <path d="M210 214 L210 150" stroke="#032107" stroke-width="6" stroke-linecap="round" />
+        <ellipse cx="190" cy="170" rx="21" ry="10" fill="#81be4d" transform="rotate(-30 190 170)" />
+        <ellipse cx="230" cy="160" rx="21" ry="10" fill="#81be4d" transform="rotate(26 230 160)" />
+        <ellipse cx="210" cy="130" rx="17" ry="9" fill="#a7dcb2" transform="rotate(-4 210 130)" />
+
+        <circle cx="116" cy="145" r="17" fill="#a7dcb2" />
+        <rect x="94" y="158" width="44" height="64" rx="13" fill="#81be4d" />
+        <rect x="99" y="222" width="13" height="20" rx="6" fill="#235434" />
+        <rect x="120" y="222" width="13" height="20" rx="6" fill="#235434" />
+        <path
+          d="M138 174 Q160 184 176 198"
+          stroke="#a7dcb2"
+          stroke-width="9"
+          stroke-linecap="round"
+          fill="none"
+        />
+
+        <circle cx="304" cy="145" r="17" fill="#a7dcb2" />
+        <rect x="282" y="158" width="44" height="64" rx="13" fill="#032107" />
+        <rect x="287" y="222" width="13" height="20" rx="6" fill="#235434" />
+        <rect x="308" y="222" width="13" height="20" rx="6" fill="#235434" />
+        <path
+          d="M282 174 Q260 184 244 198"
+          stroke="#a7dcb2"
+          stroke-width="9"
+          stroke-linecap="round"
+          fill="none"
+        />
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="categorias" class="seccion seccion-blanco-alterno reveal">
+  <div class="seccion-contenido">
+    <h2>Categorías que manejamos</h2>
+    <p class="seccion-subtitulo">
+      Al crear un reporte puedes elegir entre estas categorías ambientales.
+    </p>
+
+    @if (cargandoCategorias()) {
+      <p class="seccion-vacio" role="status">Cargando categorías…</p>
+    } @else if (!categorias().length) {
+      <p class="seccion-vacio">No hay categorías disponibles por el momento.</p>
+    } @else {
+      <div class="carrusel">
+        <div class="carrusel-pista" #pista>
+          @for (categoria of carruselItems(); track $index) {
+            <article class="carrusel-tarjeta">
+              <h3>{{ categoria.categoria }}</h3>
+              <p>{{ categoria.descripcion || 'Sin descripción.' }}</p>
+              <span class="carrusel-total">{{ categoria.total }} reportes</span>
+            </article>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<section id="evidencias" class="seccion seccion-blanco reveal">
+  <div class="seccion-contenido">
+    <h2>Evidencias de la comunidad</h2>
+    <p class="seccion-subtitulo">
+      Fotografías reales que la ciudadanía adjunta a sus reportes en todos los departamentos.
+    </p>
+
+    <div class="mosaico" [attr.aria-busy]="cargandoEvidencias()">
+      @for (evidencia of evidencias().slice(0, 8); track evidencia.idEvidencia) {
+        @if (api.urlImagen(evidencia.urlImagen); as imagen) {
+          <figure class="mosaico-item">
+            <img [src]="imagen" [alt]="evidencia.descripcion || evidencia.titulo" loading="lazy" />
+          </figure>
+        }
+      }
+      <a class="mosaico-btn" routerLink="/evidencias">Ver más evidencias</a>
+    </div>
+
+    @if (cargandoEvidencias()) {
+      <p class="seccion-vacio" role="status">Cargando evidencias…</p>
+    } @else if (!evidencias().length) {
+      <p class="seccion-vacio">Aún no hay evidencias disponibles.</p>
+    }
+  </div>
+</section>
+
+<footer class="home-footer">
+  <nav class="footer-links" aria-label="Información del sitio">
+    <a href="#acerca" (click)="irA('acerca', $event)">Acerca de</a>
+    <a routerLink="/ubicaciones">Ubicaciones</a>
+    <a routerLink="/ayuda">Ayuda</a>
+    <a href="#categorias" (click)="irA('categorias', $event)">Categorías</a>
+    <a href="#evidencias" (click)="irA('evidencias', $event)">Evidencias</a>
+  </nav>
+</footer>
